@@ -198,8 +198,9 @@ const requestOptions = {
 
          
       
-<button disabled={profile == "" || handle =="" || links[0].linktext == ""}onClick={()=>{submitlink()}}className='bg-black p-2 px-4 rounded-full text-white font-bold cursor-pointer'> Create Daplink</button>
-    
+ <button disabled={profile == "" || handle =="" || links.linktext == ""}onClick={()=>{submitlink()}}className='bg-black p-2 px-4 rounded-full text-white font-bold cursor-pointer'> Create Daplink</button> 
+ 
+  
         </div>
      </div>
 
