@@ -1,6 +1,6 @@
-
+// API endpoint for creating and Storing Data 
 import clientPromise from "@/lib/mongodb"
-
+  
 export async function POST(request) {
   const client = await clientPromise;
     const body = await request.json()
@@ -13,7 +13,8 @@ export async function POST(request) {
     }
     const result = await collection.insertOne(body)
     return Response.json({ success:  true, error:false ,message: 'daplink created', result: result  })
-  
+
+
 }
 
 

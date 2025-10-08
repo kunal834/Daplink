@@ -12,6 +12,7 @@
   "dependencies": {
     "mongodb": "^6.18.0",
     "mongoose": "^8.16.4",
+    "net": "^1.0.2",
     "next": "15.4.2",
     "next-auth": "^4.24.11",
     "react": "19.1.0",

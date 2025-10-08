@@ -1,4 +1,4 @@
-"use client"
+ "use client"
 import Navbar from "@/Components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +8,11 @@ import { useState } from "react";
   import Footer from "@/Components/Footer";
 
 
+
+
+
 export default function Home() {
+   
   const router = useRouter()
    const createdaplink  = () => {
     router.push(`/Generate?handle=${text}`)
@@ -19,7 +23,7 @@ const [text, settext] = useState("")
   return (
     <>
   
-    <main className=" md:w-full  w-[106vw] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <main className=" md:w-full  w-[106vw]  bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500  ">
        <Navbar/>
   {/* grid grid-cols-2 */}
   {/* bg-[#254f1a] */}
@@ -49,6 +53,11 @@ const [text, settext] = useState("")
       {/* <section className="bg-pink-200 min-h-[100vh]">
   
       </section> */}
+       <div>
+      
+
+    
+    </div>
     </main>
 <Footer/>
     </>
