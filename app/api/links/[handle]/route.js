@@ -1,4 +1,4 @@
-// api endpoint for data fetching to view on screen
+//SSapi endpoint for data fetching to view on screen
 import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
  
@@ -13,3 +13,5 @@ export async function GET(request, { params }) {
   }
   return NextResponse.json({ success: true, error: false, result: data });
 }
+
+
