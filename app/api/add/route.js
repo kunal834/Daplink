@@ -2,8 +2,16 @@
 import clientPromise from "@/lib/mongodb"
   
 export async function POST(request) {
+  const body = await request.json()
+  if (!body || !body.handle) {
+        return Response.json({ 
+            success: false, 
+            error: true, 
+            message: 'Missing required field: handle' 
+        }, { status: 400 }); // Use status 400 for Bad Request
+    }
+    
   const client = await clientPromise;
-    const body = await request.json()
     const db = client.db("Daplink")
     const collection = db.collection("links")
     // if handle is already exist u can not created daplink is already present 

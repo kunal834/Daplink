@@ -17,7 +17,7 @@ export default function  BlogPostPage({ params }) {
 
  const [data, setData] = useState(null);
 
-  useEffect(() => {
+  useEffect(() => {   // use to fetch data 
     fetch(`/api/links/${params.handle}`)
       .then((res) => res.json())
       .then((json) => setData(json.result));
