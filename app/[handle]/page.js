@@ -49,7 +49,7 @@ const [modalOpen, setModalOpen] = useState(false);
     <div className="photo mb-6">
       <img
         className="rounded-full w-32 h-32 object-cover ring-4 ring-amber-200 shadow-md"
-        src={data.profile}
+        src={data.profile ||" https://img.freepik.com/premium-vector/professional-business-man-avatar-vector-illustration-isolated-white-background_1322553-77267.jpg?w=360"}
         alt="Profile Photo"
       />
     </div>
