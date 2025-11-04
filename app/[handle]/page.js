@@ -41,7 +41,7 @@ const [modalOpen, setModalOpen] = useState(false);
 
 
       <body className="bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 ">
-      <div className="flex gap-5 items-center justify-center w-full md:h-screen h-[60vw] md:mt-16 mt-100  bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 p-6">
+      <div className="flex flex-col md:flex-row gap-5 items-center justify-center w-full md:h-screen h-[60vw] md:mt-16 mt-100  bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 p-6" >
 
   <div className="profile-card flex flex-col items-center bg-white max-w-[90%] w-[22rem]  rounded-2xl shadow-2xl p-8 transition-transform duration-300 hover:scale-105">
     
