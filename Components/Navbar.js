@@ -66,15 +66,15 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="flex gap-4 items-center">
-          <button
+          {/* <button
             type="button"
             className="bg-[#8B2635] text-white px-4 py-2 rounded-xl font-bold text-xs hover:bg-gray-900 shadow-md transition"
           >
             Login
-          </button>
+          </button> */}
           <Link href="/Generate"  className="bg-[#8B2635] text-white font-semibold rounded-full px-6 py-2 text-sm shadow-md hover:bg-gray-900 transition">
             
-              Sign up free
+              Create
             
           </Link>
         </div>
