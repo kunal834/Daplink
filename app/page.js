@@ -32,8 +32,7 @@ const [text, settext] = useState("")
          <p className="text-black font-extrabold text-6xl"> One  Link </p>
          <p className="text-red-800 font-extrabold text-6xl">  Infinite, </p> 
         <p className="text-lime-600 font-extrabold text-6xl">Possibilities.</p> 
-         <p className="text-xl  mt-4 text-black font-bold w-3/4 my-4 "> Daplink is your professional digital headquarters. Instantly connect your audience to your entire world—from your social profiles and online store to your portfolio and next career opportunity
-          social media profiles.</p>  
+         <p className="text-xl  mt-4 text-black font-bold w-3/4 my-4 "> Daplink is the next generation link-in-bio platform. Beyond connecting your social media and products, your Daplink page serves as your personal gateway to professional growth. Seamlessly link your audience to your portfolio, services, and future networking opportunities.</p>  
           <div className="button flex mt-4 gap-4 ">
      <input value={text}  onChange={(e) => settext(e.target.value)}className='bg-white p-2 rounded-xl focus:outline-green-800  shadow-2xl z-10'type="text" placeholder="Enter your handle"/> 
           
