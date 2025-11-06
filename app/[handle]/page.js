@@ -95,7 +95,8 @@ const [modalOpen, setModalOpen] = useState(false);
     <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 cursor-pointer text-white font-semibold py-2 rounded-md transition focus:outline-none focus:ring-2 focus:ring-indigo-400">
       Explore Peoples
     </button>
-   <button className="flex-1 bg-green-600 hover:bg-green-700 cursor-pointer text-white font-semibold py-2 rounded-md transition focus:outline-none focus:ring-2 focus:ring-green-400" onClick={() => setModalOpen(true)}> Explore Jobs</button>
+   
+  <button className="flex-1 bg-green-600 hover:bg-green-700 cursor-pointer text-white font-semibold py-2 rounded-md transition focus:outline-none focus:ring-2 focus:ring-green-400" onClick={() => setModalOpen(true)}> Explore Jobs</button>
  
   </div>
 </div>
