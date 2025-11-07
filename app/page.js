@@ -6,6 +6,7 @@ import { useState } from "react";
   import { ToastContainer, toast } from 'react-toastify';
   import { useRouter } from "next/navigation";
   import Footer from "@/Components/Footer";
+import FeatureShowcase from "@/Components/Fearureshowcase";
 
 
 
@@ -58,6 +59,7 @@ const [text, settext] = useState("")
     
     </div>
     </main>
+    <FeatureShowcase/>
 <Footer/>
     </>
   );
