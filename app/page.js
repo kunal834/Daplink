@@ -8,6 +8,7 @@ import { useState } from "react";
   import Footer from "@/Components/Footer";
 import FeatureShowcase from "@/Components/Fearureshowcase";
 import Testimonial from "@/Components/Testimonial";
+import CallToActionSection from "@/Components/CalltoAction";
 
 
 
@@ -99,6 +100,7 @@ const [text, settext] = useState("")
 </main>
     <FeatureShowcase/>
   <Testimonial/>
+  <CallToActionSection/>
 <Footer/>
     </>
   );
