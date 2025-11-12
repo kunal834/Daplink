@@ -17,14 +17,14 @@ const Navbar = () => {
         </Link>
         {/* Center Navigation Links */}
         <ul className="hidden md:flex flex-grow justify-center gap-8 text-sm font-medium text-gray-700">
-          <li className="cursor-pointer hover:text-indigo-600 transition">Products</li>
-          <li className="cursor-pointer hover:text-indigo-600 transition">Templates</li>
-          <li className="cursor-pointer hover:text-indigo-600 transition">Marketplace</li>
-          <li className="cursor-pointer hover:text-indigo-600 transition">Learn</li>
-          <li className="cursor-pointer hover:text-indigo-600 transition">Pricing</li>
+          <Link href="/Products"  className="cursor-pointer hover:text-indigo-600 transition">Products</Link>
+          <Link href="/"  className="cursor-pointer hover:text-indigo-600 transition">Templates</Link>
+          <Link href="/"  className="cursor-pointer hover:text-indigo-600 transition">Marketplace</Link>
+          <Link href="/"  className="cursor-pointer hover:text-indigo-600 transition">Learn</Link>
+          <Link href="/"  className="cursor-pointer hover:text-indigo-600 transition">Pricing</Link>
         </ul>
         {/* User Auth/CTA Section */}
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 iLinkms-center">
           <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition">
             Log in
           </Link>
@@ -36,6 +36,7 @@ const Navbar = () => {
           </Link>
         </div>
       </div>
+      
     </nav>
 
 

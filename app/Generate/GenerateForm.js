@@ -39,7 +39,7 @@ const Generate = () => {
          })
       })
    }
-   //  const notify = () => toast("Daplink Created! share your bio");
+   
 
    const submitlink = async () => {
       const myHeaders = new Headers();
@@ -61,14 +61,12 @@ const Generate = () => {
       };
 
       const r = await fetch("./api/add", requestOptions)
-      //   .then((response) => response.text())
-      //   .then((result) => console.log(result))
-      //   .catch((error) => console.error(error));
+   
 
       const result = await r.json();
       if (result.success) {
          toast.success(result.message)
-         //  setlinks(links[] == "")
+       
          sethandle("")
          setprofile("")
          router.push(`/${handle}`);
@@ -107,7 +105,7 @@ const Generate = () => {
                <div className='mt-8'>
                   <h2 className='text-center font-bold text-2xl text-black'>Step1: Claim your Handle</h2>
                   <div className="flex justify-center  mt-4">
-                     {/* <input value={handle || ""}onChange={e=>{sethandle(e.target.value)}}type="text" className='bg-gray-800 text-white p-2 px-4' placeholder='Choose a Handle '/> */}
+                 
                      <input value={handle || ""} onChange={e => { sethandle(e.target.value) }} type="text" className=' md:ml-0 md:mr-0  ml-6 mr-4  w-full max-w-md 
     bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm 
     text-gray-900 dark:text-gray-100 
@@ -155,7 +153,7 @@ const Generate = () => {
                <div className='mt-8'>
                   <h2 className='text-center font-bold text-2xl text-black'>Step3: Add Picture , Description and Finalize</h2>
                   <div className="flex justify-center  mt-4">
-                     {/* <input value={profile || ""} onChange={e=>{setprofile(e.target.value)}} type="text" className='bg-gray-800 text-white p-2 px-4 focus:outline-gray-400' placeholder='Enter Link to your Picture '/> */}
+                     
                      <input
                         value={profile || ""}
                         onChange={e => setprofile(e.target.value)}
@@ -205,14 +203,11 @@ const Generate = () => {
                   </div>
                </div>
 
-               {/* <div className='flex justify-center mt-8'>
-      <img src="/fun.png" alt="" /> 
-
-     </div> */}
+         
 
             </div>
             <div className=' md:w-1/2 h-full  '>
-               {/* <img className='w-full h-full none hidden md:block'src="/Sign.png" alt="" /> */}
+
                <img className='w-full h-full none hidden md:block' src="/half.jpg" alt="" />
                <ToastContainer />
             </div>
@@ -227,3 +222,5 @@ const Generate = () => {
 }
 
 export default Generate
+
+

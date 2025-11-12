@@ -28,15 +28,15 @@ const [text, settext] = useState("")
 
 
 
-    <main className="bg-gradient-to-tr from-[#e5eaff] via-[#f1e3f3] to-[#fae6fe] w-full">
+    <main className="bg-gradient-to-tr from-[#e5eaff] via-[#f1e3f3] md:p-4 p-5 to-[#fae6fe] w-full">
      <Navbar/>
-  <div className="flex justify-start items-center pt-6 pl-[5vw]">
+  <div className="flex justify-start items-center pt-6  md:pt-6 pl-[5vw]">
 
   </div>
   <section className="flex flex-col md:flex-row min-h-[100vh] bg-gradient-to-tr from-[#e5eaff] via-[#f1e3f3] to-[#fae6fe]">
     {/* Left Section */}
     <div className="flex flex-col justify-center ml-[2vw] md:ml-[10vw] gap-4 pt-8 md:pt-0">
-      <h1 className="text-6xl font-extrabold">
+      <h1 className="text-4xl md:text-6xl font-extrabold">
         <span className="text-black">One Link To </span>
         <span className="text-blue-700">Rule </span>
         <span className="text-pink-600">Them </span>
@@ -63,7 +63,7 @@ const [text, settext] = useState("")
       </div>
     </div>
     {/* Right Section */}
-    <div className="flex items-center justify-center md:w-[40vw] w-full md:mt-0 mt-10 mr-[10vw]">
+    <div className="flex items-center justify-center md:w-[40vw] w-full md:mt-0 mt-10 mr-[10vw] ] ">
       <img src="/dog.jpg" alt="Dog" className="rounded-xl w-full object-cover max-h-[560px]" />
     </div>
   </section>
