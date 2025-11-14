@@ -246,7 +246,7 @@ const App = () => {
                     Simple, Transparent Pricing
                 </h1>
                 <p className="mt-3 text-xl text-gray-500">
-                    Choose the plan that's right for you. All plans include a 14-day free trial.
+                    Choose the plan that&apos;s  right for you. All plans include a 14-day free trial.
                 </p>
             </header>
 
