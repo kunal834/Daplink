@@ -1,6 +1,7 @@
 // CallToActionSection.jsx
 import React from 'react';
 import { ArrowRightIcon } from '@heroicons/react/24/outline'; // For the arrow icon
+import Link from 'next/link';
 
 const CallToActionSection = () => {
   return (
@@ -19,7 +20,7 @@ const CallToActionSection = () => {
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
         {/* Main Title */}
-        <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
           Start your journey with DapLink
         </h2>
 
@@ -40,12 +41,12 @@ const CallToActionSection = () => {
           </a>
 
           {/* Explore Features Button */}
-          <a
-            href="#" // Replace with your actual "Explore Features" link
+          <Link
+            href="/Products"// Replace with your actual "Explore Features" link
             className="inline-flex items-center justify-center px-8 py-4 border border-white text-base font-medium rounded-full text-white hover:bg-white hover:text-indigo-600 transition-colors shadow-lg"
           >
             Explore Features
-          </a>
+          </Link>
         </div>
       </div>
     </section>

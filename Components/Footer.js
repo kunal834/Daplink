@@ -29,10 +29,10 @@ const Footer = () => {
                         {/* Column 1: Product */}
                         <div className="w-1/2 md:w-auto">
                             <h3 className="text-base font-semibold text-white mb-4">Product</h3>
-                            <ul className="space-y-3 text-sm">
+                            <ul className="space-y-3 flex flex-col text-sm">
                                 <Link href="/Products" className="hover:text-white transition-colors">Features</Link>
-                                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+                                 <Link href="/Templates" className="hover:text-white transition-colors">Templates</Link>
+                                 <Link href="/Pricing" className="hover:text-white transition-colors">Pricing</Link>
                             </ul>
                         </div>
 
