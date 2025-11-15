@@ -6,6 +6,7 @@ import { FiUsers, FiRepeat, FiBriefcase, FiMessageCircle, FiCheckCircle } from '
 import { PiLinkSimpleHorizontalLight } from "react-icons/pi";
 import Navbar from '@/Components/Navbar';
 import CallToActionSection from '@/Components/CalltoAction';
+import Footer from '@/Components/Footer';
 
 // --- Reusable Feature Block Component ---
 const FeatureBlock = ({ title, icon: Icon, description, features, imageSrc, imageAlt, reverse }) => {
@@ -85,8 +86,8 @@ const FeatureBlock = ({ title, icon: Icon, description, features, imageSrc, imag
 // --- Main Page Component ---
 const FeaturePage = () => {
   return (
-
-      <div className="relative min-h-screen bg-gray-50 flex items-center justify-center">
+<>
+<div className="relative min-h-screen bg-gray-50 flex items-center justify-center">
 
       {/* This is your background element. 
         'absolute' and 'inset-0' make it fill the parent container's bounds (which is now min-h-screen).
@@ -219,9 +220,15 @@ const FeaturePage = () => {
          
       </footer>
 
+      
+
     </div>
 
     </div>
+
+    <Footer/>
+</>
+      
 
 
 
