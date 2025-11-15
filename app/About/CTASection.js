@@ -9,7 +9,7 @@ const CTASection = () => {
             Join Us on This Journey
           </h2>
           <p className="text-xl mb-8 font-light">
-            Whether you're a **creator**, **professional**, or **student**, Daplink is here to help you showcase your world and connect with the right people.
+            {`Whether you're a creator , professional, or student , Daplink is here to help you showcase your world and connect with the right people.`}
           </p>
           <div className="flex justify-center space-x-4">
             <button className="px-8 py-3 text-lg font-medium text-indigo-600 bg-white rounded-full hover:bg-gray-100 transition duration-300 shadow-md">

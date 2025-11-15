@@ -16,7 +16,7 @@ const NewsletterCTA = () => {
       {/* Container: Use a darker indigo for a more premium, professional feel */}
       <div className="text-center bg-indigo-700 p-8 sm:p-12 rounded-2xl shadow-2xl">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
-          Don't Miss the Next Opportunity!
+         {`Don't Miss the Next Opportunity!`}
         </h2>
         {/* Adjusted text color for better contrast/professionalism */}
         <p className="text-indigo-300 mb-8 max-w-xl mx-auto">

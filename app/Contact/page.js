@@ -62,7 +62,7 @@ const HeroContact = () => (
         Get in Touch
       </h1>
       <p className="text-lg text-gray-600">
-        Have a question or feedback? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+       { `Have a question or feedback? We'd love to hear from you. Send us a message and we'll respond as soon as possible.`}
       </p>
     </div>
   </section>
