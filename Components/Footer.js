@@ -42,7 +42,7 @@ const Footer = () => {
                             <ul className="space-y-3 text-sm">
                                 <li><a href="#" className="hover:text-white transition-colors">Learn</a></li>
                                 <li><a href="#" className="hover:text-white transition-colors">Marketplace</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                                <Link href="/About" className="hover:text-white transition-colors"> About </Link >
                             </ul>
                         </div>
                         
@@ -50,7 +50,7 @@ const Footer = () => {
                         <div className="w-1/2 md:w-auto mt-6 md:mt-0">
                             <h3 className="text-base font-semibold text-white mb-4">Legal</h3>
                             <ul className="space-y-3 text-sm">
-                                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                                <Link href="/Contact"  className="hover:text-white transition-colors">Contact</Link>
                                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
                                 <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
                             </ul>

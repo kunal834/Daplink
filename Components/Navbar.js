@@ -37,8 +37,8 @@ const megaMenuData = {
 const navItems = [
   { label: "Products", type: "mega", slug: "products" },
   { label: "Templates", type: "simple", href: "/Templates" },
-  { label: "Marketplace", type: "simple", href: "/" },
-  { label: "Learn", type: "simple", href: "/Learn" }, 
+  { label: "About", type: "simple", href: "/About" },
+  { label: "Blog", type: "simple", href: "/Blog" }, 
   { label: "Pricing", type: "simple", href: "/Pricing" },
 ];
 
