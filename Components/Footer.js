@@ -39,8 +39,8 @@ const Footer = () => {
                         {/* Column 2: Resources */}
                         <div className="w-1/2 md:w-auto">
                             <h3 className="text-base font-semibold text-white mb-4">Resources</h3>
-                            <ul className="space-y-3 text-sm">
-                                <li><a href="#" className="hover:text-white transition-colors">Learn</a></li>
+                            <ul className="space-y-3 flex flex-col text-sm">
+                                <Link href="/Blog" className="hover:text-white transition-colors"> blog</Link>
                                 <li><a href="#" className="hover:text-white transition-colors">Marketplace</a></li>
                                 <Link href="/About" className="hover:text-white transition-colors"> About </Link >
                             </ul>
@@ -49,7 +49,7 @@ const Footer = () => {
                         {/* Column 3: Legal */}
                         <div className="w-1/2 md:w-auto mt-6 md:mt-0">
                             <h3 className="text-base font-semibold text-white mb-4">Legal</h3>
-                            <ul className="space-y-3 text-sm">
+                            <ul className="space-y-3 flex flex-col text-sm">
                                 <Link href="/Contact"  className="hover:text-white transition-colors">Contact</Link>
                                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
                                 <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
