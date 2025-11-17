@@ -234,6 +234,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import Navbar from '@/Components/Navbar';
+import Footer from '@/Components/Footer';
 
 // --- Placeholder Icon Components (for the design) ---
 const IconUser = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>;
@@ -253,11 +255,14 @@ const Generate = () => {
     const [profile, setprofile] = useState("")
     const [script, setscript] = useState("")
     const [activeTab, setActiveTab] = useState("Profile"); // New state for tabs
+    const [Mindset, setMindset] = useState("")
 
     // --- Link Handlers ---
     const addlink = () => {
         setlinks(links.concat([{ link: "", linktext: "" }]))
     }
+
+   
 
     // New handler to remove a link item
     const removeLink = (indexToRemove) => {
@@ -286,7 +291,8 @@ const Generate = () => {
             "links": links.filter(l => l.link && l.linktext), // Filter out empty links before submission
             "handle": handle,
             "profile": profile,
-            "script": script
+            "script": script,
+            "mindset" : Mindset
         });
         console.log(raw)
 
@@ -414,17 +420,38 @@ const Generate = () => {
                 <p className="text-center text-gray-500 pt-4"> {`Click "Add Link" to start building your page.`}</p>
             )}
         </section>
-    );
+);
     
+ // ... inside the Generate component ...
+
+const Mindsettab = () => (
+    <section className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
+        <h2 className="text-lg font-semibold mb-2 text-gray-800">Mindset Wall</h2>
+        <p className="text-sm text-gray-500 mb-4">Share your vision, values, and what drives you</p>
+        
+        {/* Input area for the Mindset text */}
+        <textarea
+            value={Mindset || ""}
+            onChange={e => setMindset(e.target.value)}
+            rows="4" // Use textarea for multi-line input
+            placeholder="Always learning, always growing. Building products that make a difference."
+            className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-indigo-500 focus:border-indigo-500"
+        />
+    </section>
+);
+
+
     // --- MAIN RENDER ---
     return (
-        <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <>
+      <Navbar/>
+         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
             <ToastContainer />
             
             {/* Header */}
             <header className="max-w-4xl mx-auto text-center mb-10">
                 <div className='flex items-center justify-center'>
-                    <h1 className='text-3xl font-extrabold text-gray-900'>Create Your DapLink</h1>
+                    <h1 className='text-3xl mt-16 font-extrabold text-gray-900'>Create Your DapLink</h1>
                 </div>
                 <p className='text-gray-600 mt-2'> {`Build and customize your personal link-in-bio page`} </p>
             </header>
@@ -450,7 +477,7 @@ const Generate = () => {
                         <span>Links</span>
                     </button>
                     {/* Placeholder for Mindset and Skills tabs */}
-                    <button className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-400 cursor-default">
+                    <button   onClick={() => setActiveTab("Mindset")}   className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg transition ${activeTab === "Mindset" ? 'text-indigo-700 bg-indigo-50 shadow' : 'text-gray-600 hover:text-gray-900'}`}>
                         <span>Mindset</span>
                     </button>
                     <button className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-400 cursor-default">
@@ -466,6 +493,8 @@ const Generate = () => {
                 <div className="md:col-span-2 space-y-6">
                     {activeTab === "Profile" && <ProfileTab />}
                     {activeTab === "Links" && <LinksTab />}
+                    {activeTab === "Mindset" && <Mindsettab />}
+                    
                     
                     {/* Save Changes Button & Preview Button */}
                     <div className="flex justify-between items-center mt-6 p-2">
@@ -495,6 +524,7 @@ const Generate = () => {
                             />
                             <h2 className="text-lg font-bold">{handle || "Name"}</h2>
                             <p className="text-sm text-gray-500 mb-6">{script || "Designer & Developer | Bio goes here"}</p>
+                           
                             
                             {/* Preview Links */}
                             <div className="space-y-3 mb-6">
@@ -508,8 +538,17 @@ const Generate = () => {
                                     </div>
                                 ))}
                             </div>
+                           <div className="w-11/12 mx-auto mt-6 bg-gray-50 rounded-lg shadow-sm p-4 border  border-l-4 border-[#639FAB]">
+    <p className="text-gray-700 text-sm italic leading-relaxed">
+        {Mindset || "Always learning, always growing. Building products that make a difference."}
+    </p>
+</div>
                             <p className="text-xs text-gray-400 mt-10">Live Preview will show your data.</p>
+
+                            
                         </div>
+
+                        
                     </div>
                     <p className="text-center text-xs text-gray-500 mt-2">
                         {`Live Preview - Changes appear in real time`}
@@ -517,6 +556,10 @@ const Generate = () => {
                 </div>
             </div>
         </div>
+
+        <Footer/>
+      </>
+     
     )
 }
 

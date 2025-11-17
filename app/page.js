@@ -64,7 +64,7 @@ const [text, settext] = useState("")
     </div>
     {/* Right Section */}
     <div className="flex items-center justify-center md:w-[40vw] w-full md:mt-0 mt-10 mr-[10vw] ] ">
-      <img src="/dog.jpg" alt="Dog" className="rounded-xl w-full object-cover max-h-[560px]" />
+      <img src="https://images.unsplash.com/photo-1531379410502-63bfe8cdaf6f?fit=max&fm=jpg&ixid=MnwzNTY3MHwwfDF8YWxsfHx8fHx8fHx8MTY4MjE4NjE3OA&ixlib=rb-4.0.3&q=75&w=720&utm_medium=referral&utm_source=vocal.media" alt="Dog" className="rounded-xl w-full object-cover max-h-[560px]" />
     </div>
   </section>
 </main>
