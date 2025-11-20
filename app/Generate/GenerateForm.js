@@ -246,7 +246,7 @@ const Skillstab = () => (
             {/* --- Skills I'm Offering Section --- */}
             <div>
                 <label className="text-base font-medium text-gray-700 block mb-3">
-                    Skills I'm Offering
+                    {`Skills I'm Offering`}
                 </label>
                 
                 {/* Current Skills Chips */}
@@ -287,7 +287,7 @@ const Skillstab = () => (
             {/* --- Skills I'm Seeking Section --- */}
             <div>
                 <label className="text-base font-medium text-gray-700 block mb-3">
-                    Skills I'm Seeking
+                   {` Skills I'm Seeking`}
                 </label>
                 
                 {/* Current Skills Chips */}
@@ -469,7 +469,7 @@ const Skillstab = () => (
         )}
     </div>
 )}
-// ...
+
       
                             <p className="text-xs text-gray-400 mt-10">Live Preview will show your data.</p>
 
