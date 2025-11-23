@@ -94,7 +94,7 @@ export default function BlogPostPage({ params }) {
                   <h2 className="font-bold text-gray-900">Mindset</h2>
                 </div>
                 <p className="text-gray-600 italic text-sm leading-relaxed">
-                  "{mindset}"
+                  {mindset}
                 </p>
               </div>
             )}
