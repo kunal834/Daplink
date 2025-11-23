@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
@@ -135,11 +135,22 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // State for desktop mega-menu visibility (tracks the slug of the open menu)
   const [activeMegaMenu, setActiveMegaMenu] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const closeMenu = () => {
     setIsMobileMenuOpen(false);
     setActiveMegaMenu(null);
   }
+
+  useEffect(() => {
+    async function check() {
+      const res = await fetch("/api/auth/me", { cache: "no-store" });
+      const data = await res.json();
+      console.log("Auth Check:", data);
+      setLoggedIn(data.user ? true : false);
+    }
+    check();
+  }, []);
 
   // Helper function to handle mouse leave from the entire navigation area
   const handleMouseLeave = () => {
@@ -197,15 +208,26 @@ const Navbar = () => {
         
         {/* User Auth/CTA Section (Desktop) */}
         <div className="hidden md:flex gap-2 items-center">
-          <Link href="/Logi" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition">
-            Log in
-          </Link>
-          <Link
-            href="/Generate"
-            className="bg-black text-white font-semibold rounded-full px-5 py-2 text-sm shadow hover:bg-gray-700 transition-all focus:outline-none"
-          >
-            Create
-          </Link>
+          {loggedIn ? (
+            <Link 
+              href="/Generate"
+              className="bg-black text-white font-semibold rounded-full px-5 py-2 text-sm shadow hover:bg-gray-700 transition-all focus:outline-none"
+            >
+              Create Daplink
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition">
+                Log in
+              </Link>
+              <Link
+                href="/Generate"
+                className="bg-black text-white font-semibold rounded-full px-5 py-2 text-sm shadow hover:bg-gray-700 transition-all focus:outline-none"
+              >
+                Create
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Toggler */}
