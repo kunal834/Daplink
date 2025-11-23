@@ -62,41 +62,41 @@ const [newSkillSeek, setNewSkillSeek] = useState(''); // New input state
     // --- End Link Handlers ---
     
     // --- Submission Logic (Unchanged) ---
-    const submitlink = async () => {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+    // const submitlink = async () => {
+    //     const myHeaders = new Headers();
+    //     myHeaders.append("Content-Type", "application/json");
 
-        const raw = JSON.stringify({
-            "links": links.filter(l => l.link && l.linktext), // Filter out empty links before submission
-            "handle": handle,
-            "profile": profile,
-            "script": script,
-            "mindset" : Mindset,
-            "skillsoff" : skilloffered,
-            "skillsseek": skillsseek
+    //     const raw = JSON.stringify({
+    //         "links": links.filter(l => l.link && l.linktext), // Filter out empty links before submission
+    //         "handle": handle,
+    //         "profile": profile,
+    //         "script": script,
+    //         "mindset" : Mindset,
+    //         "skillsoff" : skilloffered,
+    //         "skillsseek": skillsseek
             
-        });
-        console.log(raw)
+    //     });
+    //     console.log(raw)
 
-        const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-        };
+    //     const requestOptions = {
+    //         method: "POST",
+    //         headers: myHeaders,
+    //         body: raw,
+    //         redirect: "follow"
+    //     };
 
-        const r = await fetch("./api/add", requestOptions)
-        const result = await r.json();
+    //     const r = await fetch("./api/add", requestOptions)
+    //     const result = await r.json();
 
-        if (result.success) {
-            toast.success(result.message)
-            sethandle("")
-            setprofile("")
-            router.push(`/${handle}`);
-        } else {
-            toast.error(result.message)
-        }
-    }
+    //     if (result.success) {
+    //         toast.success(result.message)
+    //         sethandle("")
+    //         setprofile("")
+    //         router.push(`/${handle}`);
+    //     } else {
+    //         toast.error(result.message)
+    //     }
+    // }
     // --- End Submission Logic ---
 
     // Simplified disabled logic for the "Save Changes" button
@@ -388,8 +388,8 @@ const Skillstab = () => (
                     {/* Save Changes Button & Preview Button */}
                     <div className="flex justify-between items-center mt-6 p-2">
                         <button
-                            disabled={isDisabled}
-                            onClick={submitlink}
+                            // disabled={isDisabled}
+                            // onClick={submitlink}
                             className={`flex-grow bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold py-3 rounded-lg transition ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:from-indigo-600 hover:to-purple-700'}`}
                         >
                             Save Changes

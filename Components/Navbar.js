@@ -197,7 +197,7 @@ const Navbar = () => {
         
         {/* User Auth/CTA Section (Desktop) */}
         <div className="hidden md:flex gap-2 items-center">
-          <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition">
+          <Link href="/Logi" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition">
             Log in
           </Link>
           <Link
@@ -244,7 +244,7 @@ const Navbar = () => {
           {/* Bottom Section (Log in & Create Buttons) */}
           <div className="flex flex-col gap-4">
             <Link
-              href="/login"
+              href="/Logi"
               onClick={closeMenu}
               className="w-full text-center text-lg font-medium text-gray-700 hover:text-gray-900 transition py-2"
             >
