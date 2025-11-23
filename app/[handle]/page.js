@@ -81,7 +81,7 @@ export default function BlogPostPage({ params }) {
           </a>
         ))} 
       </div>
-    </div>
+    </div>  
 
           {/* 3. DETAILS GRID (Mindset & Skills) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
