@@ -27,7 +27,10 @@ export default function RootLayout({ children }) {
         {/* <SessionWrapper>
         </SessionWrapper> */}
         {/* <Navbar/> */}
+      
+
         {children}
+      
        <Analytics />
        <SpeedInsights/>
       </body>

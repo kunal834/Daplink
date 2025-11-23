@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Link from 'next/link';
 const CTASection = () => {
   return (
     <section className="py-16">
@@ -15,9 +15,9 @@ const CTASection = () => {
             <button className="px-8 py-3 text-lg font-medium text-indigo-600 bg-white rounded-full hover:bg-gray-100 transition duration-300 shadow-md">
               Get Started Now
             </button>
-            <button className="px-8 py-3 text-lg font-medium text-white border-2 border-white rounded-full hover:bg-white hover:text-indigo-600 transition duration-300 shadow-md">
+            <Link href="/Contact" className="px-8 py-3 text-lg font-medium text-white border-2 border-white rounded-full hover:bg-white hover:text-indigo-600 transition duration-300 shadow-md">
              Contact us 
-            </button>
+            </Link>
           </div>
         </div>
       </div>

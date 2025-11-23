@@ -149,7 +149,7 @@ const Navbar = () => {
   return (
     // Use onMouseLeave on the entire nav to close the dropdown when leaving the header area
     <nav 
-      className="bg-white/80 backdrop-blur-2sm border-b border-gray-200 shadow-sm fixed top-0 left-0 w-full z-50"
+      className="bg-white/80 backdrop-blur-2sm border- border-gray-200 shadow-sm fixed top-0 left-0 w-full z-50"
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex justify-between items-center max-w-7xl mx-auto px-6 py-2 relative">
