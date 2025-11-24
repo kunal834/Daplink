@@ -5,6 +5,7 @@ import { Link as LinkIcon, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { set } from "mongoose";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const [name, setName] = useState("");
@@ -51,17 +52,17 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message || "Invalid credentials");
+        toast.error(data.message || "Invalid credentials");
         return;
       }
 
       if (data.user) {
-        alert("Login Successful!");
+        toast.success("Login Successful!");
         router.replace("/Generate");
       }
     } catch (error) {
       console.error("Login Error:", error);
-      alert("Something went wrong. Try again.");
+      toast.error("Something went wrong. Try again.");
     }
   };
 
@@ -78,16 +79,16 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message || "Signup failed");
+        toast.error(data.message || "Signup failed");
         return;
       }
       if (data.user) {
-        alert("Signup Successful!");
+        toast.success("Signup Successful!");
         setIsLogin(true);
       }
     } catch (error) {
       console.error("Signup Error:", error);
-      alert("Something went wrong. Try again.");
+      toast.error("Something went wrong. Try again.");
     }
   };
 

@@ -8,12 +8,12 @@ export default function BlogPostPage({ params }) {
   const [data, setData] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // // Data Fetching
-  // useEffect(() => {
-  //   fetch(`/api/links/${params.handle}`)
-  //     .then((res) => res.json())
-  //     .then((json) => setData(json.result));
-  // }, [params.handle]);
+  // Data Fetching
+  useEffect(() => {
+    fetch(`/api/links/${params.handle}`)
+      .then((res) => res.json())
+      .then((json) => setData(json.result));
+  }, [params.handle]);
 
   // Loading State
   if (!data) {

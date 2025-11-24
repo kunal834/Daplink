@@ -30,39 +30,53 @@ const Generate = () => {
     const [newSkillSeek, setNewSkillSeek] = useState('');
 
     // --- Submission Logic ---
-    const submitlink = async () => {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+    const submitLink = async () => {
+        try {
+            // Avoid empty submissions
+            const filteredLinks = links.filter(l => l.link && l.linktext);
 
-        const raw = JSON.stringify({
-            "links": links.filter(l => l.link && l.linktext),
-            "handle": handle,
-            "profile": profile,
-            "script": script,
-            "mindset": Mindset,
-            "skillsoff": skilloffered,
-            "skillsseek": skillsseek
-        });
+            const payload = {
+                links: filteredLinks,
+                handle,
+                profile,
+                script,
+                mindset: Mindset,
+                skillsoff: skilloffered,
+                skillsseek
+            };
 
-        const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-        };
+            console.log("Submitting:", payload);
 
-        const r = await fetch("./api/add", requestOptions)
-        const result = await r.json();
+            const response = await fetch("/api/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
 
-        if (result.success) {
-            toast.success(result.message)
-            sethandle("")
-            setprofile("")
-            router.push(`/${handle}`);
-        } else {
-            toast.error(result.message)
+            if (!response.ok) throw new Error("Network error: " + response.status);
+
+            const result = await response.json();
+
+            if (result.success) {
+                toast.success(result.message);
+
+                // Reset state BEFORE redirect
+                sethandle("");
+                setprofile("");
+
+                router.push(`/${handle}`);
+            } else {
+                toast.error(result.message || "Something went wrong");
+            }
+
+        } catch (error) {
+            console.error("Submit error:", error);
+            toast.error(error.message || "Unexpected error");
         }
-    }
+    };
+
 
     const isDisabled = handle === "" || links.every(l => l.link === "" && l.linktext === "");
 
@@ -104,7 +118,7 @@ const Generate = () => {
 
                     {/* Left Column: Editor Sections */}
                     <div className="md:col-span-2 space-y-6">
-                        
+
                         {/* ✅ CORRECT: Components with Props inside Return */}
                         {activeTab === "Profile" && (
                             <Profiletab
@@ -150,7 +164,7 @@ const Generate = () => {
                         <div className="flex justify-between items-center mt-6 p-2">
                             <button
                                 disabled={isDisabled}
-                                onClick={submitlink}
+                                onClick={submitLink}
                                 className={`flex-grow bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold py-3 rounded-lg transition ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:from-indigo-600 hover:to-purple-700'}`}
                             >
                                 Save Changes
@@ -192,7 +206,7 @@ const Generate = () => {
                                 {(skilloffered.length > 0 || skillsseek.length > 0) && (
                                     <div className="w-11/12 mx-auto mt-6 bg-white p-4 rounded-lg shadow-md border border-gray-200">
                                         <h3 className="text-sm font-bold text-gray-800 mb-3">Skills & Seeking</h3>
-                                        
+
                                         {skilloffered.length > 0 && (
                                             <div className="mb-3">
                                                 <p className="text-xs font-medium text-green-600 mb-1">Skills Offered:</p>
