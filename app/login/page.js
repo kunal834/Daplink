@@ -225,7 +225,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-8">
-          By continuing, you agree to DapLink's{" "}
+          {`By continuing, you agree to DapLink's{" "}`}
           <Link href="#" className="underline hover:text-slate-500">Terms of Service</Link> and{" "}
           <Link href="#" className="underline hover:text-slate-500">Privacy Policy</Link>.
         </p>
