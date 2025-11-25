@@ -41,5 +41,138 @@
     box-shadow: 0 0 20px rgba(83, 105, 118, 0.5), 0 0 10px rgba(41, 46, 73, 0.3);
 }
 
+/* changes Prashant has Done */
+:root {
+  /* Theme Variables */
+  --bg-primary: #020202;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  
+  --nav-bg: rgba(2, 2, 2, 0.7);
+  --nav-border: rgba(255, 255, 255, 0.05);
+  
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: rgba(0, 0, 0, 0.1);
+  
+  --card-hover-bg: rgba(255, 255, 255, 0.05);
+  --card-hover-border: rgba(255, 255, 255, 0.15);
+  --card-hover-shadow: rgba(20, 184, 166, 0.1);
+
+  --aurora-opacity: 0.3;
+}
+
+[data-theme='light'] {
+  --bg-primary: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  
+  --nav-bg: rgba(255, 255, 255, 0.7);
+  --nav-border: rgba(0, 0, 0, 0.05);
+  
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  
+  --card-hover-bg: rgba(255, 255, 255, 0.9);
+  --card-hover-border: rgba(20, 184, 166, 0.2);
+  --card-hover-shadow: rgba(20, 184, 166, 0.15);
+
+  --aurora-opacity: 0.5;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s ease;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(1deg); }
+}
+
+@keyframes aurora {
+  0% { transform: rotate(0deg) scale(1); opacity: var(--aurora-opacity); }
+  50% { transform: rotate(180deg) scale(1.1); opacity: var(--aurora-opacity); }
+  100% { transform: rotate(360deg) scale(1); opacity: var(--aurora-opacity); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes textShine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.animate-float { animation: float 8s ease-in-out infinite; }
+.animate-aurora { animation: aurora 25s infinite linear; }
+
+/* Reveal Utilities */
+.reveal-hidden {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(30px) scale(0.95);
+  transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-visible {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0) scale(1);
+}
+
+/* Glass Utilities */
+.glass-nav {
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--nav-border);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.glass-card:hover {
+  border-color: var(--card-hover-border);
+  transform: translateY(-5px) scale(1.01);
+  background: var(--card-hover-bg);
+  box-shadow: 0 20px 40px -10px var(--card-hover-shadow);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fff 30%, #2dd4bf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: textShine 5s ease-in-out infinite alternate;
+}
+
+[data-theme='light'] .gradient-text {
+  background: linear-gradient(135deg, #0f172a 30%, #0d9488 100%);
+}
+
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: shimmer 3s infinite;
+}
+
 /* styles/globals.css */
 

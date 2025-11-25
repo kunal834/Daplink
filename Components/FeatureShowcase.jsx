@@ -1,0 +1,148 @@
+'use client';
+import React from 'react';
+import { Layers, PieChart, Zap, Users, Briefcase, Quote, Youtube, Twitter, Pin } from 'lucide-react';
+import Reveal from './ui/Reveal';
+import FeatureCard from './ui/FeatureCard';
+import JobItem from './ui/JobItem';
+
+export default function FeaturesSection({ theme }) {
+  return (
+    <section id="features" className={`py-32 relative overflow-hidden transition-colors duration-500 ${theme === 'dark' ? 'bg-[#020202]' : 'bg-white'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Section Header */}
+        <div className="text-center mb-24">
+          <Reveal>
+            <h2 className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+              Everything you need. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-800">Nothing you don't.</span>
+            </h2>
+          </Reveal>
+          <Reveal delayClass="stagger-1">
+            <p className={`max-w-2xl mx-auto text-lg leading-relaxed ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+              A powerful suite of tools designed to help you monetize your audience and build your digital empire.
+            </p>
+          </Reveal>
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          {/* 1. Central Hub */}
+          <Reveal delayClass="stagger-1">
+            <FeatureCard 
+              theme={theme}
+              icon={Layers} iconColor="text-teal-400" iconBg="bg-teal-500/10" 
+              title="Central Hub"
+              desc="Manage your videos, music, store, and socials from one unified command center."
+            >
+              <div className={`mt-auto relative h-28 overflow-hidden rounded-xl border p-4 transition-colors ${theme === 'dark' ? 'border-white/5 bg-white/5 group-hover:bg-white/10' : 'border-gray-100 bg-gray-50 group-hover:bg-gray-100'}`}>
+                <div className="flex items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-400"><Youtube size={16} /></div>
+                  <div className={`h-2 w-24 rounded ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`}></div>
+                </div>
+                <div className="flex items-center gap-3 mt-3 opacity-40 group-hover:opacity-100 transition-opacity delay-75">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400"><Twitter size={16} /></div>
+                  <div className={`h-2 w-16 rounded ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`}></div>
+                </div>
+              </div>
+            </FeatureCard>
+          </Reveal>
+
+          {/* 2. Analytics */}
+          <Reveal delayClass="stagger-2">
+            <FeatureCard 
+              theme={theme}
+              icon={PieChart} iconColor="text-emerald-400" iconBg="bg-emerald-500/10"
+              title="Analytics"
+              desc="Real-time insights on clicks, views, and audience demographics."
+              badge="+24%" badgeColor="text-emerald-400 bg-emerald-900/30 border-emerald-500/20"
+            >
+              <div className="h-32 flex items-end gap-2 mt-6 px-2">
+                  {[40, 70, 50, 85, 60].map((h, i) => (
+                    <div key={i} className={`w-full bg-emerald-500/20 rounded-t-sm group-hover:bg-emerald-500/40 transition-all duration-500`} style={{ height: `${h}%` }}></div>
+                  ))}
+              </div>
+            </FeatureCard>
+          </Reveal>
+
+          {/* 3. Skill Swap */}
+          <Reveal delayClass="stagger-3">
+            <FeatureCard 
+              theme={theme}
+              icon={Zap} iconColor="text-purple-400" iconBg="bg-purple-500/10"
+              title="Skill Swap"
+              desc="Connect with other creators to trade expertise. Learn React, teach Design."
+            >
+              <div className="mt-6 flex -space-x-4 justify-center py-6">
+                <div className={`w-14 h-14 rounded-full border-4 z-10 group-hover:translate-x-[-10px] transition-transform ${theme === 'dark' ? 'border-[#0A0A0A] bg-gray-700' : 'border-white bg-gray-300'}`}></div>
+                <div className={`w-14 h-14 rounded-full border-4 z-20 group-hover:scale-110 transition-transform shadow-xl ${theme === 'dark' ? 'border-[#0A0A0A] bg-gray-600' : 'border-white bg-gray-400'}`}></div>
+                <div className={`w-14 h-14 rounded-full border-4 z-10 group-hover:translate-x-[10px] transition-transform ${theme === 'dark' ? 'border-[#0A0A0A] bg-gray-500' : 'border-white bg-gray-500'}`}></div>
+              </div>
+            </FeatureCard>
+          </Reveal>
+
+          {/* 4. Community */}
+          <Reveal delayClass="stagger-1">
+            <FeatureCard 
+              theme={theme}
+              icon={Users} iconColor="text-blue-400" iconBg="bg-blue-500/10"
+              title="Community"
+              desc="Find your tribe instantly. Join groups based on your interests and niche."
+            >
+              <div className="mt-6 space-y-2">
+                <div className={`flex items-center gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${theme === 'dark' ? 'bg-white/5 border-white/5 hover:bg-white/10' : 'bg-gray-50 border-gray-100 hover:bg-gray-100'}`}>
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                  <span className={`text-xs font-bold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>1,204 Creators Online</span>
+                </div>
+                <div className={`flex items-center gap-3 p-3 rounded-xl border opacity-60 hover:opacity-100 transition-opacity cursor-pointer ${theme === 'dark' ? 'bg-white/5 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                  <span className={`text-xs font-bold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>New Group: Web3 Design</span>
+                </div>
+              </div>
+            </FeatureCard>
+          </Reveal>
+
+          {/* 5. Job Finder */}
+          <Reveal delayClass="stagger-2">
+            <FeatureCard 
+              theme={theme}
+              icon={Briefcase} iconColor="text-orange-400" iconBg="bg-orange-500/10"
+              title="Job Finder"
+              desc="AI-matched freelance gigs and full-time roles based on your bio content."
+            >
+              <div className="mt-6 space-y-2">
+                  <JobItem theme={theme} title="UX Designer" wage="$5k" />
+                  <div className="opacity-60 delay-75"><JobItem theme={theme} title="Video Editor" wage="$2k" /></div>
+              </div>
+            </FeatureCard>
+          </Reveal>
+
+          {/* 6. Mindset Wall */}
+          <Reveal delayClass="stagger-3">
+            <FeatureCard 
+              theme={theme}
+              icon={Quote} iconColor="text-pink-400" iconBg="bg-pink-500/10"
+              title="Mindset Wall"
+              desc="Share your daily vision and values. A sticky-note wall for your digital soul."
+            >
+              <div className="relative mt-4 mx-2">
+                  <div className={`relative w-full h-28 border rounded-xl p-4 transform rotate-2 group-hover:rotate-0 transition-transform duration-300 flex flex-col justify-center shadow-2xl ${theme === 'dark' ? 'bg-[#151515] border-white/10' : 'bg-gray-50 border-gray-200'}`}>
+                  <p className={`text-sm font-medium italic ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>"Build in silence, let success make the noise."</p>
+                  <div className="mt-3 flex items-center gap-2">
+                      <div className="w-5 h-5 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full"></div>
+                      <span className="text-[10px] text-gray-500 font-bold">@alex_creator</span>
+                  </div>
+                  <div className={`absolute -top-3 right-4 rounded-full p-1 border ${theme === 'dark' ? 'bg-[#151515] border-white/10' : 'bg-gray-50 border-gray-200'}`}>
+                      <Pin className="text-red-500 w-4 h-4 transform rotate-45" />
+                  </div>
+                  </div>
+              </div>
+            </FeatureCard>
+          </Reveal>
+
+        </div>
+      </div>
+    </section>
+  );
+}

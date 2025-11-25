@@ -16,12 +16,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(true);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_HOST || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_HOST;
   const router = useRouter();
 
   useEffect(() => {
     async function check() {
-      const res = await fetch("/api/auth/me", { cache: "no-store" });
+      const res = await fetch(`${BASE_URL}/api/auth/me`, { cache: "no-store" });
       const data = await res.json();
       console.log("Auth Check:", data);
       setLoggedIn(data.user ? true : false);

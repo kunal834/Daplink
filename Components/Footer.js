@@ -1,70 +1,76 @@
+'use client';
 import React from 'react';
-import { LinkIcon } from '@heroicons/react/24/outline'; // Using LinkIcon for the logo
-import Link from 'next/link';
-import Image from 'next/image';
-const Footer = () => {
-    const currentYear = new Date().getFullYear();
+import { Link as LinkIcon, Twitter, Instagram, Youtube } from 'lucide-react';
+import FooterColumn from './ui/FooterColumn';
 
+export default function Footer({ theme }) {
     return (
-        <footer className="bg-[#12141d] text-gray-300 py-16 w-full">
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="md:flex md:justify-between md:space-x-12">
-                    
-                    {/* Logo and concise description (Left Column) */}
-                    <div className="mb-12 md:mb-0 md:w-1/3">
-                        <div className="flex items-center text-white mb-4">
-                            {/* Simplified Daplink Logo Icon */}
-                            {/* <LinkIcon className="w-6 h-6 mr-2 text-indigo-400" aria-hidden="true" /> */}
-                            <Image src="/innovate.png" alt="DapLink Logo" width={32} height={32}></Image>
-                            <h2 className="text-2xl font-bold">Daplink</h2>
+        <footer className={`border-t pt-20 pb-10 transition-colors duration-500 ${theme === 'dark' ? 'border-gray-900 bg-black' : 'border-gray-100 bg-gray-50'}`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
+
+                    {/* Brand Column */}
+                    <div className="col-span-2 md:col-span-1">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+                                <LinkIcon className="text-white" size={20} />
+                            </div>
+                            <span className={`font-bold text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>DapLink</span>
                         </div>
-                        <p className="max-w-xs text-gray-400 text-sm">
-                            Your all-in-one platform for personal branding and connection.
+                        <p className={`text-sm mb-6 leading-relaxed ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                            The ultimate link-in-bio tool for modern creators. Build, share, and grow.
                         </p>
-                    </div>
-
-                    {/* Navigation Links (Right Columns) */}
-                    <div className="flex flex-wrap md:flex-nowrap gap-12 md:gap-24 md:w-2/3">
-                        
-                        {/* Column 1: Product */}
-                        <div className="w-1/2 md:w-auto">
-                            <h3 className="text-base font-semibold text-white mb-4">Product</h3>
-                            <ul className="space-y-3 flex flex-col text-sm">
-                                <Link href="/Products" className="hover:text-white transition-colors">Features</Link>
-                                 <Link href="/Templates" className="hover:text-white transition-colors">Templates</Link>
-                                 <Link href="/Pricing" className="hover:text-white transition-colors">Pricing</Link>
-                            </ul>
-                        </div>
-
-                        {/* Column 2: Resources */}
-                        <div className="w-1/2 md:w-auto">
-                            <h3 className="text-base font-semibold text-white mb-4">Resources</h3>
-                            <ul className="space-y-3 flex flex-col text-sm">
-                                <Link href="/Blog" className="hover:text-white transition-colors"> blog</Link>
-                                <li><a href="#" className="hover:text-white transition-colors">Marketplace</a></li>
-                                <Link href="/About" className="hover:text-white transition-colors"> About </Link >
-                            </ul>
-                        </div>
-                        
-                        {/* Column 3: Legal */}
-                        <div className="w-1/2 md:w-auto mt-6 md:mt-0">
-                            <h3 className="text-base font-semibold text-white mb-4">Legal</h3>
-                            <ul className="space-y-3 flex flex-col text-sm">
-                                <Link href="/Contact"  className="hover:text-white transition-colors">Contact</Link>
-                                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-                            </ul>
+                        <div className="flex gap-4">
+                            {[Twitter, Instagram, Youtube].map((Icon, i) => (
+                                <a key={i} href="#" className={`transition-colors p-2 rounded-lg ${theme === 'dark' ? 'text-gray-400 hover:text-white bg-gray-900 hover:bg-gray-800' : 'text-gray-500 hover:text-black bg-white hover:bg-gray-200'}`}>
+                                    <Icon size={18} />
+                                </a>
+                            ))}
                         </div>
                     </div>
+
+                    {/* Links Columns with Hrefs */}
+                    <FooterColumn
+                        theme={theme}
+                        title="Product"
+                        links={[
+                            { name: 'Features', href: '/Products' },
+                            { name: 'Templates', href: '/Templates' },
+                            // { name: 'Integrations', href: '/Integrations' },
+                            { name: 'Pricing', href: '/Pricing' }
+                        ]}
+                    />
+
+                    <FooterColumn
+                        theme={theme}
+                        title="Resources"
+                        links={[
+                            { name: 'Blog', href: '/Blog' },
+                            { name: 'Marketplace', href: '/Marketplace' },
+                            { name: 'About', href: '/About' }
+                        ]}
+                    />
+
+                    <FooterColumn
+                        theme={theme}
+                        title="Legal"
+                        links={[
+                            { name: 'Contact', href: '/Contact' },
+                            { name: 'Privacy Policy'},
+                            { name: 'Terms of Service' }
+                        ]}
+                    />
                 </div>
 
-                {/* Copyright */}
-                <div className="mt-16 pt-8 border-t border-gray-700/50 text-center text-gray-500 text-sm">
-                    © {currentYear} Daplink. All rights reserved.
+                {/* Bottom Bar */}
+                <div className={`border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm ${theme === 'dark' ? 'border-gray-900 text-gray-600' : 'border-gray-200 text-gray-500'}`}>
+                    <div>&copy; {new Date().getFullYear()} DapLink. All rights reserved.</div>
+                    <div className="flex gap-6">
+                        <a href="/status" className="hover:text-gray-400">Status</a>
+                        <a href="/sitemap" className="hover:text-gray-400">Sitemap</a>
+                    </div>
                 </div>
             </div>
         </footer>
     );
-};
-
-export default Footer;
+}
