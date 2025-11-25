@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Daplink",
   description: "connect by Daplink",
+  icons: {
+    icon: "./innovate.png",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -32,7 +35,7 @@ export default function RootLayout({ children }) {
 
         {children}
         <ToastContainer
-          position="top"
+          position="top-right"
           autoClose={2000}
           theme="light"
         />
