@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/Components/Navbar';
-import HeroSection from '@/Components/HeroSection';
+import HeroSection from '@/Components/heroSection';
 import FeaturesSection from '@/Components/FeatureShowcase';
 import TestimonialsSection from '@/Components/Testimonial';
 import Footer from '@/Components/Footer';
