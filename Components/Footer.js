@@ -12,8 +12,8 @@ export default function Footer({ theme }) {
                     {/* Brand Column */}
                     <div className="col-span-2 md:col-span-1">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
-                                <LinkIcon className="text-white" size={20} />
+                            <div className="w-10 h-10  rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+                                <img src="/innovate.png" alt="" />
                             </div>
                             <span className={`font-bold text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>DapLink</span>
                         </div>
