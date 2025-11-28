@@ -152,9 +152,9 @@ export default function BlogPostPage({ params }) {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <button className="px-5 py-2.5 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg">
+                <Link href="/Explorepeoples" className="px-5 py-2.5 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg">
                   Explore People
-                </button>
+                </Link>
                 <button 
                   onClick={() => setModalOpen(true)}
                   className="px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-500 transition shadow-lg flex items-center justify-center gap-2"
