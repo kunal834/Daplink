@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 [data-nextjs-dev-overlay] {
   display: none !important;
 }
@@ -41,9 +42,10 @@
     box-shadow: 0 0 20px rgba(83, 105, 118, 0.5), 0 0 10px rgba(41, 46, 73, 0.3);
 }
 
-/* changes Prashant has Done */
+/* --- THEME VARIABLES --- */
+
 :root {
-  /* Theme Variables */
+  /* Theme Variables - Default (Dark) */
   --bg-primary: #020202;
   --text-primary: #ffffff;
   --text-secondary: #9ca3af;
@@ -62,6 +64,7 @@
   --aurora-opacity: 0.3;
 }
 
+/* Light Mode Overrides */
 [data-theme='light'] {
   --bg-primary: #ffffff;
   --text-primary: #0f172a;
@@ -81,12 +84,16 @@
 }
 
 body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  overflow-x: hidden;
+  margin: 0;
   transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s ease;
 }
 
-/* Animations */
+/* --- ANIMATIONS --- */
+
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(1deg); }
@@ -108,15 +115,25 @@ body {
   100% { background-position: 100% 50%; }
 }
 
-.animate-float { animation: float 8s ease-in-out infinite; }
-.animate-aurora { animation: aurora 25s infinite linear; }
+/* Animation Utility Classes */
+.animate-float { 
+  animation: float 8s ease-in-out infinite; 
+}
 
-/* Reveal Utilities */
+.animate-aurora { 
+  animation: aurora 25s infinite linear; 
+}
+
+/* Reveal Animation States */
 .reveal-hidden {
   opacity: 0;
   filter: blur(12px);
   transform: translateY(30px) scale(0.95);
-  transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: 
+    opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
 }
 
 .reveal-visible {
@@ -125,7 +142,14 @@ body {
   transform: translateY(0) scale(1);
 }
 
-/* Glass Utilities */
+/* Stagger Delays */
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+
+/* --- GLASSMORPHISM UTILITIES --- */
+
 .glass-nav {
   background: var(--nav-bg);
   backdrop-filter: blur(12px);
@@ -146,22 +170,39 @@ body {
   box-shadow: 0 20px 40px -10px var(--card-hover-shadow);
 }
 
+/* --- DECORATIVE ELEMENTS --- */
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -1;
+  transition: opacity 0.5s ease;
+}
+
 .gradient-text {
   background: linear-gradient(135deg, #fff 30%, #2dd4bf 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent; /* Fallback */
   background-size: 200% auto;
   animation: textShine 5s ease-in-out infinite alternate;
+  display: inline-block;
 }
 
 [data-theme='light'] .gradient-text {
   background: linear-gradient(135deg, #0f172a 30%, #0d9488 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .shimmer-btn {
   position: relative;
   overflow: hidden;
 }
+
 .shimmer-btn::after {
   content: '';
   position: absolute;
@@ -173,6 +214,4 @@ body {
   transform: translateX(-100%);
   animation: shimmer 3s infinite;
 }
-
-/* styles/globals.css */
 

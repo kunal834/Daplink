@@ -96,7 +96,7 @@ export default function LoginPage() {
   if (loading) return null;
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-white overflow-hidden font-sans text-slate-900">
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-white overflow-hidden font-sans text-slate-900 pt-12">
 
       {/* --- Background Effects (Aurora Blurs) --- */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-200/40 blur-[120px]" />
@@ -106,12 +106,12 @@ export default function LoginPage() {
       <div className="z-10 w-full max-w-md px-4">
 
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
+        {/* <div className="flex items-center justify-center gap-2 mb-8">
           <div className="w-8">
             <img src="/innovate.png" alt="" />
           </div>
           <span className="text-xl font-semibold tracking-tight">DapLink</span>
-        </div>
+        </div> */}
 
         {/* --- Login Card --- */}
         <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 p-8">

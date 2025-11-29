@@ -84,7 +84,7 @@ export default function TemplateGallery() {
     <>
     
     <div className="min-h-screen px-4 py-8 bg-gray-50">
-        <Navbar/>
+        {/* <Navbar/> */}
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl md:text-3xl font-medium text-center mb-2 mt-8">Choose Your Perfect Template</h1>
         <p className="text-gray-500 text-center mb-6">
