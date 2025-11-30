@@ -1,7 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { Search, Sparkles, Layout, ArrowRight } from 'lucide-react';
 import Reveal from '@/Components/ui/Reveal';
+import { useTheme } from '@/context/ThemeContext';
 
 
 // --- MOCK DATA ---
@@ -73,7 +74,8 @@ const templates = [
 
 const categories = ["All", "Students", "Designers", "Developers", "Creators", "Business"];
 
-export default function TemplateGallery({ theme }) {
+export default function TemplateGallery() {
+  const {theme}=useTheme();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [search, setSearch] = useState("");
 
@@ -93,7 +95,7 @@ export default function TemplateGallery({ theme }) {
             <span>Premium Collection</span>
           </div>
         </Reveal>
-        
+        {console.log("theme:", theme)}
         <Reveal delayClass="stagger-1">
           <h1 className={`text-4xl md:text-6xl font-bold tracking-tight mb-4 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
             Choose Your <span className="gradient-text">Perfect Template</span>

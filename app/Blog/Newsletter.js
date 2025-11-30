@@ -1,7 +1,9 @@
+'use client';
 import React, { useState } from 'react';
+import { Mail, ArrowRight } from 'lucide-react';
 
-const NewsletterCTA = () => {
-  const [email, setEmail] = useState('');
+export default function Newsletter({ theme }) {
+  const [email,setEmail]=useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,55 +14,45 @@ const NewsletterCTA = () => {
   };
 
   return (
-    <div className="mt-20">
-      {/* Container: Use a darker indigo for a more premium, professional feel */}
-      <div className="text-center bg-indigo-700 p-8 sm:p-12 rounded-2xl shadow-2xl">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
-         {`Don't Miss the Next Opportunity!`}
-        </h2>
-        {/* Adjusted text color for better contrast/professionalism */}
-        <p className="text-indigo-300 mb-8 max-w-xl mx-auto">
-          Get the latest guides, feature updates, and exclusive networking tips delivered straight to your inbox.
-        </p>
+    <div className={`relative rounded-[2.5rem] overflow-hidden p-8 md:p-12 border ${theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-slate-900 border-slate-800'}`}>
+      
+      {/* Decorative Glow */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
+
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
         
-        {/* Form and Input Container: Now handles stacking on small screens */}
-        <form onSubmit={handleSubmit} className="flex flex-col items-center sm:flex-row sm:justify-center sm:max-w-md mx-auto space-y-4 sm:space-y-0">
-          
-          {/* Email Input */}
-          <input
-            type="email"
-            placeholder="Enter your email address"
-            aria-label="Email address for newsletter"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="
-              px-5 py-3 w-full sm:flex-1 
-              rounded-xl sm:rounded-r-none border-0 
-              text-gray-800 placeholder-gray-500
-              focus:ring-4 focus:ring-indigo-400 focus:outline-none 
-              transition-shadow duration-200
-            "
-            required
-          />
-          
-          {/* Subscribe Button */}
-          <button
-            type="submit"
-            className="
-              w-full sm:w-auto px-6 py-3 
-              bg-gray-900 text-white font-semibold 
-              rounded-xl sm:rounded-l-none 
-              hover:bg-indigo-500 
-              transition-colors duration-300 shadow-lg
-              focus:ring-4 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-indigo-700 focus:outline-none
-            "
-          >
-            Subscribe Now
-          </button>
-        </form>
+        <div className="text-center md:text-left max-w-lg">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold uppercase mb-4">
+            <Mail size={12} /> Weekly Digest
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-3">
+            Join the inner circle
+          </h2>
+          <p className="text-gray-400 text-lg">
+            Get the latest trends, profile tips, and product updates delivered straight to your inbox.
+          </p>
+        </div>
+
+        <div className="w-full max-w-md">
+          <form className="flex flex-col sm:flex-row gap-3" onSubmit={handleSubmit}>
+            <input 
+              type="email" 
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} 
+              required
+              className="flex-1 px-5 py-3.5 rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-500 outline-none focus:border-teal-500/50 focus:bg-white/15 transition-all"
+            />
+            <button className="px-8 py-3.5 rounded-xl bg-teal-500 text-black font-bold hover:bg-teal-400 transition-all flex items-center justify-center gap-2">
+              Subscribe <ArrowRight size={18} />
+            </button>
+          </form>
+          <p className="text-xs text-gray-500 mt-3 text-center sm:text-left">
+            No spam, unsubscribe anytime.
+          </p>
+        </div>
+
       </div>
     </div>
   );
-};
-
-export default NewsletterCTA;
+}
