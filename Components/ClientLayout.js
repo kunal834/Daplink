@@ -1,5 +1,4 @@
-// Components/ClientLayout.jsx
-'use client'; // 👈 This marks it as a Client Component
+'use client'; 
 import React from 'react';
 import { useTheme } from '@/context/ThemeContext'; 
 import Navbar from "@/Components/Navbar";
