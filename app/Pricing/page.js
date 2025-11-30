@@ -2,7 +2,7 @@
 
 import FAQ from '@/Components/FAQs';
 import React, { useState, useMemo } from 'react';
-import Footer from '@/Components/Footer';
+
 
 // --- Data Definitions ---
 
@@ -296,7 +296,7 @@ const App = () => {
 
         </div>
             <FAQ/>
-              <Footer/>
+           
         </>
 
   

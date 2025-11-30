@@ -3,7 +3,7 @@ import { FiLinkedin } from 'react-icons/fi';
 
 const teamMembers = [
   { name: 'Kunal Kumar', role: 'Founder', image: 'profile.jpg' , linkedin : 'https://www.linkedin.com/in/kunal-kumar-547a48313/' },
-  { name: 'Akshit Kumar', role: 'CTO & Co-founder', image: 'https://via.placeholder.com/150/10b981/ffffff?text=MO' },
+  { name: 'Prashant', role: 'CTO & Co-founder', image: 'https://via.placeholder.com/150/10b981/ffffff?text=MO' },
   { name: 'Dewansh ', role: 'Head of Design', image: 'https://via.placeholder.com/150/f97316/ffffff?text=ED' },
   { name: 'Gaurav singh rawat', role: 'Social media manager', image: 'https://via.placeholder.com/150/ef4444/ffffff?text=AK' },
 ];

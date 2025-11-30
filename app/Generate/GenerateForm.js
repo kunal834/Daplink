@@ -2,8 +2,6 @@
 import { ToastContainer, toast } from 'react-toastify';
 import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Navbar from '@/Components/Navbar';
-import Footer from '@/Components/Footer';
 import Profiletab from './Profiletab';
 import LinksTab from './LinksTab';
 import Mindsettab from './Mindsettab';
@@ -86,7 +84,7 @@ const Generate = () => {
     // --- MAIN RENDER ---
     return (
         <>
-            <Navbar />
+           
             <div className="min-h-screen bg-gray-50 p-4 md:p-8">
                 <ToastContainer />
 
@@ -242,7 +240,7 @@ const Generate = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
+         
         </>
     )
 }

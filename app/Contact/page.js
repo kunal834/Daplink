@@ -1,8 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { Mail, MessageCircle, MapPin, Twitter, Linkedin, Instagram, Facebook } from 'lucide-react';
-import Navbar from '@/Components/Navbar';
-import Footer from '@/Components/Footer';
+
 
 // --- DATA ---
 const contactMethods = [
@@ -243,7 +242,7 @@ const SocialLinks = () => (
 const ContactPage = () => {
   return (
     <>
-    <Navbar/>
+    
      <div className="bg-white text-gray-800 font-sans">
       <HeroContact />
       <div className='bg-gray-200 h-0.5 w-full'> </div>
@@ -265,7 +264,7 @@ const ContactPage = () => {
       </div>
     </div>
 
-    <Footer/>
+    
 
     
     </>

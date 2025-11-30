@@ -1,7 +1,7 @@
-"use client"; // 👈 Important: Needed for onClick events
+"use client"; 
 import React, { useState } from 'react';
 import axios from 'axios';
-import Footer from '@/Components/Footer';
+
 import Link from 'next/link';
 
 const UserProfile = ({ params }) => {
@@ -98,7 +98,7 @@ const UserProfile = ({ params }) => {
       )}
 
     </div>
-    <Footer/>
+
 
     </>
    
