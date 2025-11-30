@@ -1,7 +1,6 @@
 "use client"; // 👈 Important: Needed for onClick events
 import React, { useState } from 'react';
 import axios from 'axios';
-import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 import Link from 'next/link';
 
@@ -28,9 +27,9 @@ const UserProfile = ({ params }) => {
   return (
     <>
      <div className="min-h-screen w-full bg-[#F3E8FF] p-10"> {/* Assuming a light purple bg like screenshot */}
-      <Navbar/>
+
       {/* Header Area */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 mt-16">
         <h1 className='text-3xl font-bold text-gray-800'>
             Profile: <span className="text-blue-600">@{params.handle}</span>
         </h1>

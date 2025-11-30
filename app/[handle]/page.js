@@ -1,5 +1,5 @@
 "use client";
-import Navbar from "@/Components/Navbar";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Modal from "/Components/Modal";
@@ -19,7 +19,7 @@ export default function BlogPostPage({ params }) {
   if (!data) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <Navbar />
+      
         <div className="animate-pulse flex flex-col items-center gap-4">
           <div className="h-16 w-16 bg-gray-200 rounded-full"></div>
           <div className="h-4 w-32 bg-gray-200 rounded"></div>
@@ -40,7 +40,7 @@ export default function BlogPostPage({ params }) {
 
   return (
     <>
-      <Navbar />
+  
 
       {/* Main Wrapper with subtle gradient background */}
       <div className="min-h-screen bg-gradient-to-tr from-[#e5eaff] via-[#f1e3f3] md:p-4 p-5 to-[#fae6fe] pt-24 pb-12 px-4 sm:px-6">

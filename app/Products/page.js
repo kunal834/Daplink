@@ -105,10 +105,10 @@ const FeaturePage = () => {
      
 
     <div className="min-h-screen bg-white">
-       <Navbar/>
+  
       {/* 1. Full-Width Header Section (Hero/Banner) - From previous request */}
       <header className="
-        w-full 
+        w-full  
         bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 
         text-white 
         py-20 
