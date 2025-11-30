@@ -239,7 +239,7 @@ const App = () => {
         <>
         
         <div className="min-h-screen bg-gray-50 py-16 px-4 sm:px-6 lg:px-8 font-sans">
-            
+            {/* <Navbar/> */}
             <header className="text-center mb-16">
                 <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
                     Simple, Transparent Pricing

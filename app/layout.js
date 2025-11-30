@@ -1,10 +1,10 @@
+// app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/Components/Navbar";
+import { ThemeProvider } from '@/context/ThemeContext';
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { ToastContainer } from "react-toastify";
-
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import ClientLayout from "@/Components/ClientLayout"; // 👈 Import the new component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,22 +26,19 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">            
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* <SessionWrapper>
-        </SessionWrapper> */}
-        <Navbar/>
-      
+        
+        {/* 1. Provider wraps everything */}
+        <ThemeProvider>
+          {/* 2. ClientLayout handles the UI that needs useTheme() */}
+          <ClientLayout>
+            {children}
+          </ClientLayout>
+        </ThemeProvider>
 
-        {children}
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          theme="light"
-        />
-      
-       <Analytics />
-       <SpeedInsights/>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
