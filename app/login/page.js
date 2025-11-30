@@ -16,7 +16,7 @@ export default function Login() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(true);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_HOST || "";
+  const BASE_URL = process.env.NEXT_PUBLIC_HOST ;
   const router = useRouter();
 
   // Auth Check
