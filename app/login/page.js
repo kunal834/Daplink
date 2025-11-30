@@ -219,10 +219,12 @@ export default function Login() {
         </div>
 
         <p className={`text-center text-xs mt-8 ${styles.subTextColor}`}>
-          By continuing, you agree to DapLink's{" "}
-          <a href="#" className="underline hover:text-teal-500">Terms of Service</a> and{" "}
+          {"By continuing, you agree to DapLink's "}
+          <a href="#" className="underline hover:text-teal-500">Terms of Service</a>
+          {" and "}
           <a href="#" className="underline hover:text-teal-500">Privacy Policy</a>.
         </p>
+
       </div>
     </div>
   );
