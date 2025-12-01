@@ -57,7 +57,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-all duration-300">
+            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-all duration-300">
               <img src="/innovate.png" alt="Logo" className="w-6 h-6 object-contain filter brightness-0 invert" />
             </div>
             <span className={`font-bold text-xl tracking-tight transition-colors ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>DapLink</span>
@@ -142,7 +142,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            {['Features', 'Templates', 'Pricing'].map((item) => (
+            {['Blog', 'Templates', 'Pricing'].map((item) => (
               <Link key={item} href={`/${item}`} className={`text-sm font-medium transition-colors hover:scale-105 ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
                 {item}
               </Link>
@@ -157,10 +157,10 @@ export default function Navbar() {
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
 
-            <a href="/login" className={`text-sm font-medium transition-colors ${theme === 'dark' ? 'text-gray-200 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Log in</a>
-            <Link href="/Generate" className={`shimmer-btn px-6 py-2.5 text-sm font-bold rounded-full transition-all transform hover:scale-105 shadow-lg ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-gray-800'}`}>
+            <Link href="/login" className={`text-sm font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Log in</Link>
+            <button className={`shimmer-btn px-6 py-2.5 text-sm font-bold rounded-full transition-all transform hover:scale-105 shadow-lg ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-gray-800'}`}>
               Create Free
-            </Link >
+            </button>
           </div>
 
           {/* Mobile Toggle */}
@@ -233,7 +233,7 @@ export default function Navbar() {
               <button className={`w-full py-3 border rounded-xl font-medium ${theme === 'dark' ? 'border-gray-700 text-gray-300' : 'border-gray-200 text-gray-700'}`}>
                 <Link href="/login" className="block w-full h-full">Login</Link>
               </button>
-              <Link href="/Generate" className={`w-full py-3 rounded-xl cursor-pointer font-bold ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}>Create Free</Link>
+              <button className={`w-full py-3 rounded-xl font-bold ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}>Create Free</button>
             </div>
           </div>
         </div>
