@@ -158,9 +158,9 @@ export default function Navbar() {
             </button>
 
             <Link href="/login" className={`text-sm font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Log in</Link>
-            <button className={`shimmer-btn px-6 py-2.5 text-sm font-bold rounded-full transition-all transform hover:scale-105 shadow-lg ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-gray-800'}`}>
+            <Link href="/Generate" className={`shimmer-btn px-6 py-2.5 text-sm font-bold rounded-full transition-all transform hover:scale-105 shadow-lg ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-gray-800'}`}>
               Create Free
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
