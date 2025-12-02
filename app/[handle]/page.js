@@ -221,7 +221,10 @@ export default function ProfilePage({ params }) {
                 <Brain size={20} />
                 <span className="text-xs font-bold uppercase tracking-widest">Mindset</span>
               </div>
-              <p className={`text-lg font-medium leading-relaxed italic ${colors.text}`}>"{mindset}"</p>
+              <p className={`text-lg font-medium leading-relaxed italic ${colors.text}`}>
+                “{mindset}”
+              </p>
+
             </div>
           )}
 
@@ -266,7 +269,7 @@ export default function ProfilePage({ params }) {
           <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2 justify-center sm:justify-start">
-                Join the Daplink Family 
+                Join the Daplink Family
               </h3>
               <p className="text-gray-400 text-sm max-w-sm">Create your own professional profile and connect with others.</p>
             </div>

@@ -302,7 +302,8 @@ export default function GenerateForm() {
                                                 <div className="flex items-center gap-1 text-teal-500 text-xs font-bold uppercase mb-2">
                                                     <Brain size={12} /> Mindset
                                                 </div>
-                                                <p className="text-xs italic opacity-80">"{mindset}"</p>
+                                                <p className="text-xs italic opacity-80">{`“${mindset}”`}</p>
+
                                             </div>
                                         )}
 
