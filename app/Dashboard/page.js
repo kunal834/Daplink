@@ -132,7 +132,7 @@ const AnalyticsPanel = ({ colors, data }) => (
 
     {/* Connections Graph */}
     <div className={`p-6 rounded-2xl shadow-xl ${colors.card}`}>
-      <h3 className={`text-xl font-bold mb-6 ${colors.text}`}>Link Performance (Last 6 Weeks)</h3>
+      <h3 className={`text-xl font-bold mb-6 ${colors.text}`}>{`Link Performance (Last 6 Weeks)`}</h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
