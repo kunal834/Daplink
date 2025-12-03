@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Link as LinkIcon, Eye, EyeOff, Sun, Moon, ArrowLeft } from "lucide-react";
 import { useTheme } from '@/context/ThemeContext'; // Ensure this path matches your project
+import { useAuth } from "@/context/Authenticate";
+import axios from "axios";
+import { ResponsiveContainer } from "recharts";
 
 export default function Login() {
   const { theme, toggleTheme } = useTheme();
@@ -16,44 +19,33 @@ export default function Login() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(true);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_HOST ;
   const router = useRouter();
+  const { login ,user } = useAuth();
 
   // Auth Check
   useEffect(() => {
-    async function check() {
-      try {
-        const res = await fetch(`${BASE_URL}/api/auth/me`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.user) router.replace("/Generate");
-        }
-      } catch (e) {
-        console.log("Auth check failed", e);
-      } finally {
-        setLoading(false);
-      }
+    if(user){
+      router.replace("/Generate");
     }
-    check();
-  }, [router, BASE_URL]);
+  },[user,router]);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${BASE_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        toast.error(data.message || "Invalid credentials");
-        return;
-      }
-      if (data.user) {
+      const response = await axios.post(`/api/auth/login`, {
+      email,
+      password
+      })
+
+      const data = response.data;
+
+      if(data.user){
         toast.success("Login Successful!");
-        router.replace("/Generate");
+        login(data.user);   // coming from Authenticate context to change the navbar instant 
+      
+
       }
+  
     } catch (error) {
       console.error("Login Error:", error);
       toast.error("Something went wrong. Try again.");
@@ -63,28 +55,26 @@ export default function Login() {
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${BASE_URL}/api/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        toast.error(data.message || "Signup failed");
-        return;
-      }
-      if (data.user) {
-        toast.success("Signup Successful!");
+       const response = await axios.post("/api/auth/signup" ,{
+        name,
+        email,
+        password
+       })
+
+       const data = response.data;
+       
+       if(data.user){
+        toast.success("Signup Successful! Please login.");
         setIsLogin(true);
-        router.replace("/Generate");
-      }
+        login(data.user);   // coming from Authenticate context to change the navbar instant
+        
+
+       }
     } catch (error) {
       console.error("Signup Error:", error);
       toast.error("Something went wrong. Try again.");
     }
   };
-
-  if (loading) return null;
 
   // Dynamic Styles based on theme
   const styles = {

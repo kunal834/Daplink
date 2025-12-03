@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/Authenticate';
+import { toast } from "react-toastify";
+import axios from 'axios';
+import {  useRouter } from 'next/navigation';
 export default function Navbar() {
   // 1. Consume Global Theme State
   const { theme, toggleTheme } = useTheme();
@@ -15,8 +18,9 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mobileProductExpand, setMobileProductExpand] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
 // Consume Global Auth State using the custom hook
-const { isAuthenticated, user, loading } = useAuth();
+const { isAuthenticated, user, loading , logout } = useAuth();
   // 3. Handle Scroll Logic Locally
   useEffect(() => {
     const handleScroll = () => {
@@ -26,8 +30,37 @@ const { isAuthenticated, user, loading } = useAuth();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const logouthandler=()=>{
-    console.log("logout clicked");
+  const logouthandler= async ()=>{
+
+    try{
+
+      const isConfirm = window.confirm("Are you sure you want to logout?");
+ 
+      if(isConfirm){
+        const result = await axios.get('/api/auth/logout'  , {
+         withCredentials:true,
+        });
+       
+   
+          if(result.data.success){
+            logout();
+            toast.success("Logged out successfully");
+            router.replace("/login"); 
+
+     
+          }else{
+            toast.error( result.data.message || "Logout failed");
+          }
+
+    }
+  }catch(error){
+      console.error("Logout Error:", error);
+          
+       
+     }
+     
+     
+
   }
   // Mega Menu Data Configuration
   const megaMenuData = {
@@ -163,7 +196,7 @@ const { isAuthenticated, user, loading } = useAuth();
          { isAuthenticated ? 
            (
             <>
-            <Link href="/dashboard" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Dashboard</Link>
+            <Link href="/Dashboard" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Dashboard</Link>
         <button onClick={logouthandler} className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`} > Logout </button>
             
             </>
@@ -250,7 +283,7 @@ const { isAuthenticated, user, loading } = useAuth();
                { isAuthenticated ?  
                (
                 <>
-                <Link href="/dashboard" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Dashboard</Link>
+                <Link href="/Dashboard" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Dashboard</Link>
  <button onclick={logouthandler}className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`} > Logout </button>
                 </>
                )
