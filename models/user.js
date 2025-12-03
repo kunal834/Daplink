@@ -14,6 +14,15 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    daplinkID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Daplink",
+        default: null
+    },
+    isProfileComplete: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true }
 );
