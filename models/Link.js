@@ -6,6 +6,8 @@ const LinkSchema = new mongoose.Schema(
     profile: { type: String }, // Stores the Picture URL
     script: { type: String },  // Stores the Bio/Description
     mindset: { type: String },
+    location: { type: String ,default: "Remote" },
+    profession: { type: String ,default: "Creator" },
     
     // Arrays for your list items
     links: [{ 

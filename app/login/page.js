@@ -4,77 +4,96 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { Link as LinkIcon, Eye, EyeOff, Sun, Moon, ArrowLeft } from "lucide-react";
+import { Link as LinkIcon, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useTheme } from '@/context/ThemeContext'; // Ensure this path matches your project
 import { useAuth } from "@/context/Authenticate";
 import axios from "axios";
-import { ResponsiveContainer } from "recharts";
 
 export default function Login() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const isFormValid = email.trim() !== "" && password.trim() !== "" && (isLogin || name.trim() !== "");
+
 
   const router = useRouter();
-  const { login ,user } = useAuth();
+  const { login, user, loading: authLoading } = useAuth();
 
   // Auth Check
   useEffect(() => {
-    if(user){
-      router.replace("/Generate");
+    if (authLoading) return;
+    if (!user) {
+      router.replace("/login");
+      return;
     }
-  },[user,router]);
+
+    if (!user.isProfileComplete) {
+      router.replace("/Generate");
+      return;
+    }
+
+    router.replace("/Dashboard");
+  }, [authLoading, user]);
+
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(`/api/auth/login`, {
-      email,
-      password
+        email,
+        password
       })
 
       const data = response.data;
 
-      if(data.user){
+      if (data.user) {
         toast.success("Login Successful!");
-        login(data.user);   // coming from Authenticate context to change the navbar instant 
-      
-
+        login(data.user);
+        router.replace("/Dashboard");
       }
-  
+      else {
+        console.log("Login Failed:", data.message);
+        toast.error(data.message);
+      }
+      setLoading(false);
+
     } catch (error) {
-      console.error("Login Error:", error);
-      toast.error("Something went wrong. Try again.");
+      console.error("Login Error:", error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || "Something went wrong. Try again.");
+      setLoading(false);
     }
   };
 
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-       const response = await axios.post("/api/auth/signup" ,{
+      const response = await axios.post("/api/auth/register", {
         name,
         email,
-        password
-       })
+        password,
+      });
 
-       const data = response.data;
-       
-       if(data.user){
-        toast.success("Signup Successful! Please login.");
-        setIsLogin(true);
-        login(data.user);   // coming from Authenticate context to change the navbar instant
-        
+      const data = response.data;
 
-       }
+      if (data.user) {
+        toast.success("Signup Successful!");
+        router.replace("/Generate");
+      }
     } catch (error) {
       console.error("Signup Error:", error);
       toast.error("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
 
   // Dynamic Styles based on theme
   const styles = {
@@ -92,6 +111,7 @@ export default function Login() {
       : 'bg-black text-white hover:bg-gray-800',
     socialBtn: `w-full flex items-center justify-center gap-2 border rounded-xl py-2.5 text-sm font-medium transition-colors ${theme === 'dark' ? 'border-white/10 hover:bg-white/5 text-white' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`
   };
+
 
   return (
     <div className={`relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden font-sans pt-12 transition-colors duration-500 ${styles.pageBg}`}>
@@ -191,9 +211,17 @@ export default function Login() {
 
             <button
               onClick={isLogin ? handleLoginSubmit : handleSignupSubmit}
-              className={`${styles.btnBase} ${styles.btnTheme}`}
+              disabled={loading || !isFormValid}
+              className={`${styles.btnBase} ${styles.btnTheme} flex items-center justify-center gap-2 ${(!isFormValid || loading) ? "opacity-60 cursor-not-allowed" : ""}`}
             >
-              {isLogin ? "Sign In" : "Create Account"}
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5" />
+                  {isLogin ? "Logging in..." : "Signing up..."}
+                </>
+              ) : (
+                isLogin ? "Sign In" : "Create Account"
+              )}
             </button>
           </form>
 
@@ -216,6 +244,6 @@ export default function Login() {
         </p>
 
       </div>
-    </div>
+    </div >
   );
 }

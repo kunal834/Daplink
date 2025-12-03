@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
@@ -14,6 +14,10 @@ import Skillstab from './Skillstab';
 
 // Import Context
 import { useTheme } from '@/context/ThemeContext';
+import axios from 'axios';
+import { useAuth } from '@/context/Authenticate';
+import { set } from 'mongoose';
+import GenerateFormSkeleton from '@/Components/SkeletonScreen/GenerateSkeleton';
 
 // --- Styles for Animations ---
 const AnimationStyles = () => (
@@ -43,6 +47,8 @@ export default function GenerateForm() {
     const { theme } = useTheme();
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { user, loading: authLoading } = useAuth();
+
 
     // --- State ---
     const [activeTab, setActiveTab] = useState("Profile");
@@ -63,6 +69,32 @@ export default function GenerateForm() {
     const [skillsSeek, setSkillsSeek] = useState(["Marketing"]);
     const [newSkillOffered, setNewSkillOffered] = useState('');
     const [newSkillSeek, setNewSkillSeek] = useState('');
+    const [UserChecking, setUserChecking] = useState(false);
+
+
+
+
+    useEffect(() => {
+        setUserChecking(true);
+        if (authLoading) return;
+        if (user === undefined) return;
+        console.log("User in GenerateForm:", user);
+
+        // const token = localStorage.getItem('authToken');
+
+        if (!user) {
+            router.replace("/login");
+            return;
+        }
+
+        if (user.isProfileComplete ) {
+            router.replace('/Dashboard');
+            return;
+        }
+        setLoading(false);
+        setUserChecking(false);
+    }, [user]);
+
 
     // --- Logic ---
     const submitLink = async () => {
@@ -76,6 +108,7 @@ export default function GenerateForm() {
                 handle,
                 profile,
                 script,
+                userId: user?.user.id,
                 location,
                 profession,
                 mindset,
@@ -93,7 +126,7 @@ export default function GenerateForm() {
             const result = await response.json();
 
             if (result.success) {
-                toast.success("Profile created successfully! 🚀");
+                toast.success("Profile created successfully! ");
                 setTimeout(() => router.push(`/${handle}`), 1500);
             } else {
                 toast.error(result.message || "Something went wrong");
@@ -106,6 +139,9 @@ export default function GenerateForm() {
         }
     };
 
+    if (!user || UserChecking) {
+        return <GenerateFormSkeleton theme={theme} />;
+    }
     const isDisabled = !handle || loading;
 
     // --- Dynamic Theme Styles ---
