@@ -7,16 +7,16 @@ import {
   MapPin, Tag, Layout, ArrowRight, Grid, Package 
 } from 'lucide-react';
 import Link from 'next/link';
-
+import { useAuth } from '@/context/Authenticate';
 export default function Navbar() {
   // 1. Consume Global Theme State
   const { theme, toggleTheme } = useTheme();
-  
   // 2. Local UI State
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mobileProductExpand, setMobileProductExpand] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+// Consume Global Auth State using the custom hook
+const { isAuthenticated, user, loading } = useAuth();
   // 3. Handle Scroll Logic Locally
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +26,9 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const logouthandler=()=>{
+    console.log("logout clicked");
+  }
   // Mega Menu Data Configuration
   const megaMenuData = {
     products: [
@@ -156,11 +159,23 @@ export default function Navbar() {
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-
-            <Link href="/login" className={`text-sm font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Log in</Link>
-            <button className={`shimmer-btn px-6 py-2.5 text-sm font-bold rounded-full transition-all transform hover:scale-105 shadow-lg ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-gray-800'}`}>
+     
+         { isAuthenticated ? 
+           (
+            <>
+            <Link href="/dashboard" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Dashboard</Link>
+        <button onClick={logouthandler} className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`} > Logout </button>
+            
+            </>
+           )
+           : 
+           (
+           <Link href="/login" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Log in</Link>
+          
+           )}
+            <Link href="/Generate" className={`shimmer-btn px-6 py-2.5 text-sm font-bold rounded-full transition-all transform hover:scale-105 shadow-lg ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-gray-800'}`}>
               Create Free
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
@@ -231,9 +246,19 @@ export default function Navbar() {
             
             <div className="pt-4 flex flex-col gap-3 px-1">
               <button className={`w-full py-3 border rounded-xl font-medium ${theme === 'dark' ? 'border-gray-700 text-gray-300' : 'border-gray-200 text-gray-700'}`}>
-                <Link href="/login" className="block w-full h-full">Login</Link>
+               
+               { isAuthenticated ?  
+               (
+                <>
+                <Link href="/dashboard" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Dashboard</Link>
+ <button onclick={logouthandler}className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`} > Logout </button>
+                </>
+               )
+
+          
+         : (<Link href="/login" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Log in</Link>)}
               </button>
-              <button className={`w-full py-3 rounded-xl font-bold ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}>Create Free</button>
+              <Link href="/Generate" className={`w-full py-3 rounded-xl font-bold curseor-pointer ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}>Create Free</Link>
             </div>
           </div>
         </div>

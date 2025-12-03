@@ -226,7 +226,7 @@ const FeaturePage = () => {
 
     </div>
 
-    <Footer/>
+
 </>
       
 

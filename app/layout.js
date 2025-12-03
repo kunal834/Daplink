@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ClientLayout from "@/Components/ClientLayout"; // 👈 Import the new component
+import { AuthContextProvider } from "@/context/Authenticate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +32,13 @@ export default function RootLayout({ children }) {
         
         {/* 1. Provider wraps everything */}
         <ThemeProvider>
+          <AuthContextProvider>
           {/* 2. ClientLayout handles the UI that needs useTheme() */}
           <ClientLayout>
+            
             {children}
           </ClientLayout>
+          </AuthContextProvider>
         </ThemeProvider>
 
         <Analytics />
