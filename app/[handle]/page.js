@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+ import Link from "next/link";
 import {
   Link as LinkIcon, Brain, Wrench, Share2, ExternalLink,
   CheckCircle, Moon, Sun, MapPin, Briefcase, Search,
@@ -54,6 +54,7 @@ const PageStyles = ({ theme }) => (
 
 
 export default function ProfilePage({ params }) {
+
   const { theme, toggleTheme } = useTheme();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import { io } from "socket.io-client";
+import { Import } from 'lucide-react';
 
-// NOTE: You will need to import your Socket.IO client instance here
-// import { socket } from '../path/to/socket-client'; 
+
+
 
 const UserProfile = ({ params }) => {
   const [people, setPeople] = useState([]);
@@ -34,18 +36,14 @@ const UserProfile = ({ params }) => {
     // 2. You would implement the actual messaging logic here:
     
     // --- Option A: Using Socket.IO ---
-    /*
-    socket.emit('start_private_chat', {
-        senderId: params.handle, // Your current user's ID/Handle
+    
+    io.emit('start_private_chat', {
+        senderId: targetUserHandle  ,// Your current user's ID/Handle
         recipientId: targetUserId,
         // Often, the server handles creating the chat room
     });
-    */
     
-    // --- Option B: Simple Redirect to a Chat Page ---
-    // If you have a dedicated chat route, e.g., /chat/[handle]
-    // You could use Next.js Router for navigation here:
-    // router.push(`/chat/${targetUserHandle}`);
+  
     
     alert(`Messaging feature placeholder: Would open chat with ${targetUserHandle}`);
   };

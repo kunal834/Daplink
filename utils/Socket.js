@@ -1,6 +1,7 @@
 // utils/socket.js
 
 import { Server } from 'socket.io';
+// import link from '../models/Link';
 
 const SocketHandler = (req, res) => {
   if (res.socket.server.io) {
@@ -8,11 +9,14 @@ const SocketHandler = (req, res) => {
     res.end();
     return;
   }
-
+  
+  
   // 1. Initialize the Socket.IO server
   const io = new Server(res.socket.server);
   res.socket.server.io = io; // Attach it to the server object
-
+  
+  // socket.id = link._id;
+  console.log('Socket ID assigned to link:', socket.id);
   // 2. Define connection listeners
   io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
