@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/mongodb";
 import LinkModel from "@/models/Link"; // Make sure this matches your file name
+import User from "@/models/user";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -8,7 +9,7 @@ export async function POST(request) {
     const body = await request.json();
 
     // 1. Destructure the data coming from "submitlink" in Generate.js
-    const { handle, links, profile, script, mindset, skillsoff, skillsseek } = body;
+    const { handle, links, profile, script, mindset, skillsoff, skillsseek, location, profession,userId } = body;
 
     // 2. Validation: Only 'handle' is strictly required to start
     if (!handle) {
@@ -18,22 +19,36 @@ export async function POST(request) {
       );
     }
 
-    // 3. The Fix: Use findOneAndUpdate with 'upsert: true'
-    // - If the handle exists -> It UPDATES the data (Save changes)
-    // - If the handle doesn't exist -> It CREATES a new one
+    const existingLink = await LinkModel.findOne({ handle });
+    if (existingLink) {
+      return NextResponse.json(
+        { success: false, error: true, message: "Handle already exists!" },
+        { status: 400 }
+      );
+    }
+
     const updatedProfile = await LinkModel.findOneAndUpdate(
       { handle: handle }, // Find criteria
-      { 
-        handle, 
-        links, 
-        profile, 
-        script, 
-        mindset, 
+      {
+        handle,
+        links,
+        profile,
+        location,
+        profession,
+        script,
+        mindset,
         skillsoff: skillsoff || [], // Ensure arrays are at least empty lists
-        skillsseek: skillsseek || [] 
+        skillsseek: skillsseek || []
       }, // Data to save
       { new: true, upsert: true, setDefaultsOnInsert: true } // Options
     );
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId },
+      { daplinkID: updatedProfile._id, isProfileComplete: true },
+      { new: true }
+    );
+    // console.log("Updated User:", updatedUser);
 
     return NextResponse.json(
       {

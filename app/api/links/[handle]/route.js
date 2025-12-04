@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    const { handle } = params;
+    const { handle } =await  params;
 
     if (!handle) {
       return NextResponse.json(
