@@ -4,12 +4,11 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/user";
 
-
 export async function GET() {
   try {
     await connectDB();
 
-    // MUST await in Next.js 15+
+    // MUST await in Next.js 15
     const cookieStore = await cookies();
     const token = cookieStore.get("authtoken")?.value;
 
@@ -17,8 +16,18 @@ export async function GET() {
       return NextResponse.json({ user: null });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // verify JWT safely
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+      console.error("JWT ERROR:", error);
+      return NextResponse.json({ user: null });
+    }
 
+    if (!decoded?.id) {
+      return NextResponse.json({ user: null });
+    }
 
     const user = await User.findById(decoded.id).select("-password");
 
@@ -27,6 +36,7 @@ export async function GET() {
     }
 
     return NextResponse.json({ user });
+
   } catch (err) {
     console.error("ME ROUTE ERROR:", err);
     return NextResponse.json({ user: null }, { status: 500 });

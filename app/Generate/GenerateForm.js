@@ -108,7 +108,7 @@ export default function GenerateForm() {
                 handle,
                 profile,
                 script,
-                userId: user?.user.id,
+                userId: user.id,
                 location,
                 profession,
                 mindset,
