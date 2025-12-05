@@ -425,7 +425,7 @@ console.log(isFollowing,"isFollowing");
                   <Brain size={18} className="text-teal-500" />
                   <span className="text-xs font-bold uppercase tracking-wider text-teal-500">Mindset</span>
                 </div>
-                <p className={`text-sm leading-relaxed italic ${colors.text}`}>"{mindset}"</p>
+                <p className={`text-sm leading-relaxed italic ${colors.text}`}>{`"${mindset}"`}</p>
               </div>
             )}
 
