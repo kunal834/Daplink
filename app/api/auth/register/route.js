@@ -39,11 +39,6 @@ export async function POST(req) {
             password: hashedPassword,
         });
 
-        const token = jwt.sign(
-            { id: newUser._id, email: newUser.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-        );
 
         const response = NextResponse.json(
             {
@@ -56,15 +51,6 @@ export async function POST(req) {
             },
             { status: 201 }
         );
-
-        // Storing token in Cookies
-        response.cookies.set("authtoken", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            path: "/",
-            maxAge: 60 * 60, // 60 minutes
-        });
 
         return response;
 

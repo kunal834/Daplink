@@ -52,6 +52,7 @@ export async function POST(req) {
                     id: user._id,
                     name: user.name,
                     email: user.email,
+                    isProfileComplete: user.isProfileComplete,
                 },
             },
             { status: 200 }
