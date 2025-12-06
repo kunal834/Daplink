@@ -75,25 +75,28 @@ export default function GenerateForm() {
 
 
     useEffect(() => {
-        setUserChecking(true);
-        if (authLoading) return;
-        if (user === undefined) return;
-        console.log("User in GenerateForm:", user);
 
-        // const token = localStorage.getItem('authToken');
+        if (authLoading) return;
+
+        if (user === undefined) return;
+
+        setUserChecking(true);
 
         if (!user) {
             router.replace("/login");
             return;
         }
 
-        if (user.isProfileComplete ) {
-            router.replace('/Dashboard');
+        if (user.isProfileComplete) {
+            router.replace("/Dashboard");
             return;
         }
+
         setLoading(false);
         setUserChecking(false);
-    }, [user]);
+
+    }, [authLoading, user]);
+
 
 
     // --- Logic ---
