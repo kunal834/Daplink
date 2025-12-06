@@ -9,7 +9,7 @@ export async function POST(request) {
     const body = await request.json();
 
     // 1. Destructure the data coming from "submitlink" in Generate.js
-    const { handle, links, profile, script, mindset, skillsoff, skillsseek, location, profession,userId } = body;
+    const { handle, links, profile, script, mindset, skillsoff, skillsseek, location, profession, userId } = body;
 
     // 2. Validation: Only 'handle' is strictly required to start
     if (!handle) {
@@ -43,8 +43,12 @@ export async function POST(request) {
       { new: true, upsert: true, setDefaultsOnInsert: true } // Options
     );
 
+
     const updatedUser = await User.findOneAndUpdate(
-      { _id: userId },
+      {
+        _id: userId,
+        daplinkID: { $in: [null, ""] }
+      },
       { daplinkID: updatedProfile._id, isProfileComplete: true },
       { new: true }
     );
