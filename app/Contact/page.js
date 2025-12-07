@@ -1,8 +1,6 @@
 "use client"
 import React, { useState } from 'react';
 import { Mail, MessageCircle, MapPin, Twitter, Linkedin, Instagram, Facebook } from 'lucide-react';
-import Navbar from '@/Components/Navbar';
-import Footer from '@/Components/Footer';
 
 
 // --- DATA ---
@@ -19,14 +17,14 @@ const contactMethods = [
     title: 'Live Chat',
     description: 'Chat with our support team.',
     linkText: 'Available 9am-5pm india',
-    href: '#',
+    href: '#', 
   },
   {
     icon: MapPin,
     title: 'Office',
     description: 'Visit us in person.',
     linkText: 'New Delhi',
-    href: 'https://maps.google.com/?q=San+Francisco,+CA',
+    href: 'https://maps.google.com/?q=San+Francisco,+CA', 
   },
 ];
 
@@ -63,7 +61,7 @@ const HeroContact = () => (
         Get in Touch
       </h1>
       <p className="text-lg text-gray-600">
-        {`Have a question or feedback? We'd love to hear from you. Send us a message and we'll respond as soon as possible.`}
+       { `Have a question or feedback? We'd love to hear from you. Send us a message and we'll respond as soon as possible.`}
       </p>
     </div>
   </section>
@@ -244,33 +242,33 @@ const SocialLinks = () => (
 const ContactPage = () => {
   return (
     <>
-      <Navbar />
-      <div className="bg-white text-gray-800 font-sans">
-        <HeroContact />
-        <div className='bg-gray-200 h-0.5 w-full'> </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <ContactMethods />
+    
+     <div className="bg-white text-gray-800 font-sans">
+      <HeroContact />
+      <div className='bg-gray-200 h-0.5 w-full'> </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <ContactMethods />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mt-20">
-            <div>
-              <ContactForm />
-            </div>
-            <div>
-              <FAQSection />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mt-20">
+          <div>
+            <ContactForm />
           </div>
-
-          <div className="mt-20">
-            <SocialLinks />
+          <div>
+            <FAQSection />
           </div>
         </div>
+
+        <div className="mt-20">
+          <SocialLinks />
+        </div>
       </div>
+    </div>
 
-      <Footer />
+    
 
-
+    
     </>
-
+   
   );
 };
 
