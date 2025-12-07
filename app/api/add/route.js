@@ -47,7 +47,7 @@ export async function POST(request) {
     const updatedUser = await User.findOneAndUpdate(
       {
         _id: userId,
-        daplinkID: { $in: [null, ""] }
+        daplinkID: null
       },
       { daplinkID: updatedProfile._id, isProfileComplete: true },
       { new: true }
