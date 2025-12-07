@@ -21,13 +21,13 @@ export default function ClientLayout({ children }) {
         </div>
       </div>
 
-      <Navbar />
+      {/* <Navbar /> */}
 
       <main className="min-h-screen relative z-10">
         {children}
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
 
       <ToastContainer
         position="top-right"
