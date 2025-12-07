@@ -13,6 +13,7 @@ import { useTheme } from '../../context/ThemeContext';
 import Modal from "@/Components/Modal";
 import { useAuth } from "@/context/Authenticate";
 import { set } from "mongoose";
+import Navbar from "@/Components/Navbar";
 
 /* -------------------------------------------------------------------------- */
 /* STYLES & ANIMATIONS                                                        */
@@ -181,9 +182,9 @@ export default function ProfilePage({ params }) {
     }
 
     if (user?._id) checkFollow();
-  }, [user?._id,targetUserId]);
+  }, [user?._id, targetUserId]);
 
-console.log(isFollowing,"isFollowing");
+  console.log(isFollowing, "isFollowing");
   const handleFollow = async () => {
     if (!user?._id) {
       toast.error("Please login to follow");
@@ -265,249 +266,251 @@ console.log(isFollowing,"isFollowing");
   const { handle, profile, script, links = [], mindset, skillsoff = [], skillsseek = [], location, profession } = data;
 
   return (
-    <div className={`min-h-screen w-full transition-colors duration-300 ${colors.bg} font-sans pb-20`}>
-      <PageStyles theme={theme} />
+    <><Navbar />
+      <div className={`min-h-screen w-full transition-colors duration-300 ${colors.bg} font-sans pb-20`}>
+        <PageStyles theme={theme} />
 
-      {/* Simplified Background */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        {theme === 'dark' ? (
-          <>
-            <div className="absolute w-[500px] h-[500px] bg-teal-500/5 top-0 right-0 rounded-full blur-[100px]"></div>
-            <div className="absolute w-[500px] h-[500px] bg-purple-500/5 bottom-0 left-0 rounded-full blur-[100px]"></div>
-          </>
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-50/30 via-white to-purple-50/30"></div>
-        )}
-      </div>
+        {/* Simplified Background */}
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+          {theme === 'dark' ? (
+            <>
+              <div className="absolute w-[500px] h-[500px] bg-teal-500/5 top-0 right-0 rounded-full blur-[100px]"></div>
+              <div className="absolute w-[500px] h-[500px] bg-purple-500/5 bottom-0 left-0 rounded-full blur-[100px]"></div>
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-50/30 via-white to-purple-50/30"></div>
+          )}
+        </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 pt-24">
+        {/* Main Content */}
+        <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 pt-24">
 
-        {/* Profile Header - Horizontal Layout */}
-        <div className={`glass-card rounded-3xl p-8 mb-6 animate-enter`}>
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            {/* Profile Image */}
-            <div className="relative flex-shrink-0">
-              <div className={`absolute -inset-1 rounded-full blur-md opacity-50 ${theme === 'dark' ? 'bg-gradient-to-r from-teal-500 to-purple-500' : 'bg-gradient-to-r from-teal-400 to-purple-400'}`}></div>
-              <img
-                src={profile || `https://placehold.co/200x200/222/fff?text=${handle?.[0]?.toUpperCase() || '@'}`}
-                alt={`@${handle}`}
-                className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 ${theme === 'dark' ? 'border-[#0a0a0a]' : 'border-white'} shadow-xl`}
-              />
-              <div className={`absolute bottom-1 right-1 ${theme === 'dark' ? 'bg-blue-500' : 'bg-blue-400'} text-white p-1.5 rounded-full border-3 ${theme === 'dark' ? 'border-[#0a0a0a]' : 'border-white'}`}>
-                <CheckCircle size={14} fill="currentColor" />
+          {/* Profile Header - Horizontal Layout */}
+          <div className={`glass-card rounded-3xl p-8 mb-6 animate-enter`}>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              {/* Profile Image */}
+              <div className="relative flex-shrink-0">
+                <div className={`absolute -inset-1 rounded-full blur-md opacity-50 ${theme === 'dark' ? 'bg-gradient-to-r from-teal-500 to-purple-500' : 'bg-gradient-to-r from-teal-400 to-purple-400'}`}></div>
+                <img
+                  src={profile || `https://placehold.co/200x200/222/fff?text=${handle?.[0]?.toUpperCase() || '@'}`}
+                  alt={`@${handle}`}
+                  className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 ${theme === 'dark' ? 'border-[#0a0a0a]' : 'border-white'} shadow-xl`}
+                />
+                <div className={`absolute bottom-1 right-1 ${theme === 'dark' ? 'bg-blue-500' : 'bg-blue-400'} text-white p-1.5 rounded-full border-3 ${theme === 'dark' ? 'border-[#0a0a0a]' : 'border-white'}`}>
+                  <CheckCircle size={14} fill="currentColor" />
+                </div>
+                <div className="fixed top-4 right-6">
+                  <button
+                    onClick={copyToClipboard}
+                    className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 text-sm font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] hover:bg-[#222] text-gray-400 hover:text-white' : 'bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-900 shadow-sm border border-gray-200'}`}
+                  >
+                    {copied ? (
+                      <>
+                        <CheckCircle size={16} className="text-green-500" />
+                        <span className="text-green-500">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 size={16} />
+                        <span>Share</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
-              <div className="fixed top-4 right-6">
-                <button
-                  onClick={copyToClipboard}
-                  className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 text-sm font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] hover:bg-[#222] text-gray-400 hover:text-white' : 'bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-900 shadow-sm border border-gray-200'}`}
-                >
-                  {copied ? (
-                    <>
-                      <CheckCircle size={16} className="text-green-500" />
-                      <span className="text-green-500">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Share2 size={16} />
-                      <span>Share</span>
-                    </>
+
+              {/* Profile Info */}
+              <div className="flex-1 text-center sm:text-left">
+                <h1 className={`text-3xl sm:text-4xl font-bold mb-2 ${colors.text}`}>@{handle}</h1>
+                {script && <p className={`text-sm sm:text-base mb-4 ${colors.subtext} max-w-lg`}>{script}</p>}
+
+                {/* Location & Profession Pills */}
+                <div className="flex flex-wrap gap-2 mb-4 justify-center sm:justify-start">
+                  {location && (
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
+                      <MapPin size={12} className="text-teal-500" /> {location}
+                    </span>
                   )}
-                </button>
-              </div>
-            </div>
-
-            {/* Profile Info */}
-            <div className="flex-1 text-center sm:text-left">
-              <h1 className={`text-3xl sm:text-4xl font-bold mb-2 ${colors.text}`}>@{handle}</h1>
-              {script && <p className={`text-sm sm:text-base mb-4 ${colors.subtext} max-w-lg`}>{script}</p>}
-
-              {/* Location & Profession Pills */}
-              <div className="flex flex-wrap gap-2 mb-4 justify-center sm:justify-start">
-                {location && (
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
-                    <MapPin size={12} className="text-teal-500" /> {location}
-                  </span>
-                )}
-                {profession && (
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
-                    <Briefcase size={12} className="text-purple-500" /> {profession}
-                  </span>
-                )}
-              </div>
-
-              {/* Stats and Follow Button Row */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
-                {/* Stats */}
-                <div className="flex gap-6">
-                  <div className="stat-badge text-center">
-                    <div className={`text-2xl font-bold ${colors.text}`}>{followerCount.toLocaleString()}</div>
-                    <div className={`text-xs ${colors.mutedText}`}>Followers</div>
-                  </div>
-                  <div className="stat-badge text-center">
-                    <div className={`text-2xl font-bold ${colors.text}`}>{links.length}</div>
-                    <div className={`text-xs ${colors.mutedText}`}>Links</div>
-                  </div>
+                  {profession && (
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
+                      <Briefcase size={12} className="text-purple-500" /> {profession}
+                    </span>
+                  )}
                 </div>
 
-                {/* Follow Button */}
-                {user?._id && user._id !== targetUserId && (
-                  <button
-                    onClick={handleFollow}
-                    disabled={followLoading}
-                    className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 ${isFollowing
+                {/* Stats and Follow Button Row */}
+                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
+                  {/* Stats */}
+                  <div className="flex gap-6">
+                    <div className="stat-badge text-center">
+                      <div className={`text-2xl font-bold ${colors.text}`}>{followerCount.toLocaleString()}</div>
+                      <div className={`text-xs ${colors.mutedText}`}>Followers</div>
+                    </div>
+                    <div className="stat-badge text-center">
+                      <div className={`text-2xl font-bold ${colors.text}`}>{links.length}</div>
+                      <div className={`text-xs ${colors.mutedText}`}>Links</div>
+                    </div>
+                  </div>
+
+                  {/* Follow Button */}
+                  {user?._id && user._id !== targetUserId && (
+                    <button
+                      onClick={handleFollow}
+                      disabled={followLoading}
+                      className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 ${isFollowing
                         ? theme === 'dark'
                           ? 'bg-[#1a1a1a] text-white hover:bg-[#222] border border-[#333]'
                           : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-200'
                         : 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white hover:from-teal-600 hover:to-emerald-700 shadow-md hover:shadow-lg'
-                      } ${followLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                  >
-                    {followLoading ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : isFollowing ? (
-                      <>
-                        <UserCheck size={16} />
-                        <span>Following</span>
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus size={16} />
-                        <span>Follow</span>
-                      </>
-                    )}
-                  </button>
-                )}
+                        } ${followLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {followLoading ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : isFollowing ? (
+                        <>
+                          <UserCheck size={16} />
+                          <span>Following</span>
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus size={16} />
+                          <span>Follow</span>
+                        </>
+                      )}
+                    </button>
+                  )}
 
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-enter" style={{ animationDelay: '100ms' }}>
-
-          {/* Left Column - Links */}
-          <div className="lg:col-span-2 space-y-4">
-            {links.length > 0 && (
-              <>
-                <h2 className={`text-lg font-bold mb-4 ${colors.text} flex items-center gap-2`}>
-                  <LinkIcon size={18} className="text-teal-500" />
-                  Quick Links
-                </h2>
-                {links.map((item, idx) => (
-                  <a
-                    key={idx}
-                    href={item.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`link-card glass-card group flex items-center justify-between p-4 rounded-2xl`}
-                  >
-                    <div className="flex items-center gap-3 overflow-hidden flex-1">
-                      <div className={`w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center ${theme === 'dark' ? 'bg-gradient-to-br from-teal-500/10 to-purple-500/10' : 'bg-gradient-to-br from-teal-50 to-purple-50'}`}>
-                        <LinkIcon size={18} className="text-teal-500" />
-                      </div>
-                      <span className={`font-semibold text-sm truncate ${colors.text}`}>{item.linktext}</span>
-                    </div>
-                    <ExternalLink size={16} className={`${colors.subtext} group-hover:text-teal-500 transition-colors flex-shrink-0 ml-2`} />
-                  </a>
-                ))}
-              </>
-            )}
-          </div>
-
-          {/* Right Column - Mindset & Skills */}
-          <div className="space-y-4">
-
-            {/* Mindset Card */}
-            {mindset && (
-              <div className={`glass-card p-6 rounded-2xl`}>
-                <div className="flex items-center gap-2 mb-3">
-                  <Brain size={18} className="text-teal-500" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-teal-500">Mindset</span>
                 </div>
-                <p className={`text-sm leading-relaxed italic ${colors.text}`}>{`"${mindset}"`}</p>
               </div>
-            )}
+            </div>
+          </div>
 
-            {/* Skills Card */}
-            {(skillsoff.length > 0 || skillsseek.length > 0) && (
-              <div className={`glass-card p-6 rounded-2xl space-y-5`}>
-                {skillsoff.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Wrench size={16} className="text-purple-500" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-purple-500">Offering</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {skillsoff.map((skill, i) => (
-                        <span key={i} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
+          {/* Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-enter" style={{ animationDelay: '100ms' }}>
+
+            {/* Left Column - Links */}
+            <div className="lg:col-span-2 space-y-4">
+              {links.length > 0 && (
+                <>
+                  <h2 className={`text-lg font-bold mb-4 ${colors.text} flex items-center gap-2`}>
+                    <LinkIcon size={18} className="text-teal-500" />
+                    Quick Links
+                  </h2>
+                  {links.map((item, idx) => (
+                    <a
+                      key={idx}
+                      href={item.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`link-card glass-card group flex items-center justify-between p-4 rounded-2xl`}
+                    >
+                      <div className="flex items-center gap-3 overflow-hidden flex-1">
+                        <div className={`w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center ${theme === 'dark' ? 'bg-gradient-to-br from-teal-500/10 to-purple-500/10' : 'bg-gradient-to-br from-teal-50 to-purple-50'}`}>
+                          <LinkIcon size={18} className="text-teal-500" />
+                        </div>
+                        <span className={`font-semibold text-sm truncate ${colors.text}`}>{item.linktext}</span>
+                      </div>
+                      <ExternalLink size={16} className={`${colors.subtext} group-hover:text-teal-500 transition-colors flex-shrink-0 ml-2`} />
+                    </a>
+                  ))}
+                </>
+              )}
+            </div>
+
+            {/* Right Column - Mindset & Skills */}
+            <div className="space-y-4">
+
+              {/* Mindset Card */}
+              {mindset && (
+                <div className={`glass-card p-6 rounded-2xl`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Brain size={18} className="text-teal-500" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-teal-500">Mindset</span>
                   </div>
-                )}
-                {skillsseek.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Search size={16} className="text-orange-500" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-orange-500">Seeking</span>
+                  <p className={`text-sm leading-relaxed italic ${colors.text}`}>{`"${mindset}"`}</p>
+                </div>
+              )}
+
+              {/* Skills Card */}
+              {(skillsoff.length > 0 || skillsseek.length > 0) && (
+                <div className={`glass-card p-6 rounded-2xl space-y-5`}>
+                  {skillsoff.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Wrench size={16} className="text-purple-500" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-purple-500">Offering</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {skillsoff.map((skill, i) => (
+                          <span key={i} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {skillsseek.map((skill, i) => (
-                        <span key={i} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                          {skill}
-                        </span>
-                      ))}
+                  )}
+                  {skillsseek.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Search size={16} className="text-orange-500" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-orange-500">Seeking</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {skillsseek.map((skill, i) => (
+                          <span key={i} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* CTA Card */}
+          <div className={`glass-card rounded-2xl p-6 mt-6 animate-enter`} style={{ animationDelay: '200ms' }}>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-center sm:text-left">
+                <h3 className={`text-lg font-bold mb-1 ${colors.text}`}>Join DapLink Today</h3>
+                <p className={`text-sm ${colors.subtext}`}>Create your professional profile in minutes</p>
               </div>
-            )}
+              <div className="flex gap-3 w-full sm:w-auto">
+                <Link href="/Explorepeoples" className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300 hover:bg-[#222] hover:text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'}`}>
+                  <User size={16} /> Explore
+                </Link>
+                <button onClick={() => setModalOpen(true)} className="px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-emerald-700 transition-all text-sm flex items-center gap-2 shadow-md hover:shadow-lg">
+                  Jobs <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
           </div>
+
+          {/* Modal */}
+          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} theme={theme}>
+            <div className={`p-8 w-full text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-purple-500"></div>
+              <div className={`mx-auto w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${theme === 'dark' ? 'bg-teal-500/10' : 'bg-teal-50'}`}>
+                <Lock size={24} className="text-teal-500" />
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Unlock Premium Features</h3>
+              <p className={`mb-8 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                Access exclusive job listings and connect with top recruiters
+              </p>
+              <div className="flex flex-col gap-3">
+                <Link href="/Pricing" className="w-full py-3 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold rounded-xl transition-all">
+                  View Pricing
+                </Link>
+                <button onClick={() => setModalOpen(false)} className={`text-sm py-2 ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-gray-800'}`}>
+                  Maybe later
+                </button>
+              </div>
+            </div>
+          </Modal>
+
         </div>
-
-        {/* CTA Card */}
-        <div className={`glass-card rounded-2xl p-6 mt-6 animate-enter`} style={{ animationDelay: '200ms' }}>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-center sm:text-left">
-              <h3 className={`text-lg font-bold mb-1 ${colors.text}`}>Join DapLink Today</h3>
-              <p className={`text-sm ${colors.subtext}`}>Create your professional profile in minutes</p>
-            </div>
-            <div className="flex gap-3 w-full sm:w-auto">
-              <Link href="/Explorepeoples" className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300 hover:bg-[#222] hover:text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'}`}>
-                <User size={16} /> Explore
-              </Link>
-              <button onClick={() => setModalOpen(true)} className="px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-emerald-700 transition-all text-sm flex items-center gap-2 shadow-md hover:shadow-lg">
-                Jobs <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Modal */}
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} theme={theme}>
-          <div className={`p-8 w-full text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-purple-500"></div>
-            <div className={`mx-auto w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${theme === 'dark' ? 'bg-teal-500/10' : 'bg-teal-50'}`}>
-              <Lock size={24} className="text-teal-500" />
-            </div>
-            <h3 className="text-2xl font-bold mb-3">Unlock Premium Features</h3>
-            <p className={`mb-8 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-              Access exclusive job listings and connect with top recruiters
-            </p>
-            <div className="flex flex-col gap-3">
-              <Link href="/Pricing" className="w-full py-3 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold rounded-xl transition-all">
-                View Pricing
-              </Link>
-              <button onClick={() => setModalOpen(false)} className={`text-sm py-2 ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-gray-800'}`}>
-                Maybe later
-              </button>
-            </div>
-          </div>
-        </Modal>
-
       </div>
-    </div>
+    </>
   );
 }

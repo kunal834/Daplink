@@ -4,6 +4,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { io } from "socket.io-client";
 import { Import } from 'lucide-react';
+import Navbar from '@/Components/Navbar';
 
 
 
@@ -50,6 +51,7 @@ const UserProfile = ({ params }) => {
 
   return (
     <>
+    <Navbar />
       <div className="min-h-screen w-full bg-[#F3E8FF] p-10">
         {/* Header Area */}
         <div className="flex justify-between items-center mb-8 mt-16">

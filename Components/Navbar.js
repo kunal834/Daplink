@@ -11,6 +11,8 @@ import { useAuth } from '@/context/Authenticate';
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+
+
 export default function Navbar() {
   // 1. Consume Global Theme State
   const { theme, toggleTheme } = useTheme();
