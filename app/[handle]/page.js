@@ -15,6 +15,7 @@ import { useAuth } from "@/context/Authenticate";
 import { set } from "mongoose";
 import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
+import axios from "axios";
 
 /* -------------------------------------------------------------------------- */
 /* STYLES & ANIMATIONS                                                        */
@@ -118,14 +119,14 @@ export default function ProfilePage({ params }) {
   useEffect(() => {
     const getUserId = async () => {
       try {
-        const res = await fetch(`/api/getuser?userid=${data?._id}`);
-        const json = await res.json();
+        const res = await axios.get(`/api/getuser?userid=${data?._id}`);
+        const json = await res.data;
         if (res.ok) {
           setTargetUserId(json.userId);
           setFollowerCount(json.follower.length);
         }
       } catch (error) {
-        console.error("Error fetching user ID:", error);
+        // console.error("Error fetching user ID:", error);
       }
     };
 
@@ -151,17 +152,16 @@ export default function ProfilePage({ params }) {
 
         if (!handle) return;
 
-        const res = await fetch(`/api/links/${handle}`);
-        if (!res.ok) throw new Error("User not found");
+        const res = await axios.get(`/api/links/${handle}`);
 
-        const json = await res.json();
-        console.log("handlepage:,", json)
+        // console.log("handlepage:", res.data);
 
-        if (json.result) {
-          setData(json.result);;
+        if (res.data?.result) {
+          setData(res.data.result);
         } else {
           setError(true);
         }
+
       } catch (err) {
         console.error("Error loading profile:", err);
         setError(true);
@@ -173,19 +173,21 @@ export default function ProfilePage({ params }) {
     getHandle();
   }, [params]);
 
+
   useEffect(() => {
     async function checkFollow() {
-      console.log("Checking follow status for user:", data);
-      const res = await fetch(`/api/isFollowing?followerId=${user?._id}&followingId=${targetUserId}`);
+      // console.log("Checking follow status for user:", data);
+      const res = await axios.get(`/api/isFollowing?followerId=${user?._id}&followingId=${targetUserId}`);
 
-      const json = await res.json();
+      const json = await res.data;
+      // console.log("Follow status response:", json);
       setIsFollowing(json.isFollowing);
     }
 
     if (user?._id) checkFollow();
   }, [user?._id, targetUserId]);
 
-  console.log(isFollowing, "isFollowing");
+  // console.log(isFollowing, "isFollowing");
   const handleFollow = async () => {
     if (!user?._id) {
       toast.error("Please login to follow");
@@ -195,13 +197,9 @@ export default function ProfilePage({ params }) {
     setFollowLoading(true);
 
     try {
-      const res = await fetch("/api/follow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          currentUserId: user._id,   // logged-in user
-          targetUserId: targetUserId     // profile owner
-        }),
+      const res = await axios.post("/api/follow", {
+        currentUserId: user._id,   // logged-in user
+        targetUserId: targetUserId     // profile owner
       });
 
       const json = await res.json();

@@ -59,6 +59,8 @@ export default function GenerateForm() {
     const [handle, setHandle] = useState(searchParams.get('handle') || "");
     const [profile, setProfile] = useState("");
     const [script, setScript] = useState("");
+    const [handleAvailable, setHandleAvailable] = useState(null);  // true, false, or null
+    const [handleChecking, setHandleChecking] = useState(false);
 
     // NEW STATES
     const [location, setLocation] = useState("");
@@ -70,8 +72,6 @@ export default function GenerateForm() {
     const [newSkillOffered, setNewSkillOffered] = useState('');
     const [newSkillSeek, setNewSkillSeek] = useState('');
     const [UserChecking, setUserChecking] = useState(false);
-
-
 
 
     useEffect(() => {
@@ -97,14 +97,39 @@ export default function GenerateForm() {
 
     }, [authLoading, user]);
 
+    //Checking Handle Availability
+    useEffect(() => {
+        if (!handle.trim()) {
+            setHandleAvailable(null);
+            return;
+        }
+
+        const delay = setTimeout(async () => {
+            try {
+                setHandleChecking(true);
+                const res = await axios.get(`/api/check-handle/${handle}`);
+                setHandleAvailable(res.data.available);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setHandleChecking(false);
+            }
+        }, 500); // 500ms debounce
+
+        return () => clearTimeout(delay);
+
+    }, [handle]);
+
 
 
     // --- Logic ---
     const submitLink = async () => {
         setLoading(true);
         try {
-            // Filter out empty links before sending
-            const filteredLinks = links.filter(l => l.link.trim() !== "" && l.linktext.trim() !== "");
+            // Filter out empty links
+            const filteredLinks = links.filter(
+                (l) => l.link.trim() !== "" && l.linktext.trim() !== ""
+            );
 
             const payload = {
                 links: filteredLinks,
@@ -119,33 +144,30 @@ export default function GenerateForm() {
                 skillsseek: skillsSeek
             };
 
-            const response = await fetch("/api/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+            const response = await axios.post("/api/add", payload);
 
-            if (!response.ok) throw new Error("Network error: " + response.status);
-            const result = await response.json();
+            const result = response.data;
 
             if (result.success) {
-                toast.success("Profile created successfully! ");
-                setTimeout(() => router.push(`/${handle}`), 1500);
+                toast.success("Profile created successfully!");
+                setTimeout(() => router.replace(`/${handle}`), 100);
             } else {
                 toast.error(result.message || "Something went wrong");
-                setLoading(false);
             }
+
         } catch (error) {
             console.error("Submit error:", error);
-            toast.error(error.message || "Unexpected error");
+            toast.error(error.response?.data?.message || "Unexpected error");
+        } finally {
             setLoading(false);
         }
     };
 
+
     if (!user || UserChecking) {
         return <GenerateFormSkeleton theme={theme} />;
     }
-    const isDisabled = !handle || loading;
+    const isDisabled = !handle || handleAvailable === false || loading;
 
     // --- Dynamic Theme Styles ---
     const colors = {
@@ -215,7 +237,9 @@ export default function GenerateForm() {
                             <div className="min-h-[400px]">
                                 {activeTab === "Profile" && (
                                     <Profiletab
-                                        handle={handle} sethandle={setHandle}
+                                        handleChecking={handleChecking} setHandleChecking={setHandleChecking}
+                                        handleAvailable={handleAvailable} setHandleAvailable={setHandleAvailable}
+                                        handle={handle} setHandle={setHandle}
                                         profile={profile} setprofile={setProfile}
                                         script={script} setscript={setScript}
                                         location={location} setLocation={setLocation}
