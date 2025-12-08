@@ -6,6 +6,8 @@ import {
   Bell, Share2, LogOut, BarChart3, RefreshCw, Zap 
 } from 'lucide-react';
 
+import Link from 'next/link';
+
 const TopBar = ({ 
   isDarkMode, 
   setIsDarkMode, 
@@ -31,11 +33,13 @@ const TopBar = ({
   return (
     <header className={`w-full h-16 border-b flex items-center justify-between px-6 shrink-0 z-30 sticky top-0 backdrop-blur-xl ${isDarkMode ? 'bg-zinc-900/80 border-zinc-800' : 'bg-white/80 border-zinc-200/60'}`}>
         <div className="flex items-center gap-3">
-           <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-lg hover:rotate-3 transition-transform cursor-pointer ${isDarkMode ? 'bg-indigo-600 shadow-indigo-900/20' : 'bg-black shadow-zinc-900/10'}`}>
-              <LinkIcon className="text-white w-5 h-5" />
+           <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-lg hover:rotate-3 transition-transform cursor-pointer ${isDarkMode ? 'bg-white shadow-indigo-900/20' : 'bg-white shadow-zinc-900/10'}`}>
+              {/* <LinkIcon className="text-white w-5 h-5" /> */}
+
+              <Link href="/">  <img src="/innovate.png" alt="" /> </Link>
             </div>
             <div>
-              <span className="font-bold text-lg hidden sm:block tracking-tight leading-none">DapLink</span>
+              <Link href="/" className="font-bold text-lg hidden sm:block tracking-tight leading-none">DapLink</Link>
               <span className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Creator OS</span>
             </div>
         </div>
