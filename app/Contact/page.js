@@ -4,6 +4,8 @@ import { Mail, MessageCircle, MapPin, Twitter, Linkedin, Instagram, Facebook } f
 import Footer from '@/Components/Footer';
 import { useTheme } from '@/context/ThemeContext';
 import Navbar from '@/Components/Navbar';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 // --- DATA ---
 const contactMethods = [
@@ -107,7 +109,7 @@ const ContactForm = ({ theme }) => {
     name: '',
     email: '',
     subject: '',
-    message: '',
+   moredetails: '',
   });
 
   const handleChange = (e) => {
@@ -115,11 +117,22 @@ const ContactForm = ({ theme }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! We will get back to you soon.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+
+    try {
+      // FIX: Use formData directly here
+      const response = await axios.post(`/api/ContactusApi`, formData);
+
+      const data = response.data;
+      if (data) {
+        setFormData({ name: '', email: '', subject: '', moredetails: '' });
+        toast.success("Your query submitted successfully"); // Fixed spelling typo too
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   // Helper classes for inputs to reduce repetition
@@ -175,13 +188,13 @@ const ContactForm = ({ theme }) => {
           />
         </div>
         <div>
-          <label htmlFor="message" className="sr-only">Message</label>
+          <label htmlFor="moredetails" className="sr-only">More details</label>
           <textarea
-            id="message"
-            name="message"
+            id="moredetails"
+            name="moredetails"
             rows="5"
             placeholder="Tell us more..."
-            value={formData.message}
+            value={formData.moredetails}
             onChange={handleChange}
             className={inputClasses}
             required
