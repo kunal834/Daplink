@@ -6,7 +6,7 @@ import { generateShortCode } from "@/utils/GenerateShortCode";
 export async function POST(request) {
     try {
         await connectDB();
-        const { url, customCode, userId } = await request.json();
+        const { url, customCode, userId,title } = await request.json();
 
         if (!url) {
             return new Response(JSON.stringify({ error: "URL is required" }), { status: 400 });
@@ -31,6 +31,7 @@ export async function POST(request) {
         if (exists) return new Response(JSON.stringify({ message: 'could not generate unique code' }), { status: 500 });
         await ShortURL.create({
             originalUrl: url,
+            title: title || 'Untitled',
             shortCode,
             createdBy: userId,
         });

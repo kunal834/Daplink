@@ -8,7 +8,7 @@ import {
 
 const Sidebar = ({ activeTab, setActiveTab, isDarkMode }) => {
   const menuItems = [
-    { id: 'links', icon: Layout, label: 'Links' },
+    { id: 'URL Shortener', icon: Layout, label: 'URL Shortener' },
     { id: 'appearance', icon: User, label: 'Bio Page' },
     { id: 'analytics', icon: BarChart3, label: 'Analytics' },
     { id: 'community', icon: Users, label: 'Community', badge: '1,204' },
