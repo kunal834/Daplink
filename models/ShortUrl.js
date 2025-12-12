@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const ShortLinkSchema = new mongoose.Schema(
   {
+    title: { type: String, default: 'Untitled' },
     shortCode: { type: String, required: true, unique: true },
     originalUrl: { type: String, required: true },
     clicks: { type: Number, default: 0 },

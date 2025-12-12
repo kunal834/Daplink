@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 
 // Import all tabs from our consolidated tabs file
 import { 
-  LinksTab, 
   BioPageTab, 
   AnalyticsTab, 
   CommunityTab, 
@@ -13,7 +12,8 @@ import {
   MindsetTab, 
   QrCodeTab, 
   SettingsTab ,
-  ReviewTab
+  ReviewTab,
+  UrlShortenerTab
 } from '@/Components/DashboardComponents/DashboardTabs';
 import TopBar from '@/Components/DashboardComponents/DashboardTopbar';
 import Sidebar from '@/Components/DashboardComponents/DashboardSidebar';
@@ -83,8 +83,8 @@ export default function DashboardPage() {
         {/* Center Content - Scrollable */}
         <div className={`flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth ${isDarkMode ? 'bg-zinc-950' : 'bg-[#F8F9FA]'}`}>
           <div className="max-w-3xl mx-auto pb-12">
-            {activeTab === 'links' && (
-                <LinksTab isDarkMode={isDarkMode} links={links} setLinks={setLinks} />
+            {activeTab === 'URL Shortener' && (
+                <UrlShortenerTab isDarkMode={isDarkMode} links={links} setLinks={setLinks} />
             )}
             
             {activeTab === 'appearance' && (
