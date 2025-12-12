@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import { 
   Plus, X, Link as LinkIcon, GripVertical, Globe, Trash2, 
   User, Image as ImageIcon, Smartphone, Check, 
@@ -8,6 +10,7 @@ import {
   Sticker, Download, Settings, RefreshCw 
 } from 'lucide-react';
 
+import Link from 'next/link';
 export const LinksTab = ({ isDarkMode, links, setLinks }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [newLinkTitle, setNewLinkTitle] = useState('');
@@ -219,7 +222,7 @@ export const CommunityTab = ({ isDarkMode }) => {
           <div className="flex items-center gap-2 text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full"><span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>1,204 Creators Online</div>
         </div>
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-500/20">
-            <div className="relative z-10 max-w-md"><h3 className="text-2xl font-bold mb-2">Join the Creator Circle</h3><p className="text-indigo-100 text-sm mb-6 leading-relaxed">Exclusive access to brand deals, collaboration opportunities, and expert workshops.</p><button className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg">Explore Groups</button></div>
+            <div className="relative z-10 max-w-md"><h3 className="text-2xl font-bold mb-2">Join the Creator Circle</h3><p className="text-indigo-100 text-sm mb-6 leading-relaxed">Exclusive access to brand deals, collaboration opportunities, and expert workshops.</p><Link href="/Explorepeoples" className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg">Explore Peoples</Link></div>
             <div className="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-20"><Users className="w-64 h-64" /></div>
         </div>
         <div>
@@ -287,3 +290,163 @@ export const SettingsTab = ({ isDarkMode, profile }) => (
       </div>
   </div>
 );
+
+export const ReviewTab = ({ isDarkMode }) => {
+  // State for form fields
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [formData, setFormData] = useState({
+    clientname: '',
+    profession: '',
+      message: ''
+  });
+
+  const handleSubmit = async(e) => {
+   
+    e.preventDefault();
+
+    const {data} = await axios.post(`/api/Review`,{
+     ...formData,  //need of Spread Operator Open the formData box, take the items OUT, and put them directly here.
+     rating : rating
+    })
+    
+    console.log(data)
+    if(data.success){
+      toast.success("Review Submitted successfully")
+      setFormData()
+         setRating(0);
+        
+    setFormData({ clientname: '', profession: '', message: '' });
+
+
+    }else{
+      toast.error("unable to submit review")
+    }
+    
+    // Reset form
+ 
+  };
+
+  return (
+    <div className={`p-6 rounded-2xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+      <h2 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
+        Add a Testimonial
+      </h2>
+      <p className={`mb-8 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+        Manually add a review to showcase on your DapLink public profile.
+      </p>
+
+      <form onSubmit={handleSubmit} className="max-w-xl">
+        
+        {/* 1. Star Rating Section */}
+        <div className="mb-6">
+          <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
+            Rating
+          </label>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                className="focus:outline-none transition-transform active:scale-90"
+                onMouseEnter={() => setHoverRating(star)}
+                onMouseLeave={() => setHoverRating(0)}
+                onClick={() => setRating(star)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill={(hoverRating || rating) >= star ? "#F59E0B" : "none"}
+                  stroke={isDarkMode ? "#52525B" : "#D4D4D8"} 
+                  strokeWidth="1.5"
+                  className="w-8 h-8 transition-colors duration-200"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.545.044.77.77.356 1.145l-4.192 3.805a.562.562 0 00-.172.527l1.206 5.371c.14.623-.538 1.057-1.009.79l-4.813-2.766a.562.562 0 00-.568 0l-4.813 2.766c-.47.267-1.15-.167-1.01-.79l1.206-5.371a.562.562 0 00-.172-.527l-4.192-3.805c-.414-.375-.19-1.101.356-1.145l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+                  />
+                </svg>
+              </button>
+            ))}
+          </div>
+          {rating > 0 && (
+             <p className="text-amber-500 text-sm mt-1 font-medium">
+               {rating === 5 ? "Excellent!" : rating === 4 ? "Great!" : rating === 3 ? "Average" : "Poor"}
+             </p>
+          )}
+        </div>
+
+        {/* 2. Personal Details (Name & Profession) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {/* Name Input */}
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
+              Client Name
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Sarah Jenkins"
+              value={formData.clientname}
+              onChange={(e) => setFormData({...formData, clientname: e.target.value})}
+              className={`w-full px-4 py-3 rounded-xl outline-none transition-all border ${
+                isDarkMode 
+                  ? 'bg-zinc-800/50 border-zinc-700 text-white focus:border-indigo-500 placeholder:text-zinc-600' 
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-indigo-500 placeholder:text-zinc-400'
+              }`}
+            />
+          </div>
+
+          {/* Profession Input */}
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
+              Profession / Title
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Senior Designer"
+              value={formData.profession}
+              onChange={(e) => setFormData({...formData, profession: e.target.value})}
+              className={`w-full px-4 py-3 rounded-xl outline-none transition-all border ${
+                isDarkMode 
+                  ? 'bg-zinc-800/50 border-zinc-700 text-white focus:border-indigo-500 placeholder:text-zinc-600' 
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-indigo-500 placeholder:text-zinc-400'
+              }`}
+            />
+          </div>
+        </div>
+
+        {/* 3. Review Text Area */}
+        <div className="mb-8">
+          <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
+            Review Message
+          </label>
+          <textarea
+            required
+            rows="4"
+            placeholder="Write the feedback about the service here..."
+            value={formData.message}
+            onChange={(e) => setFormData({...formData,message: e.target.value})}
+            className={`w-full px-4 py-3 rounded-xl outline-none transition-all resize-none border ${
+              isDarkMode 
+                ? 'bg-zinc-800/50 border-zinc-700 text-white focus:border-indigo-500 placeholder:text-zinc-600' 
+                : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-indigo-500 placeholder:text-zinc-400'
+            }`}
+          ></textarea>
+        </div>
+
+        {/* 4. Submit Button */}
+        <button
+          type="submit"
+          className="w-full md:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2"
+        >
+          <span>Submit Review</span>
+        </button>
+
+      </form>
+    </div>
+  );
+};
+

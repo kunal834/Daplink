@@ -12,7 +12,8 @@ import {
   JobFinderTab, 
   MindsetTab, 
   QrCodeTab, 
-  SettingsTab 
+  SettingsTab ,
+  ReviewTab
 } from '@/Components/DashboardComponents/DashboardTabs';
 import TopBar from '@/Components/DashboardComponents/DashboardTopbar';
 import Sidebar from '@/Components/DashboardComponents/DashboardSidebar';
@@ -100,6 +101,9 @@ export default function DashboardPage() {
                 <QrCodeTab isDarkMode={isDarkMode} profile={profile} />
             )}
             
+           {activeTab === 'Review' && (
+        <ReviewTab isDarkMode={isDarkMode} />
+)}
             {activeTab === 'settings' && (
                 <SettingsTab isDarkMode={isDarkMode} profile={profile} />
             )}

@@ -3,7 +3,7 @@
 import React from 'react';
 import { 
   Layout, User, BarChart3, Users, RefreshCw, 
-  Briefcase, Brain, QrCode, Settings 
+  Briefcase, Brain, QrCode, Settings , StarIcon
 } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab, isDarkMode }) => {
@@ -16,7 +16,9 @@ const Sidebar = ({ activeTab, setActiveTab, isDarkMode }) => {
     { id: 'jobs', icon: Briefcase, label: 'Job Finder', badge: 'AI' },
     { id: 'mindset', icon: Brain, label: 'Mindset Wall' },
     { id: 'qrcode', icon: QrCode, label: 'QR Code' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
+    { id: 'Review',  icon: StarIcon,label: 'Review us'},
+    { id: 'settings', icon: Settings, label: 'Settings' }
+
   ];
 
   return (
