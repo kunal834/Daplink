@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Reveal from './ui/Reveal';
 import TestimonialCard from './ui/TestimonialCard';
+import axios from 'axios';
 
 export default function TestimonialsSection({ theme }) {
   const [testimonials, setTestimonials] = useState([]);
@@ -15,13 +16,12 @@ export default function TestimonialsSection({ theme }) {
   const fetchTestimonials = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/GetReview'); // Matches your backend
-      const data = await response.json();
+      const response = await axios.get('/api/GetReview'); 
+      console.log(response.data.data)
+  
       
-      console.log('API Response:', data); // Debug log
-      
-      if (data.success) {
-        setTestimonials(data.data); // ← Your backend uses 'data', not 'reviews'
+      if (response.data.success) {
+        setTestimonials(response.data.data); 
       }
     } catch (error) {
       console.error('Fetch error:', error);
