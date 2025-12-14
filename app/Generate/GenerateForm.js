@@ -241,7 +241,7 @@ export default function GenerateForm() {
                                         handleAvailable={handleAvailable} setHandleAvailable={setHandleAvailable}
                                         handle={handle} setHandle={setHandle}
                                         profile={profile} setprofile={setProfile}
-                                        script={script} setscript={setScript}
+                                        script={script} setScript={setScript}
                                         location={location} setLocation={setLocation}
                                         profession={profession} setProfession={setProfession}
                                         theme={theme}

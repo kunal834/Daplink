@@ -84,8 +84,8 @@ export default function Login() {
       const data = response.data;
 
       if (data.user) {
-        toast.success("Signup Successful!");
-        router.replace("/Generate");
+        toast.success("Signup Successful! please login to continue.");
+        router.replace("/login");
       }
     } catch (error) {
       console.error("Signup Error:", error.response?.data?.message || error.message);
