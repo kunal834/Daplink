@@ -20,7 +20,7 @@ export function AuthContextProvider({ children }) {
     // Logout function
     const logout = async () => {
         try {
-            await axios.get("/api/auth/logout"); // if you create logout API
+            await axios.get("/api/auth/logout");
         } catch (err) {
             console.error("Logout error:", err);
         }
@@ -37,7 +37,7 @@ export function AuthContextProvider({ children }) {
 
                 if (res.data?.user) {
                     setIsAuthenticated(true);
-                    setUser(res.data.user); // Store only user object
+                    setUser(res.data.user);
                 } else {
                     setIsAuthenticated(false);
                     setUser(null);

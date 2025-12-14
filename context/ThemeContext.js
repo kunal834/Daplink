@@ -1,28 +1,33 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  // Initialize theme from localStorage if available, otherwise default to 'dark'
+  // default remains the same
   const [theme, setTheme] = useState('dark');
 
+  // READ once on mount (same as before)
   useEffect(() => {
-    // Check local storage or system preference on mount
-    const savedTheme = localStorage.getItem('daplink-theme');
-    if (savedTheme) {
+    const savedTheme = Cookies.get('daplink-theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
       setTheme(savedTheme);
     }
   }, []);
 
   useEffect(() => {
-    // Apply theme class/attribute to the HTML tag
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('daplink-theme', theme);
+
+    Cookies.set('daplink-theme', theme, {
+      expires: 365,
+      sameSite: 'lax',
+      path: '/',
+    });
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   return (

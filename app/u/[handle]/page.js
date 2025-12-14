@@ -9,7 +9,7 @@ import {
   Edit
 } from 'lucide-react';
 
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../../context/ThemeContext';
 import Modal from "@/Components/Modal";
 import { useAuth } from "@/context/Authenticate";
 import { set } from "mongoose";
@@ -251,7 +251,7 @@ export default function ProfilePage({ params }) {
       <div className={`min-h-screen flex flex-col items-center justify-center ${colors.bg} ${colors.text}`}>
         <PageStyles theme={theme} />
         <div className="text-center">
-          <div className="text-6xl mb-4">😕</div>
+          <div className="text-6xl mb-4">User</div>
           <h2 className="text-2xl font-bold mb-2">Not found</h2>
           {/* <p className="text-gray-500 mb-6">This profile doesn't exist or has been removed</p> */}
           <Link href="/" className="px-6 py-3 bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-xl font-medium hover:shadow-lg transition-all inline-flex items-center gap-2">
