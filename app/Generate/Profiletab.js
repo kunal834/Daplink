@@ -192,7 +192,7 @@ export default function Profiletab({ handle, setHandle, profile, setprofile, scr
         <textarea
           rows={4}
           value={script}
-          onChange={e => setscript(e.target.value)}
+          onChange={e => setScript(e.target.value)}
           className={`w-full px-4 py-3 rounded-xl text-sm outline-none border transition-all resize-none ${colors.input}`}
           placeholder="Write a short bio about yourself..."
           maxLength={150}

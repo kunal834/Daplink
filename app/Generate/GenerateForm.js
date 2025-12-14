@@ -150,7 +150,7 @@ export default function GenerateForm() {
 
             if (result.success) {
                 toast.success("Profile created successfully!");
-                setTimeout(() => router.replace(`/${handle}`), 100);
+                setTimeout(() => router.replace(`/u/${handle}`), 100);
             } else {
                 toast.error(result.message || "Something went wrong");
             }

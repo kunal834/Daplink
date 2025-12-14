@@ -75,9 +75,6 @@ export default function DashboardPage() {
   }, [daplinkID]);
 
 
-  // console.log(loading)
-
-
   const [links, setLinks] = useState([
     { id: 1, title: 'My Portfolio', url: 'https://alex.design', active: true, clicks: 1240 },
     { id: 2, title: 'Twitter / X', url: 'https://twitter.com/alex', active: true, clicks: 850 },
