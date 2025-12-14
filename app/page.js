@@ -21,9 +21,6 @@ export default function DapLinkApp() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 3. REMOVED: The manual useEffect for 'data-theme'. 
-  // Your ThemeProvider handles document.documentElement.setAttribute now.
-
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background Blob */}
