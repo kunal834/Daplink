@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
-// Import all tabs from our consolidated tabs file
 import {
   BioPageTab,
   AnalyticsTab,
@@ -35,7 +33,7 @@ export default function DashboardPage() {
 
 
   const [profile, setProfile] = useState({
-    username: user?.handle || 'alexross',
+    username: user?.name || 'alexross',
     title: user?.name || 'Alex Ross',
     bio: 'Designer & Developer. I create beautiful web experiences.',
     theme: 'modern',
@@ -43,6 +41,7 @@ export default function DashboardPage() {
   });
 
   const daplinkID = user?.daplinkID;
+  // console.log("Daplink ID:", user);
 
   useEffect(() => {
     if (!daplinkID) return;
@@ -75,12 +74,23 @@ export default function DashboardPage() {
   }, [daplinkID]);
 
 
-  const [links, setLinks] = useState([
-    { id: 1, title: 'My Portfolio', url: 'https://alex.design', active: true, clicks: 1240 },
-    { id: 2, title: 'Twitter / X', url: 'https://twitter.com/alex', active: true, clicks: 850 },
-    { id: 3, title: 'Newsletter', url: 'https://alex.substack.com', active: true, clicks: 200 },
-  ]);
+  const [links, setLinks] = useState([]);
 
+  useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        const res = await axios.get(`/api/getLinks?userID=${user?._id}`);
+        setLinks(res.data);
+        console.log("Fetched Links:", res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
+    if (daplinkID) fetchLinks();
+  }, [daplinkID]);
+  
+  console.log(links);
   // -- Handlers --
   const updateProfile = (field, value) => {
     setProfile(prev => ({ ...prev, [field]: value }));
@@ -148,7 +158,7 @@ export default function DashboardPage() {
         <div className={`flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth ${isDarkMode ? 'bg-zinc-950' : 'bg-[#F8F9FA]'}`}>
           <div className="max-w-3xl mx-auto pb-12">
             {activeTab === 'URL Shortener' && (
-              <UrlShortenerTab isDarkMode={isDarkMode} links={links} setLinks={setLinks} />
+              <UrlShortenerTab isDarkMode={isDarkMode} links={links} setLinks={setLinks} userID={user?._id} />
             )}
 
             {activeTab === 'appearance' && (

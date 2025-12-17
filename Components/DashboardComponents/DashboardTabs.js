@@ -13,7 +13,7 @@ import {
 
 import Link from 'next/link';
 
-export const UrlShortenerTab = ({ isDarkMode }) => {
+export const UrlShortenerTab = ({ isDarkMode, userID, links, setLinks }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
@@ -23,20 +23,14 @@ export const UrlShortenerTab = ({ isDarkMode }) => {
   const [alias, setAlias] = useState('');
   const [title, setTitle] = useState('');
 
-  // Mock Data
-  const [shortLinks, setShortLinks] = useState([
-    { id: 1, title: 'My Portfolio', original: 'https://dribbble.com/shots/2349-UI-Design', short: 'dap.link/portfolio', active: true, clicks: 42, createdAt: new Date() },
-    { id: 2, title: 'Project Specs', original: 'https://docs.google.com/spreadsheets/d/123...', short: 'dap.link/specs', active: false, clicks: 12, createdAt: new Date() },
-  ]);
-
   const handleShorten = async (e) => {
     e.preventDefault();
     if (!longUrl) return;
     setIsLoading(true);
-    const response = await axios.post('/api/shorten', {
+    const response = await axios.post('/api/addLink', {
       url: longUrl,
       customCode: alias,
-      userId: '693c5f49afe964b64648bb30'
+      userId: userID,
     })
     console.log("Response:",response);
     if (response) {
@@ -50,7 +44,7 @@ export const UrlShortenerTab = ({ isDarkMode }) => {
         createdAt: new Date()
       };
 
-      setShortLinks([newLink, ...shortLinks]);
+      setLinks([newLink, ...links]);
       setIsLoading(false);
 
       // Reset and Close
@@ -63,10 +57,10 @@ export const UrlShortenerTab = ({ isDarkMode }) => {
     }
   };
 
-  const deleteLink = (id) => setShortLinks(shortLinks.filter(l => l.id !== id));
+  const deleteLink = (id) => setLinks(links.filter(l => l.id !== id));
 
   const toggleLinkActive = (id) => {
-    setShortLinks(shortLinks.map(l => l.id === id ? { ...l, active: !l.active } : l));
+    setLinks(links.map(l => l.id === id ? { ...l, active: !l.active } : l));
   };
 
   const copyToClipboard = (text, id) => {
@@ -169,7 +163,7 @@ export const UrlShortenerTab = ({ isDarkMode }) => {
 
       {/* 3. List Section (Identical to LinksTab) */}
       <div className="space-y-3">
-        {shortLinks.length === 0 && !isAdding && (
+        {links.length === 0 && !isAdding && (
           <div className={`text-center py-20 rounded-3xl border border-dashed transition-colors group cursor-pointer ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800 hover:border-zinc-700' : 'bg-white border-zinc-200 hover:border-zinc-300'}`} onClick={() => setIsAdding(true)}>
             <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5 transition-all duration-300 group-hover:scale-110 ${isDarkMode ? 'bg-zinc-800 text-zinc-600 group-hover:text-indigo-400' : 'bg-zinc-50 text-zinc-300 group-hover:text-indigo-400'}`}>
               <Scissors className="w-10 h-10" />
@@ -181,28 +175,28 @@ export const UrlShortenerTab = ({ isDarkMode }) => {
           </div>
         )}
 
-        {shortLinks.map((link) => (
-          <div key={link.id} className={`rounded-2xl p-4 pl-3 shadow-sm border transition-all flex items-center gap-4 group ${isDarkMode ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' : 'bg-white border-zinc-200/60 hover:border-zinc-300 hover:shadow-md'}`}>
+        {links.map((link) => (
+          <div key={link._id} className={`rounded-2xl p-4 pl-3 shadow-sm border transition-all flex items-center gap-4 group ${isDarkMode ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' : 'bg-white border-zinc-200/60 hover:border-zinc-300 hover:shadow-md'}`}>
 
             {/* Icon / Copy Button (Replaces Grip) */}
             <button
-              onClick={() => copyToClipboard(link.short, link.id)}
-              className={`p-2 rounded-lg transition-colors shrink-0 ${copiedId === link.id ? 'bg-emerald-500 text-white' : (isDarkMode ? 'text-zinc-600 hover:bg-zinc-800 hover:text-white' : 'text-zinc-300 hover:text-zinc-600 hover:bg-zinc-50')}`}
+              onClick={() => copyToClipboard(`${process.env.NEXT_PUBLIC_HOST}/${link.shortCode}`, link._id)}
+              className={`p-2 rounded-lg transition-colors shrink-0 ${copiedId === link._id ? 'bg-emerald-500 text-white' : (isDarkMode ? 'text-zinc-600 hover:bg-zinc-800 hover:text-white' : 'text-zinc-300 hover:text-zinc-600 hover:bg-zinc-50')}`}
             >
               {copiedId === link.id ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
             </button>
 
             {/* Text Content */}
             <div className="flex-1 min-w-0">
-              <h4 className={`font-bold truncate text-sm flex items-center gap-2 ${!link.active && 'opacity-50'}`}>
+              <h4 className={`font-bold truncate text-sm flex items-center gap-2 ${!link.isActive && 'opacity-50'}`}>
                 {link.title}
                 <span className={`text-[10px] px-1.5 py-0.5 rounded border ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500'}`}>
-                  /{link.short.split('/')[1]}
+                  {link.shortCode}
                 </span>
               </h4>
               <div className={`flex items-center gap-1.5 text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>
                 <Globe className="w-3 h-3" />
-                <span className="truncate max-w-[200px]">{link.original}</span>
+                <span className="truncate max-w-[200px]">{link.originalUrl}</span>
               </div>
             </div>
 
@@ -215,15 +209,15 @@ export const UrlShortenerTab = ({ isDarkMode }) => {
 
               {/* Toggle Switch */}
               <button
-                onClick={() => toggleLinkActive(link.id)}
-                className={`w-11 h-6 rounded-full relative transition-colors duration-300 ${link.active ? (isDarkMode ? 'bg-indigo-600' : 'bg-zinc-900') : (isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200')}`}
+                onClick={() => toggleLinkActive(link._id)}
+                className={`w-11 h-6 rounded-full relative transition-colors duration-300 ${link.isActive ? (isDarkMode ? 'bg-indigo-600' : 'bg-zinc-900') : (isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200')}`}
               >
-                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${link.active ? 'left-6' : 'left-1'}`} />
+                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${link.isActive ? 'left-6' : 'left-1'}`} />
               </button>
 
               {/* Delete Button */}
               <button
-                onClick={() => deleteLink(link.id)}
+                onClick={() => deleteLink(link._id)}
                 className={`p-2 rounded-lg transition-colors ${isDarkMode ? 'text-zinc-600 hover:text-red-400 hover:bg-red-900/20' : 'text-zinc-300 hover:text-red-500 hover:bg-red-50'}`}
               >
                 <Trash2 className="w-4 h-4" />
