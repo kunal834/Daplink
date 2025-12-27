@@ -53,6 +53,7 @@ export async function POST(req) {
                     name: user.name,
                     email: user.email,
                     isProfileComplete: user.isProfileComplete,
+                    daplinkID: user.daplinkID,
                 },
             },
             { status: 200 }

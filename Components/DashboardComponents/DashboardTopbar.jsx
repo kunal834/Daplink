@@ -1,24 +1,36 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Link as LinkIcon, Search as SearchIcon, Sun, Moon,
   Bell, Share2, LogOut, BarChart3, RefreshCw, Zap
 } from 'lucide-react';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useAuth } from '@/context/Authenticate';
 
-const TopBar = ({
-  isDarkMode,
-  setIsDarkMode,
-  notificationsOpen,
-  setNotificationsOpen,
-  searchQuery,
-  setSearchQuery,
-  profile,
-  copyLink,
-  handleLogout
-}) => {
+const TopBar = ({ isDarkMode, setIsDarkMode }) => {
+  const router = useRouter();
+  const { user, logout } = useAuth();
+
+  const { data: daplink, isPending } = useQuery({
+    queryKey: ['daplink', user?.daplinkID],
+    queryFn: async () => {
+      const res = await axios.get(
+        `/api/getDaplink?daplinkID=${user?.daplinkID}`
+      );
+      return res.data;
+    },
+    enabled: !!user?.daplinkID,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const notifications = [
     { id: 1, title: "100 Views Milestone", time: "2m ago", icon: <BarChart3 className="w-4 h-4 text-emerald-500" /> },
@@ -26,17 +38,32 @@ const TopBar = ({
     { id: 3, title: "Weekly Report Ready", time: "1d ago", icon: <Zap className="w-4 h-4 text-amber-500" /> },
   ];
 
-  // Safely access profile properties with fallbacks
-  const username = profile?.username || 'user';
-  const initial = username[0] ? username[0].toUpperCase() : 'U';
+  const username = daplink?.handle || 'user';
+  const initial = username[0]?.toUpperCase() || 'U';
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(`daplink.app/u/${username}`);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/login');
+  };
+
+  if (isPending) {
+    return (
+      <header className="h-16 flex items-center px-6 border-b">
+        <div className="w-36 h-6 bg-zinc-200 rounded animate-pulse" />
+      </header>
+    );
+  }
+
 
   return (
     <header className={`w-full h-16 border-b flex items-center justify-between px-6 shrink-0 z-30 sticky top-0 backdrop-blur-xl ${isDarkMode ? 'bg-zinc-900/80 border-zinc-800' : 'bg-white/80 border-zinc-200/60'}`}>
       <div className="flex items-center gap-3">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-lg hover:rotate-3 transition-transform cursor-pointer ${isDarkMode ? 'bg-white shadow-indigo-900/20' : 'bg-white shadow-zinc-900/10'}`}>
-          {/* <LinkIcon className="text-white w-5 h-5" /> */}
-
-          <Link href="/">  <img src="/innovate.png" alt="" /> </Link>
+          <Link href="/"> <Image src="/innovate.png" alt="" width={48} height={48} /> </Link>
         </div>
         <div>
           <Link href="/" className="font-bold text-lg hidden sm:block tracking-tight leading-none">DapLink</Link>
@@ -53,8 +80,8 @@ const TopBar = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className={`w-full pl-10 pr-4 py-2 rounded-xl text-sm font-medium outline-none border transition-all ${isDarkMode
-              ? 'bg-zinc-800 border-zinc-700 text-white focus:border-indigo-500 focus:bg-zinc-800'
-              : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-black focus:bg-white'
+            ? 'bg-zinc-800 border-zinc-700 text-white focus:border-indigo-500 focus:bg-zinc-800'
+            : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-black focus:bg-white'
             }`}
         />
       </div>
@@ -66,12 +93,20 @@ const TopBar = ({
 
         <div className="relative">
           <button onClick={() => setNotificationsOpen(!notificationsOpen)} className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors relative ${isDarkMode ? 'hover:bg-zinc-800 text-zinc-400' : 'hover:bg-zinc-100 text-zinc-500'}`}>
-            <Bell className="w-5 h-5" /><span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            <Bell className="w-5 h-5" />
           </button>
+
           {notificationsOpen && (
-            <div className={`absolute top-12 right-0 w-80 rounded-2xl shadow-2xl border p-2 animate-in fade-in slide-in-from-top-2 z-50 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-100'}`}>
-              <div className={`px-4 py-2 flex justify-between items-center border-b mb-2 ${isDarkMode ? 'border-zinc-800' : 'border-zinc-50'}`}><h3 className="font-bold text-sm">Notifications</h3><span className="text-xs text-indigo-500 font-medium cursor-pointer">Mark read</span></div>
-              <div className="space-y-1">{notifications.map(n => (<div key={n.id} className={`flex items-start gap-3 p-3 rounded-xl transition-colors cursor-pointer ${isDarkMode ? 'hover:bg-zinc-800' : 'hover:bg-zinc-50'}`}><div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border ${isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-50 border-zinc-100'}`}>{n.icon}</div><div><p className="text-sm font-semibold">{n.title}</p><p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>{n.time}</p></div></div>))}</div>
+            <div className={`absolute top-12 right-0 w-80 rounded-2xl shadow-2xl border p-2 z-50 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-100'}`}>
+              {notifications.map(n => (
+                <div key={n.id} className="flex items-start gap-3 p-3 rounded-xl">
+                  {n.icon}
+                  <div>
+                    <p className="text-sm font-semibold">{n.title}</p>
+                    <p className="text-xs text-zinc-400">{n.time}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -84,19 +119,21 @@ const TopBar = ({
         <div className={`h-6 w-px mx-1 hidden sm:block ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
         <button onClick={handleLogout} className={`transition-colors ${isDarkMode ? 'text-zinc-500 hover:text-white' : 'text-zinc-500 hover:text-black'}`}><LogOut className="w-5 h-5" /></button>
 
-
-        {profile?.avatarUrl ? (
-          <img
-            src={profile.avatarUrl}
-            alt="User avatar"
-            className="w-9 h-9 rounded-full object-cover shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all"
-          />
+        {daplink?.profile ? (
+          <div className="relative w-9 h-9 rounded-full overflow-hidden shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
+            <Image
+              src={daplink?.profile}
+              alt="User avatar"
+              fill
+              sizes="36px"
+              className="object-cover"
+            />
+          </div>
         ) : (
           <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
-            {initial}
-          </div>
-        )}
-
+              {initial}
+            </div>
+          )}
       </div>
     </header>
   );
