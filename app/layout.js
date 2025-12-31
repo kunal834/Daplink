@@ -19,8 +19,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Daplink",
-  description: "connect by Daplink",
+  metadataBase: new URL('https://daplink.online'), // THIS IS THE MAGIC LINE
+  title: 'DapLink - One Link To Rule Them All',
+  description: 'Your digital identity hub...',
+  alternates: {
+    canonical: '/',
+  },
   icons: {
     icon: "./innovate.png",
   },
