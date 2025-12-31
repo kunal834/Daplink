@@ -143,13 +143,13 @@ export default function Login() {
             {/* Social Login */}
             <div className="space-y-3">
               <button className={styles.socialBtn}>
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                {/* <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.087 0 12 0 7.31 0 3.256 2.74 1.307 6.704l3.959 3.06z" />
                   <path fill="#34A853" d="M16.04 18.013c-1.09.703-2.474 1.078-4.04 1.078a7.077 7.077 0 0 1-6.723-4.823l-3.96 3.066C4.257 21.26 7.847 24 12 24c3.314 0 6.213-1.207 8.302-3.239l-4.262-2.748z" />
                   <path fill="#4A90E2" d="M19.834 20.762c2.069-2.032 3.272-4.779 3.272-8.065 0-1.023-.113-1.994-.312-2.915H12v5.408h6.302c-.452 2.277-2.289 3.944-4.262 2.748L19.834 20.762z" />
                   <path fill="#FBBC05" d="M5.277 14.268A7.12 7.12 0 0 1 4.909 12c0-.782.125-1.533.357-2.235L1.307 6.704C.463 8.28 0 10.086 0 12c0 1.916.462 3.72 1.307 5.296l3.97-3.028z" />
-                </svg>
-                Continue with Google
+                </svg> */}
+                {/* Continue with Google */}
               </button>
             </div>
 
@@ -158,7 +158,7 @@ export default function Login() {
                 <span className={`w-full border-t ${theme === 'dark' ? 'border-white/10' : 'border-gray-200'}`}></span>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className={`px-2 rounded ${theme === 'dark' ? 'bg-[#141414] text-gray-400' : 'bg-white text-gray-400'}`}>Or continue with email</span>
+                <span className={`px-2 rounded ${theme === 'dark' ? 'bg-[#141414] text-gray-400' : 'bg-white text-gray-400'}`}>{/*Or continue with email*/}</span>
               </div>
             </div>
 
