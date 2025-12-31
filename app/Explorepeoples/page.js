@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import { io } from "socket.io-client";
@@ -9,44 +9,183 @@ import {
   Briefcase, 
   Sparkles, 
   Search, 
-  Loader2 
+  Loader2,
+  X,
+  Minimize2,
+  MessageCircle
 } from 'lucide-react';
 import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
-
-// 1. Import the Theme Context
 import { useTheme } from '@/context/ThemeContext';
 
+// --- CHAT WIDGET COMPONENT ---
+const ChatWidget = ({ currentUserHandle, recipient, onClose, theme }) => {
+  const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [isMinimized, setIsMinimized] = useState(false);
+  const scrollRef = useRef(null);
+
+  // Generate a unique room ID (e.g., "alice_bob" sorted alphabetically)
+  const roomId = [currentUserHandle, recipient.handle].sort().join("_");
+
+  // Colors based on theme (Localized for the widget)
+  const widgetColors = {
+    bg: theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white',
+    header: theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200',
+    text: theme === 'dark' ? 'text-slate-200' : 'text-slate-800',
+    inputBg: theme === 'dark' ? 'bg-[#0a0a0a] text-slate-200' : 'bg-slate-100 text-slate-800',
+    sentBubble: 'bg-purple-600 text-white',
+    receivedBubble: theme === 'dark' ? 'bg-slate-700 text-slate-200' : 'bg-slate-200 text-slate-800',
+    border: theme === 'dark' ? 'border-slate-700' : 'border-slate-200'
+  };
+
+  useEffect(() => {
+    // 1. Initialize Socket Connection
+    // Note: Replace with your actual backend URL if different
+    const newSocket = io("http://localhost:3000"); 
+    setSocket(newSocket);
+
+    // 2. Join Room
+    newSocket.emit("join_room", roomId);
+
+    // 3. Listen for incoming messages
+    newSocket.on("receive_message", (data) => {
+      setMessages((prev) => [...prev, data]);
+    });
+
+    return () => newSocket.disconnect();
+  }, [roomId]);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isMinimized]);
+
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !socket) return;
+
+    const messageData = {
+      room: roomId,
+      author: currentUserHandle,
+      message: newMessage,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    // Emit to backend
+    socket.emit("send_message", messageData);
+    
+    // Update UI immediately
+    setMessages((list) => [...list, messageData]);
+    setNewMessage("");
+  };
+
+  if (isMinimized) {
+    return (
+      <div 
+        onClick={() => setIsMinimized(false)}
+        className={`fixed bottom-0 right-4 w-72 p-3 rounded-t-xl cursor-pointer shadow-2xl border-x border-t flex items-center justify-between ${widgetColors.bg} ${widgetColors.border} ${widgetColors.text} z-50`}
+      >
+        <div className="flex items-center gap-2 font-semibold">
+          <div className="relative w-2 h-2 rounded-full bg-green-500"></div>
+          @{recipient.handle}
+        </div>
+        <Minimize2 className="w-4 h-4" />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`fixed bottom-0 right-4 w-80 md:w-96 h-[500px] flex flex-col rounded-t-2xl shadow-2xl border-x border-t z-50 ${widgetColors.bg} ${widgetColors.border}`}>
+      {/* Header */}
+      <div className={`p-3 border-b flex items-center justify-between rounded-t-2xl ${widgetColors.header} ${widgetColors.text}`}>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center text-xs text-white font-bold">
+              {recipient.handle.substring(0, 2).toUpperCase()}
+            </div>
+            <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white bg-green-400" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold">@{recipient.handle}</h4>
+            <span className="text-xs opacity-70">Online</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <button onClick={() => setIsMinimized(true)} className="p-1.5 hover:bg-slate-500/20 rounded-full transition"><Minimize2 className="w-4 h-4" /></button>
+          <button onClick={onClose} className="p-1.5 hover:bg-red-500/20 hover:text-red-500 rounded-full transition"><X className="w-4 h-4" /></button>
+        </div>
+      </div>
+
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.length === 0 && (
+            <div className="text-center mt-10 opacity-50 text-sm">
+                <p>Start the conversation with @{recipient.handle}!</p>
+            </div>
+        )}
+        {messages.map((msg, idx) => {
+          const isMe = msg.author === currentUserHandle;
+          return (
+            <div key={idx} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm ${isMe ? `${widgetColors.sentBubble} rounded-tr-none` : `${widgetColors.receivedBubble} rounded-tl-none`}`}>
+                <p>{msg.message}</p>
+                <p className={`text-[10px] mt-1 text-right ${isMe ? "text-purple-200" : "opacity-60"}`}>{msg.time}</p>
+              </div>
+            </div>
+          );
+        })}
+        <div ref={scrollRef} />
+      </div>
+
+      {/* Input Area */}
+      <form onSubmit={handleSend} className={`p-3 border-t ${widgetColors.border} ${widgetColors.bg}`}>
+        <div className="relative flex items-center gap-2">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="Type a message..."
+            className={`w-full py-2.5 pl-4 pr-10 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all ${widgetColors.inputBg}`}
+          />
+          <button 
+            type="submit" 
+            disabled={!newMessage.trim()}
+            className="absolute right-1 p-1.5 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:opacity-50 disabled:hover:bg-purple-600 transition-colors"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// --- MAIN COMPONENT ---
 const UserProfile = ({ params }) => {
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(false);
+  
+  // New State for Chat
+  const [activeChat, setActiveChat] = useState(null); // Stores the full user object of who we are chatting with
 
-  // 2. Access the theme
   const { theme } = useTheme();
 
-  // 3. Define Dynamic Colors based on theme
   const colors = {
     bg: theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-slate-50',
     text: theme === 'dark' ? 'text-slate-100' : 'text-slate-900',
     subtext: theme === 'dark' ? 'text-slate-400' : 'text-slate-500',
     headingAccent: theme === 'dark' ? 'from-purple-400 to-blue-400' : 'from-purple-600 to-blue-500',
-    
-    // Card Styles
     card: theme === 'dark' ? 'bg-[#161616] border-slate-800' : 'bg-white border-slate-200',
     cardHover: theme === 'dark' ? 'hover:border-purple-500/40' : 'hover:border-purple-200',
     cardInnerAvatar: theme === 'dark' ? 'from-slate-800 to-slate-900 text-slate-300' : 'from-slate-100 to-slate-200 text-slate-400',
-    
-    // Badges/Pills
     pill: theme === 'dark' ? 'bg-purple-500/10 text-purple-300' : 'bg-purple-100 text-purple-700',
     tag: theme === 'dark' ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-50 text-slate-600 border-slate-100',
     proBadge: theme === 'dark' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-green-50 text-green-700 border-green-100',
-
-    // Buttons
     btnPrimary: theme === 'dark' ? 'bg-slate-100 text-slate-900 hover:bg-slate-200' : 'bg-slate-900 text-white hover:bg-slate-800',
     btnSecondary: theme === 'dark' ? 'bg-slate-800 text-slate-200 hover:bg-slate-700 border-slate-700' : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200',
     btnMessage: theme === 'dark' ? 'bg-purple-700 hover:bg-purple-600' : 'bg-slate-900 hover:bg-purple-600',
-    
-    // Empty State
     emptyState: theme === 'dark' ? 'bg-[#161616] border-slate-800' : 'bg-white border-slate-300',
     emptyIcon: theme === 'dark' ? 'bg-slate-800 text-slate-500' : 'bg-slate-50 text-slate-300',
   };
@@ -55,7 +194,6 @@ const UserProfile = ({ params }) => {
     try {
       setLoading(true);
       const response = await axios.get('/api/Peoples'); 
-      console.log(response.data); 
       setPeople(response.data.result); 
       setLoading(false);
     } catch (error) {
@@ -64,15 +202,9 @@ const UserProfile = ({ params }) => {
     }
   };
 
-  const handleSendMessage = (targetUserId, targetUserHandle) => {
-    console.log(`Preparing to send message to User ID: ${targetUserId} (@${targetUserHandle})`);
-    
-    io.emit('start_private_chat', {
-        senderId: params.handle,
-        recipientId: targetUserId,
-    });
-    
-    alert(`Messaging feature placeholder: Opening chat with @${targetUserHandle}`);
+  // UPDATED: Logic to open the chat tab
+  const handleOpenChat = (user) => {
+    setActiveChat(user);
   };
 
   const getInitials = (name) => name ? name.substring(0, 2).toUpperCase() : "??";
@@ -84,7 +216,7 @@ const UserProfile = ({ params }) => {
       <main className="flex-grow pt-24 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-12">
 
-          {/* 1. Header Section */}
+          {/* Header Section */}
           <div className="text-center space-y-4">
             <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium ${colors.pill}`}>
               <span className="relative flex h-2 w-2">
@@ -101,7 +233,6 @@ const UserProfile = ({ params }) => {
               {`Connect with developers, designers, and innovators within the Daplink ecosystem.`}
             </p>
 
-            {/* Load Button */}
             <div className="mt-6">
               <button 
                 onClick={handleFetchAll}
@@ -124,18 +255,16 @@ const UserProfile = ({ params }) => {
             </div>
           </div>
 
-          {/* 2. The Grid */}
+          {/* The Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
             {people.map((user, index) => (
               <div 
                 key={user._id || index} 
                 className={`group relative rounded-3xl overflow-hidden border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${colors.card} ${colors.cardHover}`}
               >
-                {/* Decorative Banner */}
                 <div className="h-24 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 opacity-90 group-hover:opacity-100 transition-opacity"></div>
                 
                 <div className="px-6 pb-6 relative">
-                  {/* Floating Avatar */}
                   <div className="-mt-12 mb-4">
                     <div className={`h-20 w-20 rounded-2xl p-1 shadow-md inline-block transform rotate-3 group-hover:rotate-0 transition-transform duration-300 ${theme === 'dark' ? 'bg-[#161616]' : 'bg-white'}`}>
                       <div className={`h-full w-full rounded-xl bg-gradient-to-br flex items-center justify-center font-bold text-xl ${colors.cardInnerAvatar}`}>
@@ -144,7 +273,6 @@ const UserProfile = ({ params }) => {
                     </div>
                   </div>
 
-                  {/* User Info */}
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className={`text-xl font-bold transition-colors group-hover:text-purple-500 ${colors.text}`}>
@@ -155,26 +283,22 @@ const UserProfile = ({ params }) => {
                         {user.profession || "Creator"}
                       </div>
                     </div>
-                    {/* Badge */}
                     <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border ${colors.proBadge}`}>
                       Pro
                     </span>
                   </div>
 
-                  {/* Bio */}
                   <p className={`text-sm leading-relaxed mb-6 line-clamp-2 min-h-[40px] ${theme === 'dark' ? 'text-gray-400' : 'text-slate-600'}`}>
                     {user.bio || "Building something amazing on Daplink. Ask me about my projects!"}
                   </p>
 
-                  {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-6">
-                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border ${colors.tag}`}>
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border ${colors.tag}`}>
                         <Sparkles className="w-3 h-3 text-yellow-500" />
                         Daplink User
-                     </span>
+                      </span>
                   </div>
 
-                  {/* Action Bar */}
                   <div className={`grid grid-cols-2 gap-3 pt-4 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-100'}`}>
                     <Link 
                       href={`/u/${user.handle}`} 
@@ -184,8 +308,9 @@ const UserProfile = ({ params }) => {
                       Profile
                     </Link>
                     
+                    {/* UPDATED: Message Button */}
                     <button
-                      onClick={() => handleSendMessage(user._id, user.handle)}
+                      onClick={() => handleOpenChat(user)}
                       disabled={user.handle === params.handle}
                       className={`
                         flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all
@@ -219,6 +344,16 @@ const UserProfile = ({ params }) => {
         </div>
       </main>
       <Footer />
+
+      {/* --- RENDER CHAT WIDGET IF ACTIVE --- */}
+      {activeChat && (
+        <ChatWidget 
+          currentUserHandle={params.handle} 
+          recipient={activeChat} 
+          onClose={() => setActiveChat(null)} 
+          theme={theme}
+        />
+      )}
     </div>
   );
 };
