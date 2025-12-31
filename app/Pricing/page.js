@@ -25,7 +25,7 @@ export default function PricingPage() {
                 {/* 1. Beta Status Banner */}
                 <div className="relative z-20 w-full bg-teal-500/10 border-b border-teal-500/20 py-2 text-center">
                     <p className={`text-xs font-medium ${theme === 'dark' ? 'text-teal-400' : 'text-teal-600'}`}>
-                        🚀 DapLink is currently in Public Beta. Paid plans are launching soon!
+                       {` 🚀 DapLink is currently in Public Beta. Paid plans are launching soon!`}
                     </p>
                 </div>
 
@@ -48,10 +48,10 @@ export default function PricingPage() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <div className={`max-w-md w-full p-8 rounded-2xl border ${theme === 'dark' ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-black/5'} shadow-2xl animate-in fade-in zoom-in duration-300`}>
                         <h3 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                            You're Early! ⚡
+                            {`You're Early! ⚡`}
                         </h3>
                         <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                            We are currently fine-tuning our Premium features. Join 500+ creators on the waitlist to get **3 months of Pro for free** when we launch.
+                           {`We are currently fine-tuning our Premium features. Join 500+ creators on the waitlist to get **3 months of Pro for free** when we launch.`}
                         </p>
                         <div className="flex flex-col gap-3">
                             <input 
