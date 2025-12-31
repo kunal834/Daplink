@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { CheckCircle, Youtube, Briefcase, Zap, Instagram, Twitter, Linkedin, DollarSign, ArrowRight } from 'lucide-react';
 import Reveal from './ui/Reveal';
-
+import Link from 'next/link';
 // Helper Component for the Phone Elements
 function PhoneLinkItem({ theme, icon: Icon, color, bg, title, sub }) {
   return (
@@ -111,9 +111,9 @@ export default function HeroSection({ theme }) {
                   className={`flex-1 min-w-0 bg-transparent border-none focus:ring-0 font-medium ml-1 outline-none text-base sm:text-lg h-full ${theme === 'dark' ? 'text-white placeholder-gray-600' : 'text-black placeholder-gray-400'}`}
                 />
                 
-                <button className={`shimmer-btn h-full px-4 sm:px-6 rounded-lg font-bold text-xs sm:text-sm whitespace-nowrap active:scale-95 flex items-center justify-center ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}>
+                <Link href="/login" className={`shimmer-btn h-full px-4 sm:px-6 rounded-lg font-bold text-xs sm:text-sm whitespace-nowrap active:scale-95 flex items-center justify-center ${theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'}`}>
                   Claim Link
-                </button>
+                </Link>
               </div>
               
               {/* Footer Text */}
