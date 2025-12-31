@@ -17,9 +17,9 @@ const AboutUsPage = () => {
       <HeroSection />
       <main>
         <StorySection />
-        <MetricsSection />
-        <ValuesSection />
-        <TeamSection />
+        {/* <MetricsSection />
+        <ValuesSection /> */}
+        {/* <TeamSection /> */}
       </main>
       <CTASection />
 
