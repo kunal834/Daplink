@@ -7,61 +7,15 @@ import NewsletterCTA from './Newsletter';
 import ArticleCard from '@/Components/ui/ArticleCard';
 import Navbar from '@/Components/Navbar';
 
-// --- MOCK DATA ---
-const articles = [
-  {
-    id: 1,
-    title: "The Ultimate Guide to Building Your Digital Presence",
-    summary: "Learn the secrets to creating a profile that converts connections into opportunities. We cover photo selection, portfolio integration, and more.",
-    category: "Guides",
-    date: "Oct 25, 2025",
-    readTime: "7 min read",
-    imageUrl: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: 2,
-    title: "Feature Spotlight: The New AI-Powered Connection Engine",
-    summary: "Discover how our latest update uses machine learning to match you with relevant professionals and creators with 99% accuracy.",
-    category: "Product Updates",
-    date: "Oct 18, 2025",
-    readTime: "4 min read",
-    imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: 3,
-    title: "Daplink's Core Values: Why Authenticity Drives Opportunity",
-    summary: "We dive deep into the values that guide our platform, focusing on simplicity, community, and genuine connection.",
-    category: "Company Culture",
-    date: "Oct 10, 2025",
-    readTime: "5 min read",
-    imageUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: 4,
-    title: "Bootstrapped challenges and consequences",
-    summary: "A compelling case study on how one university student used their Daplink profile to secure funding for their first venture.",
-    category: "Case Studies",
-    date: "Sep 28, 2025",
-    readTime: "8 min read",
-    imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: 5,
-    title: "Tips & Tricks: Optimizing Your Profile for Mobile Viewing",
-    summary: "Since most connections happen on mobile, here are five essential steps to ensure your Daplink profile looks perfect on any screen.",
-    category: "Tips & Tricks",
-    date: "Sep 15, 2025",
-    readTime: "3 min read",
-    imageUrl: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800&q=80"
-  },
-];
-
+// --- MOCK DATA --- (Keep your existing articles array)
+const articles = [ /* ... your articles ... */ ];
 const categories = ["All", "Guides", "Product Updates", "Company Culture", "Case Studies", "Tips & Tricks"];
 
 export default function BlogPage() {
   const { theme } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false); // Added state
 
   // Filter Logic
   const filteredArticles = articles.filter(article => {
@@ -72,8 +26,16 @@ export default function BlogPage() {
   });
 
   return (
-    <><Navbar />
+    <>
+      <Navbar />
       <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 ${theme === 'dark' ? 'bg-[#020202]' : 'bg-gray-50'}`}>
+        
+        {/* 1. Consistent Beta Banner */}
+        <div className="relative z-[40] w-full bg-teal-500/10 border-b border-teal-500/20 py-2 text-center pt-24 md:pt-2">
+            <p className={`text-[10px] md:text-xs font-medium ${theme === 'dark' ? 'text-teal-400' : 'text-teal-600'}`}>
+                📖 Journaling the road to DapLink 1.0. Join the waitlist for early access.
+            </p>
+        </div>
 
         {/* Global Background Ambience */}
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -82,8 +44,7 @@ export default function BlogPage() {
           {theme === 'light' && <div className="absolute inset-0 bg-white/60 z-[-1]"></div>}
         </div>
 
-
-        <main className="relative z-10 pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <main className="relative z-10 pt-16 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
           {/* Hero Section */}
           <div className="text-center mb-20">
@@ -102,7 +63,7 @@ export default function BlogPage() {
 
             <Reveal delayClass="stagger-2">
               <p className={`text-lg max-w-2xl mx-auto leading-relaxed ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                Insights, guides, and updates on building your digital presence and unlocking new opportunities.
+                {`Insights, guides, and updates on building the future of digital presence.`}
               </p>
             </Reveal>
           </div>
@@ -110,7 +71,7 @@ export default function BlogPage() {
           {/* Filter & Search Bar */}
           <Reveal delayClass="stagger-3" className="mb-16 sticky top-24 z-30">
             <div className={`p-2 rounded-2xl border shadow-xl backdrop-blur-xl flex flex-col md:flex-row gap-4 items-center justify-between ${theme === 'dark' ? 'bg-[#0A0A0A]/80 border-white/10' : 'bg-white/80 border-gray-200'}`}>
-
+              
               {/* Categories */}
               <div className="flex flex-wrap gap-2 justify-center md:justify-start px-2">
                 {categories.map((cat) => (
@@ -155,13 +116,48 @@ export default function BlogPage() {
             ))}
           </div>
 
-          {/* Newsletter Section */}
+          {/* 2. Newsletter with logic trigger */}
           <Reveal>
-            <NewsletterCTA theme={theme} />
+            <div onClick={() => setIsModalOpen(true)} className="cursor-pointer">
+                <NewsletterCTA theme={theme} />
+            </div>
           </Reveal>
-
         </main>
       </div>
+
+      {/* 3. Reusable Waitlist Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className={`max-w-md w-full p-8 rounded-2xl border ${theme === 'dark' ? 'bg-[#0a0a0a] border-white/10' : 'bg-white border-black/5'} shadow-2xl animate-in fade-in zoom-in duration-300`}>
+                <h3 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    Stay in the loop 📩
+                </h3>
+                <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    We publish weekly insights on digital growth and DapLink product updates. Join our inner circle for early access to 1.0.
+                </p>
+                <div className="flex flex-col gap-3">
+                    <input 
+                        type="email" 
+                        placeholder="your@email.com" 
+                        className={`w-full p-3 rounded-lg border ${theme === 'dark' ? 'bg-white/5 border-white/10 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`}
+                    />
+                    <button 
+                        onClick={() => setIsModalOpen(false)}
+                        className="w-full py-3 bg-teal-500 hover:bg-teal-600 text-black font-bold rounded-lg transition-all"
+                    >
+                        Subscribe to Journal
+                    </button>
+                    <button 
+                        onClick={() => setIsModalOpen(false)}
+                        className={`text-sm mt-2 underline ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}
+                    >
+                        Maybe later
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
+    
     </>
   );
 }
