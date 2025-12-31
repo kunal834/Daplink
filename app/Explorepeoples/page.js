@@ -177,7 +177,7 @@ const UserProfile = ({ params }) => {
                   {/* Action Bar */}
                   <div className={`grid grid-cols-2 gap-3 pt-4 border-t ${theme === 'dark' ? 'border-slate-800' : 'border-slate-100'}`}>
                     <Link 
-                      href={`/${user.handle}`} 
+                      href={`/u/${user.handle}`} 
                       className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${colors.btnSecondary}`}
                     >
                       <User className="w-4 h-4" />
