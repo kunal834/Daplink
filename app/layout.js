@@ -19,14 +19,43 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://daplink.online'), // THIS IS THE MAGIC LINE
-  title: 'DapLink - One Link To Rule Them All',
-  description: 'Your digital identity hub...',
+  metadataBase: new URL('https://daplink.online'),
+  
+  // SEO TITLE: Distinct from "ARM DAPLink"
+  title: {
+    default: 'DapLink.online | Smart Link-in-Bio & Digital Identity SaaS',
+    template: '%s | DapLink.online' // This adds branding to inner pages automatically
+  },
+  
+  // DESCRIPTION: Explains exactly what you do (No firmware!)
+  description: 'The ultimate SaaS platform for creators and developers. Consolidate your social links, generate QR codes, and manage your digital identity with DapLink.',
+  
+  // KEYWORDS: Crucial for separating you from embedded systems
+  keywords: ['link in bio', 'digital business card', 'social profile', 'DapLink app', 'creator tools', 'portfolio builder', 'SaaS'],
+  
   alternates: {
     canonical: '/',
   },
   icons: {
     icon: "./innovate.png",
+    apple: "./innovate.png", // Good to add for iPhones
+  },
+
+  // OPEN GRAPH: This controls how your link looks on WhatsApp, LinkedIn, Twitter/X
+  openGraph: {
+    title: 'DapLink - Your Digital Identity Hub',
+    description: 'One link to connect your audience to everything you do. Build your professional profile in seconds.',
+    url: 'https://daplink.online',
+    siteName: 'DapLink',
+    images: [
+      {
+        url: './innovate.png', // Or a larger banner image (1200x630px is best)
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
 };
 
