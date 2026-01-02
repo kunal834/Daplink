@@ -19,7 +19,7 @@ import Footer from '@/Components/Footer';
 import { useTheme } from '@/context/ThemeContext';
 
 // --- CHAT WIDGET COMPONENT ---
-const ChatWidget = ({ currentUserHandle, recipient, onClose, theme }) => {
+const ChatWidget = ({ currentUserId, currentUserHandle, recipient, onClose, theme }) => {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -43,19 +43,31 @@ const ChatWidget = ({ currentUserHandle, recipient, onClose, theme }) => {
   useEffect(() => {
     // 1. Initialize Socket Connection
     // Note: Replace with your actual backend URL if different
-    const newSocket = io("http://localhost:3000"); 
+    const newSocket = io("http://localhost:5000", {
+      // CRITICAL: Pass the MongoDB _id here so backend adds to 'onlineUsers'
+      query: { userID: currentUserId } 
+    });
     setSocket(newSocket);
 
     // 2. Join Room
     newSocket.emit("join_room", roomId);
 
     // 3. Listen for incoming messages
-    newSocket.on("receive_message", (data) => {
-      setMessages((prev) => [...prev, data]);
+   newSocket.on("receive_message", (data) => {
+      // Check if this message belongs to THIS conversation
+      if (data.SenderId === recipient._id || data.ReceiverId === recipient._id) {
+          // Format incoming DB message to match your UI structure
+          const formattedMsg = {
+             message: data.MessageText,
+             author: data.SenderId === currentUserId ? currentUserHandle : recipient.handle,
+             time: new Date(data.Timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          setMessages((prev) => [...prev, formattedMsg]);
+      }
     });
 
     return () => newSocket.disconnect();
-  }, [roomId]);
+  }, [recipient._id, currentUserId]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -66,18 +78,21 @@ const ChatWidget = ({ currentUserHandle, recipient, onClose, theme }) => {
     e.preventDefault();
     if (!newMessage.trim() || !socket) return;
 
-    const messageData = {
-      room: roomId,
+    // UI Update (Optimistic)
+    const uiMessage = {
       author: currentUserHandle,
       message: newMessage,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
+    setMessages((list) => [...list, uiMessage]);
 
-    // Emit to backend
-    socket.emit("send_message", messageData);
-    
-    // Update UI immediately
-    setMessages((list) => [...list, messageData]);
+    // EMIT TO BACKEND
+    // Matches: const { receiverId, text } = data; in Server.js
+    socket.emit("send_message", {
+      receiverId: recipient._id, // Must be MongoDB _id
+      text: newMessage
+    });
+
     setNewMessage("");
   };
 
@@ -166,7 +181,7 @@ const ChatWidget = ({ currentUserHandle, recipient, onClose, theme }) => {
 const UserProfile = ({ params }) => {
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+  const [myself, setMyself] = useState(null);
   // New State for Chat
   const [activeChat, setActiveChat] = useState(null); // Stores the full user object of who we are chatting with
 
@@ -206,6 +221,19 @@ const UserProfile = ({ params }) => {
   const handleOpenChat = (user) => {
     setActiveChat(user);
   };
+
+  useEffect(() => {
+    const fetchMe = async () => {
+        try {
+            // Assuming you have an endpoint that returns the logged-in user's profile
+            const res = await axios.get('/api/auth/me'); 
+            setMyself(res.data); // Should contain { _id, handle, ... }
+        } catch (err) {
+            console.error("Not logged in");
+        }
+    };
+    fetchMe();
+}, []);
 
   const getInitials = (name) => name ? name.substring(0, 2).toUpperCase() : "??";
 
@@ -346,14 +374,15 @@ const UserProfile = ({ params }) => {
       <Footer />
 
       {/* --- RENDER CHAT WIDGET IF ACTIVE --- */}
-      {activeChat && (
-        <ChatWidget 
-          currentUserHandle={params.handle} 
-          recipient={activeChat} 
-          onClose={() => setActiveChat(null)} 
-          theme={theme}
-        />
-      )}
+      {activeChat && myself && (
+     <ChatWidget 
+       currentUserId={myself._id}       // <--- Pass MongoDB ID
+       currentUserHandle={myself.handle} // <--- Pass Handle
+       recipient={activeChat}           // (Already contains _id from 'people' array)
+       onClose={() => setActiveChat(null)} 
+       theme={theme}
+     />
+   )}
     </div>
   );
 };
