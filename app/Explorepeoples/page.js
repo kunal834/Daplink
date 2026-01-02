@@ -43,7 +43,7 @@ const ChatWidget = ({ currentUserId, currentUserHandle, recipient, onClose, them
   useEffect(() => {
     // 1. Initialize Socket Connection
     // Note: Replace with your actual backend URL if different
-    const newSocket = io("http://localhost:5000", {
+    const newSocket = io("https://chatmicrobackend.onrender.com", {
       // CRITICAL: Pass the MongoDB _id here so backend adds to 'onlineUsers'
       query: { userID: currentUserId } 
     });
