@@ -11,7 +11,8 @@ import { useAuth } from '@/context/Authenticate';
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-
+import { useContext } from 'react';
+import { AuthContext } from '@/context/Authenticate';
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -122,7 +123,13 @@ export default function Navbar() {
                             <p.icon size={20} />
                           </div>
                           <div>
-                            <div className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</div>
+                            {isAuthenticated ?
+                              <Link href="/Dashboard" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</Link>
+                              :
+                             <Link href="/Products" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</Link>
+
+                            }
+                            
                             <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>{p.desc}</div>
                           </div>
                         </Link>
@@ -140,7 +147,14 @@ export default function Navbar() {
                             <p.icon size={20} />
                           </div>
                           <div>
-                            <div className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</div>
+
+                            {
+                              isAuthenticated ?
+                              <Link href="/Dashboard" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</Link>
+                              :
+                              <Link href="/Products" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</Link>
+                            }
+                            
                             <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>{p.desc}</div>
                           </div>
                         </Link>
