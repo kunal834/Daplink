@@ -22,7 +22,7 @@ export default function BioPage() {
     queryFn: async () => {
       const res = await axios.get(
         `/api/getDaplink?daplinkID=${user.daplinkID}`
-      );
+      );  
       return res.data;
     },
     enabled: !authLoading && !!user?.daplinkID,
@@ -116,7 +116,7 @@ export default function BioPage() {
                   onChange={(e) =>
                     updateProfile('title', e.target.value)
                   }
-                  className="w-full px-4 py-3 rounded-xl border bg-zinc-50 text-sm font-bold"
+                  className="w-full px-4 py-3 rounded-xl border bg-gray-400 text-sm font-bold"
                 />
               </div>
 

@@ -9,6 +9,8 @@ import {
   MessagesSquare,
   MessageCircleCodeIcon
 } from 'lucide-react';
+import axios from 'axios';
+
 
 const Sidebar = ({ isDarkMode }) => {
   const pathname = usePathname();
@@ -22,7 +24,8 @@ const Sidebar = ({ isDarkMode }) => {
     { href: '/Dashboard/messages', icon: MessagesSquare, label: 'messages' },
     { href: '/Dashboard/mindset', icon: Brain, label: 'Mindset Wall' },
     // { href: '', icon: StarIcon, label: 'Review us' },
-    { href: '/Dashboard/settings', icon: Settings, label: 'Settings' }
+    { href: '/Dashboard/settings', icon: Settings, label: 'Settings' },
+  
   ];
 
   const isActive = (href) => pathname.startsWith(href);

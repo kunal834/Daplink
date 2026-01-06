@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import { AuthContext } from '@/context/Authenticate';
-export default function Navbar() {
+export default function   Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mobileProductExpand, setMobileProductExpand] = useState(false);
@@ -62,6 +62,8 @@ export default function Navbar() {
 
 
   }
+
+  const destination = isAuthenticated ? "/Dashboard" : "/Products";  // To remove hydration error
   // Mega Menu Data Configuration
   const megaMenuData = {
     products: [
@@ -88,6 +90,7 @@ export default function Navbar() {
   };
 
   return (
+    
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass-nav shadow-lg' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -123,13 +126,7 @@ export default function Navbar() {
                             <p.icon size={20} />
                           </div>
                           <div>
-                            {isAuthenticated ?
-                              <Link href="/Dashboard" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</Link>
-                              :
-                             <Link href="/Products" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</Link>
-
-                            }
-                            
+                        <div href={destination} className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</div>
                             <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>{p.desc}</div>
                           </div>
                         </Link>
