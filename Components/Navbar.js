@@ -63,7 +63,7 @@ export default function   Navbar() {
 
   }
 
-  const destination = isAuthenticated ? "/Dashboard" : "/Products";  // To remove hydration error
+  const destination = isAuthenticated ? "/Dashboard" : "/login";  // To remove hydration error
   // Mega Menu Data Configuration
   const megaMenuData = {
     products: [
@@ -145,13 +145,10 @@ export default function   Navbar() {
                           </div>
                           <div>
 
-                            {
-                              isAuthenticated ?
-                              <Link href="/Dashboard" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</Link>
-                              :
-                              <Link href="/Products" className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</Link>
-                            }
-                            
+                        
+                              <Link href={destination} className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</Link>
+                             
+                           
                             <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>{p.desc}</div>
                           </div>
                         </Link>
