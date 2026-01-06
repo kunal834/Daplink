@@ -11,8 +11,6 @@ import { useAuth } from '@/context/Authenticate';
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useContext } from 'react';
-import { AuthContext } from '@/context/Authenticate';
 export default function   Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -84,8 +82,8 @@ export default function   Navbar() {
       { name: "Daplink + Canva", icon: Zap },
     ],
     discover: [
-      { name: "API & Documentation", href: "/docs" },
-      { name: "Trust Center", href: "/trust" }
+      { name: "API & Documentation", href: "Trust" },
+      { name: "Trust Center", href: "Docu" }
     ]
   };
 
@@ -121,12 +119,12 @@ export default function   Navbar() {
                     <h4 className={`text-xs font-bold uppercase tracking-wider mb-4 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>Products</h4>
                     <div className="space-y-4">
                       {megaMenuData.products.map((p, i) => (
-                        <Link key={i} href="#" className="flex gap-3 group/item">
+                        <Link key={i} href={destination} className="flex gap-3 group/item">
                           <div className={`mt-1 ${theme === 'dark' ? 'text-teal-400' : 'text-teal-600'}`}>
                             <p.icon size={20} />
                           </div>
                           <div>
-                        <div href={destination} className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</div>
+                        <div className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-teal-400' : 'text-gray-800 group-hover/item:text-teal-600'}`}>{p.name}</div>
                             <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>{p.desc}</div>
                           </div>
                         </Link>
@@ -139,14 +137,14 @@ export default function   Navbar() {
                     <h4 className={`text-xs font-bold uppercase tracking-wider mb-4 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>Features</h4>
                     <div className="space-y-4">
                       {megaMenuData.features.map((p, i) => (
-                        <Link key={i} href="#" className="flex gap-3 group/item">
+                        <Link key={i} href={destination} className="flex gap-3 group/item">
                           <div className={`mt-1 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
                             <p.icon size={20} />
                           </div>
                           <div>
 
                         
-                              <Link href={destination} className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</Link>
+                              <div href={destination} className={`text-sm font-bold transition-colors ${theme === 'dark' ? 'text-gray-200 group-hover/item:text-blue-400' : 'text-gray-800 group-hover/item:text-blue-600'}`}>{p.name}</div>
                              
                            
                             <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>{p.desc}</div>
@@ -176,8 +174,8 @@ export default function   Navbar() {
 
                     <h4 className={`text-xs font-bold uppercase tracking-wider mb-3 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>Discover More</h4>
                     <ul className="space-y-2">
-                      <li><Link href="/docs" className={`text-sm flex items-center gap-1 hover:text-teal-500 transition-colors ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>API & Documentation <ArrowRight size={12} /></Link></li>
-                      <li><Link href="/trust" className={`text-sm flex items-center gap-1 hover:text-teal-500 transition-colors ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Trust Center <ArrowRight size={12} /></Link></li>
+                      <li><Link href="/Docu" className={`text-sm flex items-center gap-1 hover:text-teal-500 transition-colors ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>API & Documentation <ArrowRight size={12} /></Link></li>
+                      <li><Link href="/Trust" className={`text-sm flex items-center gap-1 hover:text-teal-500 transition-colors ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Trust Center <ArrowRight size={12} /></Link></li>
                     </ul>
                   </div>
 
@@ -292,7 +290,7 @@ export default function   Navbar() {
                   (
                     <>
                       <Link href="/Dashboard" className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>Dashboard</Link>
-                      <button onclick={logouthandler} className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`} > Logout </button>
+                      <button onClick={logouthandler} className={`text-sm cursor-pointer font-medium transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`} > Logout </button>
                     </>
                   )
 
