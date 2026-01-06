@@ -29,7 +29,7 @@ const FutureUpgradesPage = () => {
             The Future of <span className="text-blue-500">DapLink</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-slate-400 mb-10">
-            We are building more than just a link-in-bio. We are building a decentralized economy for creators. Here is what we are shipping next.
+            {`We are building more than just a link-in-bio. We are building a decentralized economy for creators. Here is what we are shipping next.`}
           </p>
         </div>
       </section>
@@ -44,7 +44,7 @@ const FutureUpgradesPage = () => {
                 Performance Core
               </h2>
               <p className="text-slate-600">
-                Current Focus: We are migrating our data layer to handle millions of requests with sub-millisecond latency.
+               {` Current Focus: We are migrating our data layer to handle millions of requests with sub-millisecond latency.`}
               </p>
             </div>
             
@@ -55,7 +55,7 @@ const FutureUpgradesPage = () => {
                   <h3 className="font-semibold text-lg">Redis Caching Layer</h3>
                 </div>
                 <p className="text-sm text-slate-500">
-                  Implementing a dedicated Redis cluster to cache user profiles and session data, eliminating database bottlenecks for high-traffic creators.
+                 {` Implementing a dedicated Redis cluster to cache user profiles and session data, eliminating database bottlenecks for high-traffic creators.`}
                 </p>
               </div>
 
@@ -65,7 +65,7 @@ const FutureUpgradesPage = () => {
                   <h3 className="font-semibold text-lg">Real-Time Analytics</h3>
                 </div>
                 <p className="text-sm text-slate-500">
-                  Moving from static stats to live dashboards using <strong>Socket.IO</strong>. Creators will see clicks and views happen instantly as they stream.
+                 {` Moving from static stats to live dashboards using <strong>Socket.IO</strong>. Creators will see clicks and views happen instantly as they stream.`}
                 </p>
               </div>
             </div>
@@ -79,10 +79,10 @@ const FutureUpgradesPage = () => {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
               <Gamepad2 className="h-8 w-8 text-purple-600" />
-              Project: "Level Up"
+             {` Project: "Level Up"`}
             </h2>
             <p className="text-slate-600 text-lg">
-              We are turning networking into a game. The more you share, the more you earn.
+             {` We are turning networking into a game. The more you share, the more you earn.`}
             </p>
           </div>
 
@@ -92,7 +92,7 @@ const FutureUpgradesPage = () => {
               <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4 font-bold">1</div>
               <h3 className="text-xl font-bold mb-2">DapLink XP</h3>
               <p className="text-slate-600">
-                Users earn XP for every unique click, profile update, and verified connection. High XP unlocks premium themes and verified badges.
+               {` Users earn XP for every unique click, profile update, and verified connection. High XP unlocks premium themes and verified badges.`}
               </p>
             </div>
 
@@ -101,7 +101,7 @@ const FutureUpgradesPage = () => {
               <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4 font-bold">2</div>
               <h3 className="text-xl font-bold mb-2">Skill Swapping</h3>
               <p className="text-slate-600">
-                A tinder-like interface to match creators based on complementary skills (e.g., a Designer matches with a Backend Dev).
+               {` A Gamified interface to match creators based on complementary skills (e.g., a Designer matches with a Backend Dev).`}
               </p>
             </div>
 
@@ -110,7 +110,7 @@ const FutureUpgradesPage = () => {
               <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4 font-bold">3</div>
               <h3 className="text-xl font-bold mb-2">Leaderboards</h3>
               <p className="text-slate-600">
-                Weekly competitions for "Top Creator" in specific niches (Tech, Art, Music) with cash prizes for the winners.
+                {` Weekly competitions for "Top Creator" in specific niches (Tech, Art, Music) with cash prizes for the winners.`}
               </p>
             </div>
           </div>
@@ -128,14 +128,14 @@ const FutureUpgradesPage = () => {
                    <Globe className="h-6 w-6 text-blue-500 shrink-0" />
                    <div>
                      <span className="font-semibold block">Edge Computing</span>
-                     <span className="text-slate-500 text-sm">Deploying user profiles to the Edge (Vercel/Cloudflare) so they load instantly from anywhere in the world.</span>
+                     <span className="text-slate-500 text-sm">{`Deploying user profiles to the Edge (Vercel/Cloudflare) so they load instantly from anywhere in the world.`}</span>
                    </div>
                  </li>
                  <li className="flex items-start gap-3">
                    <Users className="h-6 w-6 text-blue-500 shrink-0" />
                    <div>
                      <span className="font-semibold block">Team Collaboration</span>
-                     <span className="text-slate-500 text-sm">Allowing agencies to manage multiple DapLink profiles from a single "Business Dashboard."</span>
+                     <span className="text-slate-500 text-sm">{`Allowing agencies to manage multiple DapLink profiles from a single "Business Dashboard."`}</span>
                    </div>
                  </li>
                </ul>
@@ -143,7 +143,7 @@ const FutureUpgradesPage = () => {
             <div className="md:w-1/2 bg-slate-900 rounded-2xl p-8 text-white">
               <h3 className="text-xl font-bold mb-4">Have a feature request?</h3>
               <p className="text-slate-400 mb-6">
-                Our roadmap is community-driven. If you need a specific integration or feature, let the engineering team know directly.
+                {`Our roadmap is community-driven. If you need a specific integration or feature, let the engineering team know directly.`}
               </p>
               <Link href="mailto:features@daplink.online" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition">
                 Submit a Request <ArrowRight className="h-4 w-4" />
