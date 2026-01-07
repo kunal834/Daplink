@@ -6,7 +6,7 @@ export async function GET(request) {
     try {
         await connectDB();
         const { searchParams } = new URL(request.url);
-        const userid = searchParams.get("userid");
+        const userid = searchParams.get("daplinkID");
 
         if (!userid) {
             return Response.json({ error: "Missing user ID" }, { status: 400 });
