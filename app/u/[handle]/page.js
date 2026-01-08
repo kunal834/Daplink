@@ -16,6 +16,7 @@ import { set } from "mongoose";
 import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 /* -------------------------------------------------------------------------- */
 /* STYLES & ANIMATIONS                                                        */
@@ -119,9 +120,11 @@ export default function ProfilePage({ params }) {
   useEffect(() => {
     const getUserId = async () => {
       try {
-        const res = await axios.get(`/api/getuser?userid=${data?._id}`);
+        const res = await axios.get(`/api/getuser?daplinkID=${data?._id}`);
         const json = await res.data;
-        if (res.ok) {
+
+        console.log(json,res)
+        if (res.data) {
           setTargetUserId(json.userId);
           setFollowerCount(json.follower.length);
         }
@@ -195,6 +198,7 @@ export default function ProfilePage({ params }) {
     }
 
     setFollowLoading(true);
+    // setFollowerCount(followerCount+1);
 
     try {
       const res = await axios.post("/api/follow", {
@@ -202,12 +206,7 @@ export default function ProfilePage({ params }) {
         targetUserId: targetUserId     // profile owner
       });
 
-      const json = await res.json();
-
-      if (!res.ok) {
-        console.error(json.error);
-        return;
-      }
+      const json = await res.data;
 
       // Update follow state
       setIsFollowing(json.isFollowing);
@@ -346,8 +345,8 @@ export default function ProfilePage({ params }) {
                       <div className={`text-xs ${colors.mutedText}`}>Followers</div>
                     </div>
                     <div className="stat-badge text-center">
-                      <div className={`text-2xl font-bold ${colors.text}`}>{links.length}</div>
-                      <div className={`text-xs ${colors.mutedText}`}>Links</div>
+                      <div className={`text-2xl font-bold ${colors.text}`}>1</div>
+                      <div className={`text-xs ${colors.mutedText}`}>Following</div>
                     </div>
                   </div>
 
