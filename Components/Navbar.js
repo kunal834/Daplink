@@ -6,6 +6,7 @@ import {
   BarChart2, Zap, QrCode, Scan, FileText, Smartphone,
   MapPin, Tag, Layout, ArrowRight, Grid, Package
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/context/Authenticate';
 import { toast } from "react-toastify";
@@ -95,7 +96,7 @@ export default function   Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 cursor-pointer group">
             <div className="w-10 h-10  rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-all duration-300">
-              <img src="/innovate.png" alt="Logo" className="" />
+              <Image height={45} width={45} src="/innovate.png" alt="Logo" className="" />
             </div>
             <span className={`font-bold text-xl tracking-tight transition-colors ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>DapLink</span>
           </Link>
