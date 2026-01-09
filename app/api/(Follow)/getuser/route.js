@@ -19,7 +19,7 @@ export async function GET(request) {
             return Response.json({ error: "User not found" }, { status: 404 });
         }
         
-        return Response.json({ userId: user._id,follower: user.followers }, { status: 200 });
+        return Response.json({ userId: user._id,follower: user.followers,following:user.following }, { status: 200 });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }
