@@ -17,6 +17,7 @@ import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
+import FollowModal from "@/Components/modals/followModals";
 
 /* -------------------------------------------------------------------------- */
 /* STYLES & ANIMATIONS                                                        */
@@ -111,9 +112,21 @@ export default function ProfilePage({ params }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [followerCount, setFollowerCount] = useState(0);
+  const [followCount, setFollowCount] = useState({
+    follower:0,
+    following:0
+  });
   const [followLoading, setFollowLoading] = useState(false);
   const [targetUserId, setTargetUserId] = useState(null);
+  const [modalState, setModalState] = useState({ isOpen: false, tab: 'followers' });
+
+  const openFollowers = () => setModalState({ isOpen: true, tab: 'followers' });
+  const openFollowing = () => setModalState({ isOpen: true, tab: 'following' });
+  const closeModal = () => setModalState(prev => ({ ...prev, isOpen: false }));
+  const [followData, setFollowData] = useState({
+    followers: [],
+    following: []
+  });
 
   const { user } = useAuth();
 
@@ -123,10 +136,13 @@ export default function ProfilePage({ params }) {
         const res = await axios.get(`/api/getuser?daplinkID=${data?._id}`);
         const json = await res.data;
 
-        console.log(json,res)
+        console.log(json, res)
         if (res.data) {
           setTargetUserId(json.userId);
-          setFollowerCount(json.follower.length);
+          setFollowCount({
+            follower:json.follower.length,
+            following:json.following.length
+        });
         }
       } catch (error) {
         // console.error("Error fetching user ID:", error);
@@ -210,7 +226,9 @@ export default function ProfilePage({ params }) {
 
       // Update follow state
       setIsFollowing(json.isFollowing);
-      setFollowerCount(json.followersCount);
+      setFollowCount({
+        follower:json.followersCount
+    });
 
     } catch (err) {
       console.error("Error following user:", err);
@@ -227,6 +245,40 @@ export default function ProfilePage({ params }) {
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
+  useEffect(() => {
+    if ( modalState.open && targetUserId) {
+      fetchFollowData(targetUserId);
+    }
+  }, [modalState.open, targetUserId]);
+
+
+  const fetchFollowData = async (userId) => {
+    try {
+      // setLoading(true);
+
+      const res = await axios.get(`/api/getFollow/${userId}`, {
+        cache: "no-store"
+      });
+
+      if (!res.data) {
+        throw new Error("Failed to fetch follow data");
+      }
+
+      const data = await res.data;
+
+      setFollowData({
+        followers: data.followers || [],
+        following: data.following || []
+      });
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong");
+    } finally {
+      // setLoading(false);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -339,13 +391,13 @@ export default function ProfilePage({ params }) {
                 {/* Stats and Follow Button Row */}
                 <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
                   {/* Stats */}
-                  <div className="flex gap-6">
-                    <div className="stat-badge text-center">
-                      <div className={`text-2xl font-bold ${colors.text}`}>{followerCount.toLocaleString()}</div>
+                  <div className="flex gap-6 cursor-pointer">
+                    <div className="stat-badge text-center" onClick={openFollowers}>
+                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.follower.toLocaleString()}</div>
                       <div className={`text-xs ${colors.mutedText}`}>Followers</div>
                     </div>
-                    <div className="stat-badge text-center">
-                      <div className={`text-2xl font-bold ${colors.text}`}>1</div>
+                    <div className="stat-badge text-center"onClick={openFollowing}>
+                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.following.toLocaleString()}</div>
                       <div className={`text-xs ${colors.mutedText}`}>Following</div>
                     </div>
                   </div>
@@ -506,6 +558,13 @@ export default function ProfilePage({ params }) {
               </div>
             </div>
           </Modal>
+
+          <FollowModal
+            isOpen={modalState.isOpen}
+            onClose={closeModal}
+            initialTab={modalState.tab}
+            data={followData}
+          />
 
         </div>
       </div>
