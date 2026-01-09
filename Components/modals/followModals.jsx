@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { X, Search } from "lucide-react";
+import Link from "next/link";
 
 const UserItem = React.memo(({ user }) => (
   <div className="flex items-center justify-between rounded-xl px-3 py-3 transition hover:bg-zinc-100 dark:hover:bg-zinc-800">
     <div className="flex items-center gap-4">
+      {console.log("user",user)}
       <img
-        src={user.avatar}
+        src={user.daplinkID.profile}
         alt={user.username}
         className="h-11 w-11 rounded-full object-cover ring-2 ring-zinc-200 dark:ring-zinc-700"
         onError={e => (e.currentTarget.src = "https://via.placeholder.com/150")}
       />
       <div>
         <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          {user.username}
+          {user.daplinkID.handle}
         </p>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
           {user.name}
@@ -20,9 +22,11 @@ const UserItem = React.memo(({ user }) => (
       </div>
     </div>
 
-    <button className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700 dark:bg-white dark:text-black dark:hover:bg-zinc-200">
+    <Link className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+    href={`/u/${user.daplinkID.handle}`}
+    >
       View profile
-    </button>
+    </Link>
   </div>
 ));
 
@@ -98,8 +102,8 @@ export default function FollowModal({
           ))}
         </div>
 
-        {/* Search */}
-        <div className="px-6 py-4">
+        {/* Search  to be implemented later*/}
+        {/* <div className="px-6 py-4">
           <div className="relative">
             <Search
               size={16}
@@ -112,10 +116,10 @@ export default function FollowModal({
               className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-3 pl-11 pr-4 text-sm font-medium text-zinc-900 outline-none focus:ring-2 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:focus:ring-white"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* List */}
-        <div className="flex-1 space-y-1 overflow-y-auto px-4 pb-6">
+        <div className="flex-1 space-y-1 overflow-y-auto px-4 py-6">
           {users.length ? (
             users.map(u => <UserItem key={u.id} user={u} />)
           ) : (

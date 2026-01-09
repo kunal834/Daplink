@@ -392,11 +392,11 @@ export default function ProfilePage({ params }) {
                   {/* Stats */}
                   <div className="flex gap-6 cursor-pointer">
                     <div className="stat-badge text-center" onClick={openFollowers}>
-                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.follower.toLocaleString()}</div>
+                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.follower || 0}</div>
                       <div className={`text-xs ${colors.mutedText}`}>Followers</div>
                     </div>
                     <div className="stat-badge text-center"onClick={openFollowing}>
-                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.following.toLocaleString()}</div>
+                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.following || 0}</div>
                       <div className={`text-xs ${colors.mutedText}`}>Following</div>
                     </div>
                   </div>
