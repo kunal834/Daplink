@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     daplinkID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Daplink",
+        ref: "Link",
         default: null
     },
     isProfileComplete: {

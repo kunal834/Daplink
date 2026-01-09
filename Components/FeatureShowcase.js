@@ -1,9 +1,32 @@
 'use client';
 import React from 'react';
-import { Layers, PieChart, Zap, Users, Briefcase, Quote, Youtube, Twitter, Pin } from 'lucide-react';
+import { 
+  Layers, 
+  PieChart, 
+  Users, 
+  Quote, 
+  Youtube, 
+  Twitter, 
+  Pin, 
+  Rocket,      // For Product Marketing
+  DollarSign,  // For Monetization
+  Megaphone,
+  TrendingUp,
+  Wallet
+} from 'lucide-react';
 import Reveal from './ui/Reveal';
 import FeatureCard from './ui/FeatureCard';
-import JobItem from './ui/JobItem';
+
+// You can create a simple animated item for the Ad Network card
+const TransactionItem = ({ theme, amount, source, delay }) => (
+  <div className={`flex items-center justify-between p-2 rounded-lg border mb-2 opacity-0 animate-in fade-in slide-in-from-bottom-2 duration-700 fill-mode-forwards ${delay} ${theme === 'dark' ? 'bg-white/5 border-white/5' : 'bg-green-50 border-green-100'}`}>
+    <div className="flex items-center gap-2">
+      <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px] font-bold">$</div>
+      <span className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{source}</span>
+    </div>
+    <span className="text-xs font-bold text-green-500">+{amount}</span>
+  </div>
+);
 
 export default function FeaturesSection({ theme }) {
   return (
@@ -66,18 +89,34 @@ export default function FeaturesSection({ theme }) {
             </FeatureCard>
           </Reveal>
 
-          {/* 3. Skill Swap */}
+          {/* 3. Product Marketing (Replaced Skill Swap) */}
           <Reveal delayClass="stagger-3">
             <FeatureCard 
               theme={theme}
-              icon={Zap} iconColor="text-purple-400" iconBg="bg-purple-500/10"
-              title="Skill Swap"
-              desc="Connect with other creators to trade expertise. Learn React, teach Design."
+              icon={Rocket} iconColor="text-purple-400" iconBg="bg-purple-500/10"
+              title="Product Marketing"
+              desc="Auto-generate launch posts, track leads, and scale your product directly from your bio."
             >
-              <div className="mt-6 flex -space-x-4 justify-center py-6">
-                <div className={`w-14 h-14 rounded-full border-4 z-10 group-hover:translate-x-[-10px] transition-transform ${theme === 'dark' ? 'border-[#0A0A0A] bg-gray-700' : 'border-white bg-gray-300'}`}></div>
-                <div className={`w-14 h-14 rounded-full border-4 z-20 group-hover:scale-110 transition-transform shadow-xl ${theme === 'dark' ? 'border-[#0A0A0A] bg-gray-600' : 'border-white bg-gray-400'}`}></div>
-                <div className={`w-14 h-14 rounded-full border-4 z-10 group-hover:translate-x-[10px] transition-transform ${theme === 'dark' ? 'border-[#0A0A0A] bg-gray-500' : 'border-white bg-gray-500'}`}></div>
+               <div className="mt-6 flex flex-col items-center justify-center py-4">
+                  {/* Mock Rocket Launch UI */}
+                  <div className={`w-full p-3 rounded-lg border flex items-center gap-3 relative overflow-hidden ${theme === 'dark' ? 'bg-white/5 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+                    <div className="w-8 h-8 rounded-md bg-purple-500/20 flex items-center justify-center text-purple-400">
+                      <Megaphone size={16} />
+                    </div>
+                    <div className="flex-1">
+                      <div className={`h-2 w-20 rounded mb-1.5 ${theme === 'dark' ? 'bg-white/20' : 'bg-gray-300'}`}></div>
+                      <div className={`h-1.5 w-12 rounded ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`}></div>
+                    </div>
+                    <div className="text-xs font-bold text-purple-400 bg-purple-500/10 px-2 py-1 rounded">Launched</div>
+                  </div>
+                  
+                  {/* Growth Graph Line */}
+                  <div className="w-full mt-3 px-2 flex items-end justify-between gap-1 h-8">
+                     <div className="w-1/5 h-2 bg-purple-500/20 rounded-t"></div>
+                     <div className="w-1/5 h-4 bg-purple-500/40 rounded-t"></div>
+                     <div className="w-1/5 h-6 bg-purple-500/60 rounded-t"></div>
+                     <div className="w-1/5 h-8 bg-purple-500 rounded-t shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
+                  </div>
               </div>
             </FeatureCard>
           </Reveal>
@@ -103,17 +142,26 @@ export default function FeaturesSection({ theme }) {
             </FeatureCard>
           </Reveal>
 
-          {/* 5. Job Finder */}
+          {/* 5. Monetization / Ad Network (Replaced Job Finder) */}
           <Reveal delayClass="stagger-2">
             <FeatureCard 
               theme={theme}
-              icon={Briefcase} iconColor="text-orange-400" iconBg="bg-orange-500/10"
-              title="Job Finder"
-              desc="AI-matched freelance gigs and full-time roles based on your bio content."
+              icon={DollarSign} iconColor="text-green-400" iconBg="bg-green-500/10"
+              title="Ad Network"
+              desc="Turn your profile into an income stream. Rent digital real estate to sponsored brands."
             >
-              <div className="mt-6 space-y-2">
-                  <JobItem theme={theme} title="UX Designer" wage="$5k" />
-                  <div className="opacity-60 delay-75"><JobItem theme={theme} title="Video Editor" wage="$2k" /></div>
+              <div className="mt-6">
+                 {/* Balance Header */}
+                 <div className="flex justify-between items-end mb-3 px-1">
+                    <span className={`text-[10px] uppercase tracking-wider ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>Total Earnings</span>
+                    <span className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>$124.50</span>
+                 </div>
+                 {/* Transactions */}
+                 <div className="relative overflow-hidden h-24 mask-linear-fade">
+                    <TransactionItem theme={theme} amount="0.10" source="Click from US" delay="delay-[0ms]" />
+                    <TransactionItem theme={theme} amount="0.08" source="Click from IN" delay="delay-[1000ms]" />
+                    <TransactionItem theme={theme} amount="0.12" source="Click from UK" delay="delay-[2000ms]" />
+                 </div>
               </div>
             </FeatureCard>
           </Reveal>
