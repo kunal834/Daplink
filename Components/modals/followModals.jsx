@@ -21,7 +21,7 @@ const UserItem = React.memo(({ user }) => (
     </div>
 
     <button className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700 dark:bg-white dark:text-black dark:hover:bg-zinc-200">
-      View
+      View profile
     </button>
   </div>
 ));

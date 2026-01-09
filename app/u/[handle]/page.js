@@ -247,16 +247,17 @@ export default function ProfilePage({ params }) {
   };
 
   useEffect(() => {
-    if ( modalState.open && targetUserId) {
+    if ( modalState.isOpen && targetUserId) {
       fetchFollowData(targetUserId);
     }
-  }, [modalState.open, targetUserId]);
+  }, [modalState.isOpen, targetUserId]);
 
+  // console.log(modalState.isOpen)
 
   const fetchFollowData = async (userId) => {
     try {
       // setLoading(true);
-
+      // console.log("fetchStart")
       const res = await axios.get(`/api/getFollow/${userId}`, {
         cache: "no-store"
       });
@@ -274,9 +275,7 @@ export default function ProfilePage({ params }) {
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
-    } finally {
-      // setLoading(false);
-    }
+    } 
   };
 
 
