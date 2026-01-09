@@ -207,28 +207,30 @@ export default function ProfilePage({ params }) {
   }, [user?._id, targetUserId]);
 
   // console.log(isFollowing, "isFollowing");
-  const handleFollow = async () => {
+ const handleFollow = async () => {
     if (!user?._id) {
       toast.error("Please login to follow");
       return;
     }
 
     setFollowLoading(true);
-    // setFollowerCount(followerCount+1);
 
     try {
       const res = await axios.post("/api/follow", {
-        currentUserId: user._id,   // logged-in user
-        targetUserId: targetUserId     // profile owner
+        currentUserId: user._id, 
+        targetUserId: targetUserId 
       });
 
       const json = await res.data;
 
-      // Update follow state
       setIsFollowing(json.isFollowing);
-      setFollowCount({
-        follower:json.followersCount
-    });
+      
+      // --- FIX STARTS HERE ---
+      setFollowCount(prev => ({
+        ...prev, // This keeps the existing 'following' count
+        follower: json.followersCount // This updates only the 'follower' count
+      }));
+      // --- FIX ENDS HERE ---
 
     } catch (err) {
       console.error("Error following user:", err);
@@ -237,7 +239,6 @@ export default function ProfilePage({ params }) {
       setFollowLoading(false);
     }
   };
-
   const copyToClipboard = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
@@ -396,7 +397,7 @@ export default function ProfilePage({ params }) {
                       <div className={`text-xs ${colors.mutedText}`}>Followers</div>
                     </div>
                     <div className="stat-badge text-center"onClick={openFollowing}>
-                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.following.toLocaleString()}</div>
+                      <div className={`text-2xl font-bold ${colors.text}`}>{(followCount.following || 0).toLocaleString()}</div>
                       <div className={`text-xs ${colors.mutedText}`}>Following</div>
                     </div>
                   </div>
