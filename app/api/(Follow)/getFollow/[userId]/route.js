@@ -25,17 +25,17 @@ export async function GET(req, { params }) {
       .populate({
         path: "followers",
         select: "_id name email daplinkID",
-        // populate: {
-        //   path: "daplinkID",
-        //   select: "avatar handle"
-        // }
+        populate: {
+          path: "daplinkID",
+          select: "profile handle"
+        }
       })
       .populate({
         path: "following",
         select: "_id name email daplinkID",
         populate: {
           path: "daplinkID",
-          select: "avatar handle"
+          select: "profile handle"
         }
       });
 
