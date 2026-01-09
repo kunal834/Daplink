@@ -38,13 +38,26 @@ export default function BioPage() {
         value,
       });
     },
-    onMutate: ({ field, value }) => {
+    onMutate: async ({ field, value }) => {
+      //  Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ['daplink', user.daplinkID] });
+      // 2. Snapshot the previous value
+    const previousData = queryClient.getQueryData(['daplink', user.daplinkID]);
       // optimistic update
       queryClient.setQueryData(
         ['daplink', user.daplinkID],
         (old) => ({ ...old, [field]: value })
       );
+      return { previousData };
     },
+
+    onError: (err, variables, context) => {
+      // Rollback to previous data on error
+      queryClient.setQueryData(['daplink', user.daplinkID], context.previousData);
+    },
+    onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: ['daplink', user.daplinkID] });
+  },
   });
 
   const updateProfile = (field, value) => {
