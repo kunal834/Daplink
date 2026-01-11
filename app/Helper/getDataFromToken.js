@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export const getDataFromToken = (request) => {
     try {
         // 1. Get the token from the cookies
-        const token = request.cookies.get("authtoken")?.value || "";
+        const token = request.cookies.get("authtoken")?.value ;
         console.log(token)
         
         if (!token) {

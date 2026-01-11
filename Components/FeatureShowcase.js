@@ -12,7 +12,12 @@ import {
   DollarSign,  // For Monetization
   Megaphone,
   TrendingUp,
-  Wallet
+  Wallet,
+  CheckCircle2,
+  Trophy,
+  Heart,
+  MessageSquare,
+  Share2
 } from 'lucide-react';
 import Reveal from './ui/Reveal';
 import FeatureCard from './ui/FeatureCard';
@@ -171,21 +176,83 @@ export default function FeaturesSection({ theme }) {
             <FeatureCard 
               theme={theme}
               icon={Quote} iconColor="text-pink-400" iconBg="bg-pink-500/10"
-              title="Mindset Wall"
-              desc="Share your daily vision and values. A sticky-note wall for your digital soul."
+              title="Dappost"
+              desc="Share your daily vision and values. Manifest your time"
             >
-              <div className="relative mt-4 mx-2">
-                  <div className={`relative w-full h-28 border rounded-xl p-4 transform rotate-2 group-hover:rotate-0 transition-transform duration-300 flex flex-col justify-center shadow-2xl ${theme === 'dark' ? 'bg-[#151515] border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-                  <p className={`text-sm font-medium italic ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>"Build in silence, let success make the noise."</p>
-                  <div className="mt-3 flex items-center gap-2">
-                      <div className="w-5 h-5 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full"></div>
-                      <span className="text-[10px] text-gray-500 font-bold">@alex_creator</span>
-                  </div>
-                  <div className={`absolute -top-3 right-4 rounded-full p-1 border ${theme === 'dark' ? 'bg-[#151515] border-white/10' : 'bg-gray-50 border-gray-200'}`}>
-                      <Pin className="text-red-500 w-4 h-4 transform rotate-45" />
-                  </div>
-                  </div>
-              </div>
+             <div className="relative mt-4 mx-2 group cursor-default">
+  {/* The Card Container with Tilt Effect */}
+  <div className={`relative w-full border rounded-2xl p-5 transform rotate-2 group-hover:rotate-0 transition-all duration-300 shadow-2xl ${theme === 'dark' ? 'bg-[#151515] border-white/10' : 'bg-white border-gray-200'}`}>
+    
+    {/* Post Header */}
+    <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center gap-3">
+        {/* Avatar */}
+        <div className="relative">
+          <img 
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" 
+            alt="Avatar" 
+            className="w-10 h-10 rounded-full border border-gray-500/10"
+          />
+          <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-[#151515]"></div>
+        </div>
+        
+        {/* Name & Handle */}
+        <div>
+          <div className="flex items-center gap-1">
+            <span className={`font-bold text-sm ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
+              Prashant Rajak
+            </span>
+            <CheckCircle2 className="w-3 h-3 text-blue-500 fill-blue-500/10" />
+          </div>
+          <p className="text-xs text-gray-500">@prashant_founder · 2h</p>
+        </div>
+      </div>
+
+      {/* Verified Badge / Trophy */}
+      <div className={`px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 ${theme === 'dark' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-yellow-50 text-yellow-600'}`}>
+        <Trophy size={10} /> PRO
+      </div>
+    </div>
+
+    {/* Post Content */}
+    <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+      Just deployed the new <span className="text-blue-500 font-semibold">#Daplink</span> analytics dashboard. 🚀
+      <br /><br />
+      Traffic is up 40% since we optimized the bio-link loading speed. Check it out! 👇
+    </p>
+
+    {/* Mock Link Preview / Media */}
+    <div className={`rounded-xl border p-3 mb-4 flex items-center gap-3 ${theme === 'dark' ? 'bg-black/20 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+      <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-500">
+        <Rocket size={20} />
+      </div>
+      <div>
+        <p className={`text-xs font-bold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>daplink.online/analytics</p>
+        <p className="text-[10px] text-gray-500">Live Real-time Data</p>
+      </div>
+    </div>
+
+    {/* Action Bar (Static) */}
+    <div className={`flex items-center justify-between pt-2 border-t ${theme === 'dark' ? 'border-white/5' : 'border-gray-100'}`}>
+      <div className="flex items-center gap-1 text-gray-500 text-xs">
+        <Heart size={14} className="text-pink-500 fill-pink-500" /> 
+        <span className="font-medium">1.2k</span>
+      </div>
+      <div className="flex items-center gap-1 text-gray-500 text-xs">
+        <MessageSquare size={14} /> 
+        <span className="font-medium">84</span>
+      </div>
+      <div className="flex items-center gap-1 text-gray-500 text-xs">
+        <Share2 size={14} /> 
+        <span className="font-medium">Share</span>
+      </div>
+    </div>
+
+  </div>
+
+  {/* Decorative Background Glow (Optional) */}
+  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 -z-10"></div>
+</div>
             </FeatureCard>
           </Reveal>
 

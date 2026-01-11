@@ -27,13 +27,13 @@ const PLANS = [
       { text: "DapLink branding", included: true },
       { text: "Custom domain", included: false },
       { text: "Advanced analytics", included: false },
-      { text: "2 Barcodes", included: true },
+      { text: "2 Qr codes", included: true },
     ]
   },
   {
     id: 'pro',
     title: "Pro",
-    usdPrice: 9,
+    usdPrice: 1.8,
     description: "For professionals who mean business",
     isPopular: true,
     features: [
@@ -43,13 +43,13 @@ const PLANS = [
       { text: "Remove DapLink branding", included: true },
       { text: "Priority templates", included: true },
       { text: "Email support", included: true },
-      { text: "20 Barcodes", included: true },
+      { text: "60 custom Qr codes", included: true },
     ]
   },
   {
     id: 'premium',
     title: "Premium",
-    usdPrice: 29,
+    usdPrice: 4.9,
     description: "Maximum power for serious creators",
     isPopular: false,
     features: [
@@ -58,6 +58,7 @@ const PLANS = [
       { text: "AI profile optimizer", included: true },
       { text: "Custom CSS", included: true },
       { text: "Dedicated account manager", included: true },
+       { name: "Advanced Analytics", free: false, pro: true, premium: true },
       { text: "Unlimited Shortener", included: true },
       { text: "215 QR codes", included: true },
     ]

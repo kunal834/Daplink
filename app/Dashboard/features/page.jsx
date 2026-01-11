@@ -29,12 +29,12 @@ export default function FeaturesPage() {
     },
     {
       icon: Users,
-      title: 'Community & Skill Swap',
-      description: 'Connect with creators, collaborate, and exchange skills.'
+      title: 'Community',
+      description: 'Connect with peoples, collaborate, and grow'
     },
     {
       icon: Palette,
-      title: 'Custom Bio Page',
+      title: 'Custom Bio Templates',
       description: 'Design a personalized bio page that represents your brand.'
     },
     {
@@ -67,8 +67,8 @@ export default function FeaturesPage() {
         </h1>
         
         <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
-          DapLink provides powerful tools to manage links, track performance,
-          and build your creator presence from one dashboard.
+       {`DapLink provides powerful tools to manage links, track performance,
+          and build your creator presence from one dashboard.`}
         </p>
       </section>
 
@@ -93,7 +93,7 @@ export default function FeaturesPage() {
                 {feature.description}
               </p>
             </div>
-          ))}
+          ))} 
         </div>
       </section>
     </main>

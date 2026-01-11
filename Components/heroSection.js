@@ -67,10 +67,10 @@ export default function HeroSection({ theme }) {
             
             {/* Badge */}
             <Reveal delayClass="stagger-1">
-              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-md transition-colors cursor-default ${theme === 'dark' ? 'bg-white/5 border-white/10 text-teal-300' : 'bg-teal-50 border-teal-100 text-teal-700'}`}>
+              {/* <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-md transition-colors cursor-default ${theme === 'dark' ? 'bg-white/5 border-white/10 text-teal-300' : 'bg-teal-50 border-teal-100 text-teal-700'}`}>
                 <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-teal-200">v2.0 is Live</span>
-              </div>
+              </div> */}
             </Reveal>
             
             {/* Headline */}
