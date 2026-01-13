@@ -130,8 +130,8 @@ export default function SettingsTab({ isDarkMode }) {
       
       {/* Header */}
       <div>
-        <h2 className={`text-3xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Edit Profile</h2>
-        <p className="text-zinc-500 mt-1">Manage your public appearance and content.</p>
+        <h2 className={`text-3xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{`Edit Profile`}</h2>
+        <p className="text-zinc-500 mt-1">{`Manage your public appearance and content.`}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -224,7 +224,7 @@ export default function SettingsTab({ isDarkMode }) {
           <div className={`p-6 border-b ${isDarkMode ? 'border-zinc-800' : 'border-zinc-100'}`}>
             <h3 className={`text-lg font-bold flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
               <Layout size={20} className="text-pink-500" />
-              Bio & About
+              {`Bio & About`}
             </h3>
           </div>
           <div className="p-6">
@@ -263,7 +263,7 @@ export default function SettingsTab({ isDarkMode }) {
             {formData.links.length === 0 ? (
                <div className="text-center py-10 opacity-50">
                   <LinkIcon size={40} className="mx-auto mb-3 text-zinc-500"/>
-                  <p>No links added yet. Click "Add New Link" to start.</p>
+                  <p>{`No links added yet. Click "Add New Link" to start.`}</p>
                </div>
             ) : (
               formData.links.map((link, index) => (
