@@ -8,7 +8,8 @@ import {
   Loader2, User, ArrowRight, Lock, Sparkles, Users, UserPlus, UserCheck,
   Edit,
   Heart,
-  MessageSquare
+  MessageSquare,
+  Globe
 } from 'lucide-react';
 
 import { useTheme } from '../../../context/ThemeContext';
