@@ -6,7 +6,9 @@ import {
   Link as LinkIcon, Brain, Wrench, Share2, ExternalLink,
   CheckCircle, Moon, Sun, MapPin, Briefcase, Search,
   Loader2, User, ArrowRight, Lock, Sparkles, Users, UserPlus, UserCheck,
-  Edit
+  Edit,
+  Heart,
+  MessageSquare
 } from 'lucide-react';
 
 import { useTheme } from '../../../context/ThemeContext';
@@ -18,6 +20,7 @@ import Navbar from "@/Components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
 import FollowModal from "@/Components/modals/followModals";
+import { FiGithub, FiInstagram, FiLinkedin, FiYoutube } from "react-icons/fi";
 
 /* -------------------------------------------------------------------------- */
 /* STYLES & ANIMATIONS                                                        */
@@ -113,12 +116,13 @@ export default function ProfilePage({ params }) {
   const [copied, setCopied] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followCount, setFollowCount] = useState({
-    follower:0,
-    following:0
+    follower: 0,
+    following: 0
   });
   const [followLoading, setFollowLoading] = useState(false);
   const [targetUserId, setTargetUserId] = useState(null);
   const [modalState, setModalState] = useState({ isOpen: false, tab: 'followers' });
+  const [activeTab, setActiveTab] = useState('links');
 
   const openFollowers = () => setModalState({ isOpen: true, tab: 'followers' });
   const openFollowing = () => setModalState({ isOpen: true, tab: 'following' });
@@ -140,9 +144,9 @@ export default function ProfilePage({ params }) {
         if (res.data) {
           setTargetUserId(json.userId);
           setFollowCount({
-            follower:json.follower.length,
-            following:json.following.length
-        });
+            follower: json.follower.length,
+            following: json.following.length
+          });
         }
       } catch (error) {
         // console.error("Error fetching user ID:", error);
@@ -207,7 +211,7 @@ export default function ProfilePage({ params }) {
   }, [user?._id, targetUserId]);
 
   // console.log(isFollowing, "isFollowing");
- const handleFollow = async () => {
+  const handleFollow = async () => {
     if (!user?._id) {
       toast.error("Please login to follow");
       return;
@@ -217,14 +221,14 @@ export default function ProfilePage({ params }) {
 
     try {
       const res = await axios.post("/api/follow", {
-        currentUserId: user._id, 
-        targetUserId: targetUserId 
+        currentUserId: user._id,
+        targetUserId: targetUserId
       });
 
       const json = await res.data;
 
       setIsFollowing(json.isFollowing);
-      
+
       // --- FIX STARTS HERE ---
       setFollowCount(prev => ({
         ...prev, // This keeps the existing 'following' count
@@ -248,7 +252,7 @@ export default function ProfilePage({ params }) {
   };
 
   useEffect(() => {
-    if ( modalState.isOpen && targetUserId) {
+    if (modalState.isOpen && targetUserId) {
       fetchFollowData(targetUserId);
     }
   }, [modalState.isOpen, targetUserId]);
@@ -276,7 +280,7 @@ export default function ProfilePage({ params }) {
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
-    } 
+    }
   };
 
 
@@ -313,260 +317,243 @@ export default function ProfilePage({ params }) {
     );
   }
 
-  const { handle, profile, script, links = [], mindset, skillsoff = [], skillsseek = [], location, profession } = data;
+  const { handle, profile, script, links = [], mindset, location, profession } = data;
 
   return (
     <><Navbar />
-      <div className={`min-h-screen w-full transition-colors duration-300 ${colors.bg} font-sans pb-20`}>
-        <PageStyles theme={theme} />
+      <div className={`min-h-screen w-full transition-colors duration-500 selection:bg-blue-500 selection:text-white font-sans pb-10 overflow-x-hidden ${theme === 'dark' ? 'bg-[#030303] text-white' : 'bg-gray-50 text-gray-900'
+        }`}>
+        <style>{`
+        .glass { 
+          background: ${theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.7)'}; 
+          backdrop-filter: blur(20px); 
+          border: 1px solid ${theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)'}; 
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: ${theme === 'dark' ? '#333' : '#ccc'}; border-radius: 10px; }
+        @keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fade-up 0.6s ease forwards; }
+      `}</style>
 
-        {/* Simplified Background */}
-        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-          {theme === 'dark' ? (
-            <>
-              <div className="absolute w-[500px] h-[500px] bg-teal-500/5 top-0 right-0 rounded-full blur-[100px]"></div>
-              <div className="absolute w-[500px] h-[500px] bg-purple-500/5 bottom-0 left-0 rounded-full blur-[100px]"></div>
-            </>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-teal-50/30 via-white to-purple-50/30"></div>
-          )}
+        {/* Dynamic Background Glows */}
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+          <div className={`absolute top-0 left-0 w-[80vw] h-[80vw] rounded-full blur-[120px] -translate-x-1/3 -translate-y-1/3 opacity-50 transition-colors duration-700 ${theme === 'dark' ? 'bg-blue-500/10' : 'bg-blue-500/5'}`}></div>
+          <div className={`absolute bottom-0 right-0 w-[80vw] h-[80vw] rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 opacity-50 transition-colors duration-700 ${theme === 'dark' ? 'bg-purple-500/10' : 'bg-purple-500/5'}`}></div>
         </div>
 
-        {/* Main Content */}
-        <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 pt-24">
+        {/* Top Header Actions (Theme & Share) */}
+        {/* <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <button
+            onClick={copyToClipboard}
+            className={`w-10 h-10 glass rounded-2xl flex items-center justify-center transition-all active:scale-90 hover:scale-105 shadow-xl`}
+            title="Share Profile"
+          >
+            <Share2 size={16} className={copied ? "text-green-500" : (theme === 'dark' ? "text-zinc-400" : "text-gray-600")} />
+          </button>
+            {copied ? (
+              <>
+                <CheckCircle size={16} className="text-green-500" />
+                <span className="text-green-500">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 size={16} />
+                <span>Share</span>
+              </>
+            )}
+          </button>
+        </div> */}
 
-          {/* Profile Header - Horizontal Layout */}
-          <div className={`glass-card rounded-3xl p-8 mb-6 animate-enter`}>
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-              {/* Profile Image */}
-              <div className="relative flex-shrink-0">
-                <div className={`absolute -inset-1 rounded-full blur-md opacity-50 ${theme === 'dark' ? 'bg-gradient-to-r from-teal-500 to-purple-500' : 'bg-gradient-to-r from-teal-400 to-purple-400'}`}></div>
-                <img
-                  src={profile || `https://placehold.co/200x200/222/fff?text=${handle?.[0]?.toUpperCase() || '@'}`}
-                  alt={`@${handle}`}
-                  className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 ${theme === 'dark' ? 'border-[#0a0a0a]' : 'border-white'} shadow-xl`}
-                />
-                <div className={`absolute bottom-1 right-1 ${theme === 'dark' ? 'bg-blue-500' : 'bg-blue-400'} text-white p-1.5 rounded-full border-3 ${theme === 'dark' ? 'border-[#0a0a0a]' : 'border-white'}`}>
-                  <CheckCircle size={14} fill="currentColor" />
-                </div>
-                <div className="fixed top-4 right-6">
-                  <button
-                    onClick={copyToClipboard}
-                    className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 text-sm font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] hover:bg-[#222] text-gray-400 hover:text-white' : 'bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-900 shadow-sm border border-gray-200'}`}
+        <div className="relative z-10 max-w-2xl mx-auto px-6 pt-12 space-y-6">
+
+          {/* Profile Header */}
+          <header className="text-center animate-fade">
+            <div className="relative inline-block mb-4">
+              <div className={`absolute -inset-2 rounded-full opacity-30 blur-2xl transition-colors duration-700 ${theme === 'dark' ? 'bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500' : 'bg-gradient-to-tr from-blue-400 via-indigo-400 to-teal-400'
+                }`}></div>
+
+              <img
+                src={profile}
+                alt={handle}
+                className={`relative w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 transition-colors duration-500 ${theme === 'dark' ? 'border-black shadow-2xl' : 'border-white shadow-lg'}`}
+              />
+
+              <div className={`absolute bottom-0 right-0 p-1 rounded-full border-2 transition-colors duration-500 ${theme === 'dark' ? 'bg-blue-500 border-[#030303]' : 'bg-blue-500 border-white'
+                }`}>
+                <CheckCircle size={12} className="text-white" fill="currentColor" />
+              </div>
+            </div>
+
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-1">@{data?.handle}</h1>
+            <p className={`text-xs md:text-sm font-medium px-4 max-w-sm mx-auto leading-relaxed transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-400' : 'text-gray-600'}`}>
+              {profession ? profession : "Content Creator"}
+            </p>
+
+            <div className={`flex items-center justify-center gap-1.5 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] mt-3 transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-600' : 'text-gray-400'
+              }`}>
+              <MapPin size={10} />
+              {/* {console.log("location", data)} */}
+              <span>{location ? location : "Remote"}</span>
+            </div>
+          </header>
+
+          {/* Stats & Actions */}
+          <section className="space-y-4 max-w-md mx-auto">
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => setModalState({ isOpen: true, tab: 'followers' })}
+                className="flex-1 glass rounded-[24px] py-3 px-4 flex flex-col items-center hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+              >
+                <span className="text-base md:text-lg font-bold">{followCount.follower.toLocaleString()}</span>
+                <span className={`text-[7px] md:text-[8px] uppercase tracking-[0.1em] font-black transition-colors ${theme === 'dark' ? 'text-zinc-600' : 'text-gray-400'}`}>Followers</span>
+              </button>
+              <button
+                onClick={() => setModalState({ isOpen: true, tab: 'following' })}
+                className="flex-1 glass rounded-[24px] py-3 px-4 flex flex-col items-center hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+              >
+                <span className="text-base md:text-lg font-bold">{followCount.following}</span>
+                <span className={`text-[7px] md:text-[8px] uppercase tracking-[0.1em] font-black transition-colors ${theme === 'dark' ? 'text-zinc-600' : 'text-gray-400'}`}>Following</span>
+              </button>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={handleFollow}
+                disabled={followLoading}
+                className={`flex-1 py-3 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 hover:scale-110 ${isFollowing
+                  ? (theme === 'dark' ? 'bg-zinc-900 border border-zinc-800 text-zinc-500' : 'bg-gray-100 text-gray-400')
+                  : (theme === 'dark' ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-gray-800')
+                  } active:scale-95`}
+              >
+                {followLoading ? <Loader2 size={14} className="animate-spin" /> : isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
+                {isFollowing ? 'Following' : 'Follow'}
+              </button>
+              <button
+                className="glass flex-1 py-3 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 active:scale-95 hover:bg-black/5 dark:hover:bg-white/5"
+              >
+                <MessageSquare size={14} className={theme === 'dark' ? "text-zinc-400" : "text-gray-600"} />
+                <span>Message</span>
+              </button>
+            </div>
+          </section>
+
+          {/* Social Bar - Compact Icons */}
+          <section className="grid grid-cols-4 gap-2 max-w-[280px] mx-auto">
+            {[
+              { Icon: FiGithub, color: 'hover:text-white dark:hover:text-white' },
+              { Icon: FiInstagram, color: 'hover:text-pink-500' },
+              { Icon: FiLinkedin, color: 'hover:text-blue-500' },
+              { Icon: FiYoutube, color: 'hover:text-red-500' }
+            ].map(({ Icon, color }, idx) => (
+              <button key={idx} className={`glass py-3 rounded-xl flex items-center justify-center transition-all hover:bg-black/5 dark:hover:bg-white/5 ${theme === 'dark' ? 'text-zinc-500' : 'text-gray-400'} ${color}`}>
+                <Icon size={16} />
+              </button>
+            ))}
+          </section>
+
+          {/* Tab Switcher - Compact */}
+          <nav className="glass rounded-full p-1 flex gap-1 max-w-[320px] mx-auto">
+            <button
+              onClick={() => setActiveTab('links')}
+              className={`flex-1 py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'links'
+                ? (theme === 'dark' ? 'bg-white/10 text-white' : 'bg-black/5 text-black')
+                : (theme === 'dark' ? 'text-zinc-600 hover:text-zinc-400' : 'text-gray-400 hover:text-gray-600')
+                }`}
+            >
+              Links
+            </button>
+            <button
+              onClick={() => setActiveTab('posts')}
+              className={`flex-1 py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'posts'
+                ? (theme === 'dark' ? 'bg-white/10 text-white' : 'bg-black/5 text-black')
+                : (theme === 'dark' ? 'text-zinc-600 hover:text-zinc-400' : 'text-gray-400 hover:text-gray-600')
+                }`}
+            >
+              Posts
+            </button>
+          </nav>
+
+          {/* Tab Content */}
+          <div className="min-h-[300px] animate-fade">
+            {activeTab === 'links' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {data?.links?.map((item, idx) => (
+                  <a
+                    key={idx}
+                    href={item.link}
+                    className={`block glass p-4 rounded-[24px] flex items-center group transition-all hover:translate-y-[-1px] ${idx === 2 ? 'md:col-span-2' : ''
+                      }`}
                   >
-                    {copied ? (
-                      <>
-                        <CheckCircle size={16} className="text-green-500" />
-                        <span className="text-green-500">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Share2 size={16} />
-                        <span>Share</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Profile Info */}
-              <div className="flex-1 text-center sm:text-left">
-                <h1 className={`text-3xl sm:text-4xl font-bold mb-2 ${colors.text}`}>@{handle}</h1>
-                {script && <p className={`text-sm sm:text-base mb-4 ${colors.subtext} max-w-lg`}>{script}</p>}
-
-                {/* Location & Profession Pills */}
-                <div className="flex flex-wrap gap-2 mb-4 justify-center sm:justify-start">
-                  {location && (
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
-                      <MapPin size={12} className="text-teal-500" /> {location}
-                    </span>
-                  )}
-                  {profession && (
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-400' : 'bg-gray-100 text-gray-600'}`}>
-                      <Briefcase size={12} className="text-purple-500" /> {profession}
-                    </span>
-                  )}
-                </div>
-
-                {/* Stats and Follow Button Row */}
-                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
-                  {/* Stats */}
-                  <div className="flex gap-6 cursor-pointer">
-                    <div className="stat-badge text-center" onClick={openFollowers}>
-                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.follower || 0}</div>
-                      <div className={`text-xs ${colors.mutedText}`}>Followers</div>
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${theme === 'dark' ? 'bg-white/5 text-zinc-400 group-hover:text-white' : 'bg-black/5 text-gray-500 group-hover:text-black'
+                      }`}>
+                      <Globe size={16} />
                     </div>
-                    <div className="stat-badge text-center"onClick={openFollowing}>
-                      <div className={`text-2xl font-bold ${colors.text}`}>{followCount.following || 0}</div>
-                      <div className={`text-xs ${colors.mutedText}`}>Following</div>
+                    <div className="ml-4 flex-1 overflow-hidden">
+                      <h3 className="text-sm font-bold tracking-tight">{item.linktext}</h3>
+                      <p className={`text-[10px] truncate tracking-wide ${theme === 'dark' ? 'text-zinc-600' : 'text-gray-400'}`}>
+                        {item.link}
+                      </p>
+                    </div>
+                    <ExternalLink size={14} className={`transition-colors ml-2 ${theme === 'dark' ? 'text-zinc-800 group-hover:text-zinc-500' : 'text-gray-200 group-hover:text-gray-400'
+                      }`} />
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                {/* {[...Array(9)].map((_, i) => (
+                  <div key={i} className="aspect-square glass rounded-xl overflow-hidden group cursor-pointer relative shadow-sm">
+                    <img
+                      src={`https://images.unsplash.com/photo-${1550000000000 + i * 1500}?w=400&h=400&fit=crop`}
+                      className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+                      alt="Post"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Heart size={14} className="text-white fill-white mr-1" />
+                      <span className="text-[10px] font-bold text-white">128</span>
                     </div>
                   </div>
-
-                  {/* Follow Button */}
-                  {user?._id && user._id !== targetUserId && (
-                    <button
-                      onClick={handleFollow}
-                      disabled={followLoading}
-                      className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 ${isFollowing
-                        ? theme === 'dark'
-                          ? 'bg-[#1a1a1a] text-white hover:bg-[#222] border border-[#333]'
-                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-200'
-                        : 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white hover:from-teal-600 hover:to-emerald-700 shadow-md hover:shadow-lg'
-                        } ${followLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                    >
-                      {followLoading ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : isFollowing ? (
-                        <>
-                          <UserCheck size={16} />
-                          <span>Following</span>
-                        </>
-                      ) : (
-                        <>
-                          <UserPlus size={16} />
-                          <span>Follow</span>
-                        </>
-                      )}
-                    </button>
-                  )}
-
+                ))} */}
+                <div className={`col-span-3 md:col-span-4 glass rounded-xl p-6 flex flex-col items-center justify-center text-center ${theme === 'dark' ? 'bg-black/10' : 'bg-white/70'}`}>
+                  <Brain size={32} className={theme === 'dark' ? 'text-white/70' : 'text-gray-400'} />
+                  <h3 className="mt-4 text-lg font-bold">No Posts Yet</h3>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-enter" style={{ animationDelay: '100ms' }}>
-
-            {/* Left Column - Links */}
-            <div className="lg:col-span-2 space-y-4">
-              {links.length > 0 && (
-                <>
-                  <h2 className={`text-lg font-bold mb-4 ${colors.text} flex items-center gap-2`}>
-                    <LinkIcon size={18} className="text-teal-500" />
-                    Quick Links
-                  </h2>
-                  {links.map((item, idx) => (
-                    <a
-                      key={idx}
-                      href={item.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={`link-card glass-card group flex items-center justify-between p-4 rounded-2xl`}
-                    >
-                      <div className="flex items-center gap-3 overflow-hidden flex-1">
-                        <div className={`w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center ${theme === 'dark' ? 'bg-gradient-to-br from-teal-500/10 to-purple-500/10' : 'bg-gradient-to-br from-teal-50 to-purple-50'}`}>
-                          <LinkIcon size={18} className="text-teal-500" />
-                        </div>
-                        <span className={`font-semibold text-sm truncate ${colors.text}`}>{item.linktext}</span>
-                      </div>
-                      <ExternalLink size={16} className={`${colors.subtext} group-hover:text-teal-500 transition-colors flex-shrink-0 ml-2`} />
-                    </a>
-                  ))}
-                </>
-              )}
+          {/* CTA Section - Compact */}
+          {/* <div className={`glass rounded-[32px] p-6 md:p-8 flex flex-col items-center text-center gap-4 shadow-2xl transition-all ${theme === 'dark' ? 'bg-gradient-to-br from-white/5 to-transparent' : 'bg-gradient-to-br from-black/5 to-transparent'
+            }`}>
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${theme === 'dark' ? 'bg-white/5' : 'bg-black/5'
+              }`}>
+              <Sparkles className="text-blue-500" size={24} />
             </div>
-
-            {/* Right Column - Mindset & Skills */}
-            <div className="space-y-4">
-
-              {/* Mindset Card */}
-              {mindset && (
-                <div className={`glass-card p-6 rounded-2xl`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Brain size={18} className="text-teal-500" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-teal-500">Mindset</span>
-                  </div>
-                  <p className={`text-sm leading-relaxed italic ${colors.text}`}>{`"${mindset}"`}</p>
-                </div>
-              )}
-
-              {/* Skills Card */}
-              {(skillsoff.length > 0 || skillsseek.length > 0) && (
-                <div className={`glass-card p-6 rounded-2xl space-y-5`}>
-                  {skillsoff.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Wrench size={16} className="text-purple-500" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-purple-500">Offering</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {skillsoff.map((skill, i) => (
-                          <span key={i} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {skillsseek.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Search size={16} className="text-orange-500" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-orange-500">Seeking</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {skillsseek.map((skill, i) => (
-                          <span key={i} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* CTA Card */}
-          <div className={`glass-card rounded-2xl p-6 mt-6 animate-enter`} style={{ animationDelay: '200ms' }}>
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-center sm:text-left">
-                <h3 className={`text-lg font-bold mb-1 ${colors.text}`}>Join DapLink Today</h3>
-                <p className={`text-sm ${colors.subtext}`}>Create your professional profile in minutes</p>
-              </div>
-              <div className="flex gap-3 w-full sm:w-auto">
-                <Link href="/Explorepeoples" className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${theme === 'dark' ? 'bg-[#1a1a1a] text-gray-300 hover:bg-[#222] hover:text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'}`}>
-                  <User size={16} /> Explore
-                </Link>
-                <button onClick={() => setModalOpen(true)} className="px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-emerald-700 transition-all text-sm flex items-center gap-2 shadow-md hover:shadow-lg">
-                  Jobs <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Modal */}
-          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} theme={theme}>
-            <div className={`p-8 w-full text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-purple-500"></div>
-              <div className={`mx-auto w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${theme === 'dark' ? 'bg-teal-500/10' : 'bg-teal-50'}`}>
-                <Lock size={24} className="text-teal-500" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3">Unlock Premium Features</h3>
-              <p className={`mb-8 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                Access exclusive job listings and connect with top recruiters
+            <div className="space-y-1">
+              <h3 className="text-lg md:text-xl font-bold tracking-tight">Claim your handle</h3>
+              <p className={`text-[10px] md:text-xs leading-relaxed max-w-[240px] mx-auto ${theme === 'dark' ? 'text-zinc-500' : 'text-gray-500'}`}>
+                Join 10,000+ designers and developers building their personal brand.
               </p>
-              <div className="flex flex-col gap-3">
-                <Link href="/Pricing" className="w-full py-3 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold rounded-xl transition-all">
-                  View Pricing
-                </Link>
-                <button onClick={() => setModalOpen(false)} className={`text-sm py-2 ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-gray-800'}`}>
-                  Maybe later
-                </button>
-              </div>
             </div>
-          </Modal>
+            <button className={`w-full max-w-xs py-3 rounded-2xl font-bold uppercase tracking-widest text-[9px] active:scale-95 transition-all shadow-xl ${theme === 'dark' ? 'bg-white text-black shadow-white/5' : 'bg-black text-white shadow-black/10'
+              }`}>
+              Get Started Free
+            </button>
+          </div> */}
 
-          <FollowModal
-            isOpen={modalState.isOpen}
-            onClose={closeModal}
-            initialTab={modalState.tab}
-            data={followData}
-          />
-
+          <footer className="text-center pt-6 border-t border-black/5 dark:border-white/5">
+            <p className={`text-[8px] font-bold uppercase tracking-[0.4em] transition-colors ${theme === 'dark' ? 'text-zinc-800' : 'text-gray-300'
+              }`}>Developed by Daplink &copy; 2026</p>
+          </footer>
         </div>
+
+        <FollowModal
+          isOpen={modalState.isOpen}
+          onClose={closeModal}
+          initialTab={modalState.tab}
+          data={followData}
+          theme={theme}
+        />
       </div>
     </>
   );
