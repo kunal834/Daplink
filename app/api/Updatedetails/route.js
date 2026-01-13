@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Link from "@/models/Link";
+import User from "@/models/user";
 import { getDataFromToken } from "@/app/Helper/getDataFromToken";
 export async function PUT(req){
    
@@ -9,17 +10,25 @@ export async function PUT(req){
     await connectDB();
         const { handle, profile , link , location ,  profession , skillsoff } = body;
 
-       const { searchParams } = new URL(req.url);
-        const daplinkid = searchParams.get("daplinkID");
- 
-     console.log("daplinkiduser" , daplinkid)
+        const useridfromtoken = getDataFromToken(req);
 
-     if(!daplinkid){
-        return NextResponse.json({
-            success : false,
-            message: "UnAuthorized user log in please"
-        })
-     }
+        if(!useridfromtoken ){
+            return NextResponse.json({
+                success: false,
+                message: "Please authenticate first"
+
+            })
+        }
+
+       const user=  await User.findById(useridfromtoken).populate("daplinkID");// we will get the full data related to daplinkId also
+     
+       
+       console.log("Authuser",user);
+       const daplinkid = user.daplinkID;
+       console.log("DaplinkId of Authuser",daplinkid)
+       console.log("links" , user.daplinkID.links)
+
+  
     const updatedData ={
         handle, profile , link , location ,  profession , skillsoff
     }
@@ -40,7 +49,7 @@ export async function PUT(req){
     
  return  NextResponse.json({ 
             success : true,
-            nessage : "Your profile updated successfully",
+            message : "Your profile updated successfully",
             updateduser
         },{ status: 200 })
  
