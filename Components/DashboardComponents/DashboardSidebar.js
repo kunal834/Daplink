@@ -93,11 +93,11 @@ const Sidebar = ({ isDarkMode }) => {
         <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-5 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-700 blur-xl" />
           <div className="relative z-10">
-            <p className="text-xs font-medium text-indigo-200 mb-1">Pro Plan</p>
+            <p className="text-xs font-medium text-indigo-200 mb-1">Free plan</p>
             <p className="text-sm font-bold mb-4">Unlock Everything</p>
-            <button className="w-full bg-white text-indigo-600 text-xs font-bold py-2.5 rounded-lg hover:bg-indigo-50 transition-colors shadow-sm">
+            <Link href="/Pricing" className="w-full bg-white text-indigo-600 text-xs font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 transition-colors shadow-sm">
               Upgrade
-            </button>
+            </Link>
           </div>
         </div>
       </div>

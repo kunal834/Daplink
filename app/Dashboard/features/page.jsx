@@ -9,43 +9,51 @@ import {
   Shield,
   Palette
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function FeaturesPage() {
   const features = [
     {
       icon: LinkIcon,
       title: 'Smart URL Shortener',
-      description: 'Create clean, branded short links with analytics and redirection control.'
+      description: 'Create clean, branded short links with analytics and redirection control.',
+      href : "/URLshorten"
     },
     {
       icon: BarChart3,
       title: 'Advanced Analytics',
-      description: 'Track clicks, views, traffic sources, and performance over time.'
+      description: 'Track clicks, views, traffic sources, and performance over time.',
+      href : "/Dashboard/analytics"
     },
     {
       icon: QrCode,
       title: 'QR Code Generator',
-      description: 'Generate scannable QR codes for your links, profiles, and campaigns.'
+      description: 'Generate scannable QR codes for your links, profiles, and campaigns.',
+      href : "/Qrcode"
     },
     {
       icon: Users,
       title: 'Community',
-      description: 'Connect with peoples, collaborate, and grow'
+      description: 'Connect with peoples, collaborate, and grow',
+      href : "/Explorepeoples"
     },
     {
       icon: Palette,
       title: 'Custom Bio Templates',
-      description: 'Design a personalized bio page that represents your brand.'
+      description: 'Design a personalized bio page that represents your brand.',
+      href : "Template"
     },
     {
       icon: Shield,
       title: 'Secure & Reliable',
-      description: 'Enterprise-grade security with reliable infrastructure.'
+      description: 'Enterprise-grade security with reliable infrastructure.',
+      href : "/"
     },
     {
       icon: Zap,
       title: 'Fast Performance',
-      description: 'Optimized for speed with instant navigation and caching.'
+      description: 'Optimized for speed with instant navigation and caching.',
+      href : "/Pricing"
     }
   ];
 
@@ -85,9 +93,11 @@ export default function FeaturesPage() {
                 <feature.icon className="w-7 h-7 text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors duration-300" />
               </div>
 
-              <h3 className="font-bold text-xl mb-3 text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              <Link href={feature.href} className="font-bold text-xl mb-3 text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                 {feature.title}
-              </h3>
+              </Link>
+
+
               
               <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 {feature.description}
