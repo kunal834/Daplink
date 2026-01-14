@@ -1,29 +1,29 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { X, Search } from "lucide-react";
+import { X, Search, User, LoaderIcon } from "lucide-react";
 import Link from "next/link";
 
-const UserItem = React.memo(({ user }) => (
-  <div className="flex items-center justify-between rounded-xl px-3 py-3 transition hover:bg-zinc-100 dark:hover:bg-zinc-800">
+const UserItem = React.memo(({ user,theme }) => (
+  <div className={`flex items-center justify-between rounded-xl px-3 py-3 transition `}>
     <div className="flex items-center gap-4">
-      {console.log("user",user)}
+      {/* {console.log("user", user)} */}
       <img
         src={user.daplinkID.profile}
         alt={user.username}
-        className="h-11 w-11 rounded-full object-cover ring-2 ring-zinc-200 dark:ring-zinc-700"
+        className={`h-11 w-11 rounded-full object-cover ring-2 ring-zinc-200 ${theme === 'dark' ? 'ring-zinc-200' : 'ring-zinc-700'}`}
         onError={e => (e.currentTarget.src = "https://via.placeholder.com/150")}
       />
       <div>
-        <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+        <p className={`text-sm font-semibold  ${theme === 'dark' ? 'text-white' : 'text-zinc-800'}`}>
           {user.daplinkID.handle}
         </p>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+        <p className={`text-xs  uppercase tracking-wide ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-500'}`}>
           {user.name}
         </p>
       </div>
     </div>
 
-    <Link className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-    href={`/u/${user.daplinkID.handle}`}
+    <Link className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${theme === 'dark' ? 'bg-zinc-200 text-zinc-900 hover:bg-zinc-50' : 'bg-zinc-800 text-zinc-100 hover:bg-black hover:text-white'} hover:scale-105`}
+      href={`/u/${user.daplinkID.handle}`}
     >
       View profile
     </Link>
@@ -34,6 +34,7 @@ export default function FollowModal({
   isOpen,
   onClose,
   initialTab = "followers",
+  theme,
   data
 }) {
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -56,45 +57,52 @@ export default function FollowModal({
     );
   }, [data, activeTab, search]);
 
+  if(!users) return LoaderIcon;
+
   if (!isOpen) return null;
 
+  
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
       />
 
-      {/* Modal */}
+      {/* Modal Container */}
       <div
         onClick={e => e.stopPropagation()}
-        className="relative flex h-[600px] w-full max-w-[420px] flex-col rounded-3xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950"
+        className={`relative flex h-[500px] w-full max-w-[400px] flex-col rounded-[32px] border shadow-2xl transition-all duration-300 animate-in zoom-in-95 ${theme === 'dark'
+            ? "border-white/10 bg-[#0a0a0a]/90 backdrop-blur-xl text-white"
+            : "border-zinc-200 bg-white/90 backdrop-blur-xl text-zinc-900"
+          }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6">
-          <h2 className="text-lg font-bold uppercase tracking-tight text-zinc-900 dark:text-white">
+        <div className="flex items-center justify-between px-6 pt-5">
+          <h2 className={`text-[10px] font-black uppercase tracking-[0.3em] ${theme === 'dark' ? "text-zinc-300" : "text-zinc-700"}`}>
             {activeTab}
           </h2>
           <button
             onClick={onClose}
-            className="rounded-full bg-zinc-100 p-2 text-zinc-500 transition hover:text-zinc-900 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+            className={`rounded-full p-2 transition-all active:scale-90 ${theme === 'dark' ? "bg-white/5 text-zinc-500 hover:text-white" : "bg-zinc-100 text-zinc-500 hover:text-zinc-900"
+              }`}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="mt-4 flex gap-2 px-6">
+        {/* Tab Switcher - Refined */}
+        <div className="mt-4 flex gap-1 px-6">
           {["followers", "following"].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 rounded-full py-2 text-xs font-bold uppercase tracking-wider transition
-                ${
-                  activeTab === tab
-                    ? "bg-zinc-900 text-white dark:bg-white dark:text-black"
-                    : "bg-zinc-100 text-zinc-500 hover:text-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
+              className={`flex-1 rounded-full py-2.5 text-[9px] font-black uppercase tracking-widest transition-all
+                ${activeTab === tab
+                  ? (theme === 'dark' ? "bg-white text-black" : "bg-zinc-900 text-white")
+                  : (theme === 'dark' ? "bg-white/5 text-zinc-400 hover:text-zinc-200" : "bg-zinc-50 text-zinc-600 hover:text-zinc-800")
                 }`}
             >
               {tab}
@@ -102,30 +110,18 @@ export default function FollowModal({
           ))}
         </div>
 
-        {/* Search  to be implemented later*/}
-        {/* <div className="px-6 py-4">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
-            />
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search profiles"
-              className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-3 pl-11 pr-4 text-sm font-medium text-zinc-900 outline-none focus:ring-2 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:focus:ring-white"
-            />
-          </div>
-        </div> */}
-
-        {/* List */}
-        <div className="flex-1 space-y-1 overflow-y-auto px-4 py-6">
+        {/* List Content */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
           {users.length ? (
-            users.map(u => <UserItem key={u.id} user={u} />)
+            <div className={`divide-y ${theme === 'dark' ? "divide-white/5" : "divide-zinc-100"}`}>
+              {users.map((u, i) => <UserItem key={i} user={u} theme={theme} />)}
+            </div>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center text-zinc-400">
-              <Search size={28} />
-              <p className="mt-2 text-xs font-semibold uppercase tracking-widest">
+            <div className="flex h-full flex-col items-center justify-center opacity-40">
+              <div className={`mb-3 rounded-2xl p-4 ${theme === 'dark' ? "bg-white/5" : "bg-zinc-50"}`}>
+                <Search size={20} />
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em]">
                 No users found
               </p>
             </div>
