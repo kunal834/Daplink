@@ -7,7 +7,7 @@ import {
   Layout, User, BarChart3, Users, RefreshCw,
   Briefcase, Brain, QrCode, Settings, StarIcon,
   MessagesSquare,
-  MessageCircleCodeIcon
+  MessageCircleCodeIcon,IndianRupee
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -24,6 +24,7 @@ const Sidebar = ({ isDarkMode }) => {
     { href: '/Dashboard/mindset', icon: Brain, label: 'Dappost' },
     // { href: '', icon: StarIcon, label: 'Review us' },
     { href: '/Dashboard/settings', icon: Settings, label: 'Settings' },
+    { href: '/Dashboard/Monetize', icon: IndianRupee, label: 'Monetize' }
   
   ];
 
