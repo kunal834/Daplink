@@ -1,13 +1,14 @@
 import { connectDB } from "@/lib/mongodb";
 import ShortURL from "@/models/ShortUrl";
+import { getDataFromToken } from "@/app/Helper/getDataFromToken";
 
 import mongoose from "mongoose";
 
-export async function GET(request) {
+export async function GET(req) {
     try {
         await connectDB();
-        const { searchParams } = new URL(request.url);
-        const userID = searchParams.get("userID");
+        const userID = getDataFromToken(req);
+       console.log(userID);
         if (!userID) {
             return Response.json({ error: "Missing userID" }, { status: 400 });
         }
