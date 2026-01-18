@@ -138,10 +138,10 @@ export default function HeroSection({ theme }) {
                 {[1, 5, 8].map(i => (
                   <img key={i} className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-black' : 'border-white'}`} src={`https://i.pravatar.cc/100?img=${i}`} alt="User" />
                 ))}
-                <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold ${theme === 'dark' ? 'border-black bg-gray-800 text-white' : 'border-white bg-gray-100 text-black'}`}>+50k</div>
+                <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold ${theme === 'dark' ? 'border-black bg-gray-800 text-white' : 'border-white bg-gray-100 text-black'}`}>+more</div>
               </div>
               <div className="text-sm text-secondary">
-                Trusted by <strong className={theme === 'dark' ? 'text-white' : 'text-black'}>50k+</strong> creators.
+                Join <strong className={theme === 'dark' ? 'text-white' : 'text-black'}>DapLink</strong> creators.
               </div>
             </Reveal>
           </div>

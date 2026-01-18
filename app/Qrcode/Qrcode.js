@@ -1,16 +1,62 @@
 'use client';
 
-import React, { useState } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
-import { Download, Upload, RefreshCcw, Settings, Link as LinkIcon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+// We use the 'qr-code-styling' library for advanced shapes (dots, rounded corners, etc.)
+import QRCodeStyling from 'qr-code-styling'; 
+import { Download, Upload, RefreshCcw, Settings, Link as LinkIcon, Layers,  LucideIcon } from 'lucide-react';
 
-export default function QRGenerator({ isDarkMode }) {
-  const [url, setUrl] = useState('https://example.com');
-  const [size, setSize] = useState(300);
+export default function AdvancedQRGenerator({ isDarkMode = false }) {
+  const [url, setUrl] = useState('https://Daplink.online/your-link');
+  const [color, setColor] = useState('#2563eb'); // Default Blue
   const [bgColor, setBgColor] = useState('#ffffff');
-  const [fgColor, setFgColor] = useState('#000000');
-  const [logoSrc, setLogoSrc] = useState(null);
-  const [includeMargin, setIncludeMargin] = useState(true);
+  const [logo, setLogo] = useState(null);
+  
+  // Advanced Styling State
+  const [dotType, setDotType] = useState('rounded'); // 'rounded' | 'dots' | 'classy' | 'classy-rounded' | 'square' | 'extra-rounded'
+  const [cornerType, setCornerType] = useState('extra-rounded'); // 'dot' | 'square' | 'extra-rounded'
+  const [cornerDotType, setCornerDotType] = useState('dot'); // 'dot' | 'square'
+  
+  const qrCode = useRef(null);
+  const ref = useRef(null);
+
+  // Initialize and Update QR Code
+  useEffect(() => {
+    // Configuration for the advanced QR code
+    const options = {
+      width: 300,
+      height: 300,
+      type: 'svg',
+      data: url,
+      image: logo,
+      dotsOptions: {
+        color: color,
+        type: dotType 
+      },
+      backgroundOptions: {
+        color: bgColor,
+      },
+      imageOptions: {
+        crossOrigin: 'anonymous',
+        margin: 5,
+        imageSize: 0.4
+      },
+      cornersSquareOptions: {
+        color: color,
+        type: cornerType 
+      },
+      cornersDotOptions: {
+        color: color,
+        type: cornerDotType 
+      }
+    };
+
+    if (!qrCode.current) {
+      qrCode.current = new QRCodeStyling(options);
+      qrCode.current.append(ref.current);
+    } else {
+      qrCode.current.update(options);
+    }
+  }, [url, color, bgColor, logo, dotType, cornerType, cornerDotType]);
 
   // Handle Logo Upload
   const handleFileChange = (e) => {
@@ -18,28 +64,24 @@ export default function QRGenerator({ isDarkMode }) {
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        setLogoSrc(event.target.result);
+        setLogo(event.target.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Handle Download
-  const downloadQR = () => {
-    const canvas = document.getElementById('qr-canvas');
-    if (canvas) {
-      const pngUrl = canvas.toDataURL('image/png');
-      const downloadLink = document.createElement('a');
-      downloadLink.href = pngUrl;
-      downloadLink.download = 'custom-qr-code.png';
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
+  // Downloads
+  const onDownloadClick = (extension) => {
+    if (qrCode.current) {
+      qrCode.current.download({
+        extension: extension,
+        name: "daplink_qr"
+      });
     }
   };
 
-  // Helper classes for conditional styling
-  const cardClass = isDarkMode ? "bg-zinc-800 border-zinc-700" : "bg-white border-gray-100";
+  // Styles
+  const cardClass = isDarkMode ? "bg-zinc-800 border-zinc-700" : "bg-white border-gray-200";
   const textMain = isDarkMode ? "text-gray-100" : "text-gray-800";
   const textSub = isDarkMode ? "text-gray-400" : "text-gray-500";
   const inputClass = isDarkMode 
@@ -47,171 +89,153 @@ export default function QRGenerator({ isDarkMode }) {
     : "bg-white border-gray-200 text-gray-900 focus:ring-blue-500 placeholder-gray-400";
 
   return (
-    <div className={`flex flex-col md:flex-row gap-8 p-6 max-w-6xl mx-auto min-h-screen rounded-xl transition-colors duration-300 ${isDarkMode ? "bg-zinc-900" : "bg-gray-50"}`}>
+    <div className={`flex flex-col md:flex-row gap-8 p-6 max-w-6xl mx-auto min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-zinc-900" : "bg-gray-50"}`}>
       
-      {/* LEFT: Controls Panel */}
-      <div className={`w-full md:w-1/2 space-y-6 p-6 rounded-2xl shadow-sm border ${cardClass}`}>
+      {/* --- LEFT PANEL: Controls --- */}
+      <div className={`w-full md:w-5/12 space-y-6 p-6 rounded-2xl shadow-sm border ${cardClass} overflow-y-auto max-h-[90vh]`}>
+        
+        {/* Header */}
         <div className={`border-b pb-4 ${isDarkMode ? "border-zinc-700" : "border-gray-100"}`}>
           <h2 className={`text-2xl font-bold flex items-center gap-2 ${textMain}`}>
             <Settings className="w-6 h-6 text-blue-600" />
-            Configuration
+            DapLink Creator
           </h2>
-          <p className={`${textSub} text-sm mt-1`}>Customize your QR code details and appearance.</p>
+          <p className={`${textSub} text-sm mt-1`}>Advanced customization for your Bitly links.</p>
         </div>
 
-        {/* URL Input */}
+        {/* 1. Content Input */}
         <div className="space-y-2">
-          <label className={`text-sm font-medium flex items-center gap-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
-            <LinkIcon size={16} /> Content / URL
+          <label className={`text-sm font-semibold flex items-center gap-2 ${textMain}`}>
+            <LinkIcon size={16} /> Destination URL
           </label>
           <input
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className={`w-full p-3 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition-all ${inputClass}`}
-            placeholder="Enter URL or text"
+            className={`w-full p-3 border rounded-xl focus:ring-2 focus:border-transparent outline-none transition-all ${inputClass}`}
+            placeholder="https://DapLink.app/your-link"
           />
         </div>
 
-        {/* Colors */}
+        {/* 2. Patterns (The "Advanced" part) */}
+        <div className="space-y-3">
+            <label className={`text-sm font-semibold flex items-center gap-2 ${textMain}`}>
+                <Layers size={16} /> Pattern Style
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+                {['square', 'dots', 'rounded', 'extra-rounded', 'classy', 'classy-rounded'].map((type) => (
+                    <button
+                        key={type}
+                        onClick={() => setDotType(type)}
+                        className={`p-2 text-xs border rounded-lg capitalize transition-all ${
+                            dotType === type 
+                            ? "bg-blue-600 text-white border-blue-600" 
+                            : `${isDarkMode ? "bg-zinc-900 border-zinc-700 text-gray-300" : "bg-white text-gray-600 hover:bg-gray-50"}`
+                        }`}
+                    >
+                        {type.replace('-', ' ')}
+                    </button>
+                ))}
+            </div>
+        </div>
+
+        {/* 3. Corner Styles */}
+        <div className="space-y-3">
+            <label className={`text-sm font-semibold flex items-center gap-2 ${textMain}`}>
+                Corner Style (Eyes)
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+                {['square', 'extra-rounded', 'dot'].map((type) => (
+                    <button
+                        key={type}
+                        onClick={() => setCornerType(type)}
+                        className={`p-2 text-xs border rounded-lg capitalize transition-all ${
+                            cornerType === type 
+                            ? "bg-blue-600 text-white border-blue-600" 
+                            : `${isDarkMode ? "bg-zinc-900 border-zinc-700 text-gray-300" : "bg-white text-gray-600 hover:bg-gray-50"}`
+                        }`}
+                    >
+                        {type.replace('-', ' ')}
+                    </button>
+                ))}
+            </div>
+        </div>
+
+        {/* 4. Colors */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Foreground Color</label>
-            <div className={`flex items-center gap-3 p-2 border rounded-lg ${isDarkMode ? "border-zinc-700 bg-zinc-900" : "border-gray-200 bg-white"}`}>
-              <input
-                type="color"
-                value={fgColor}
-                onChange={(e) => setFgColor(e.target.value)}
-                className="w-8 h-8 rounded cursor-pointer border-none bg-transparent"
-              />
-              <span className={`text-xs font-mono ${textSub}`}>{fgColor}</span>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Background Color</label>
-            <div className={`flex items-center gap-3 p-2 border rounded-lg ${isDarkMode ? "border-zinc-700 bg-zinc-900" : "border-gray-200 bg-white"}`}>
-              <input
-                type="color"
-                value={bgColor}
-                onChange={(e) => setBgColor(e.target.value)}
-                className="w-8 h-8 rounded cursor-pointer border-none bg-transparent"
-              />
-              <span className={`text-xs font-mono ${textSub}`}>{bgColor}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Logo Upload */}
-        <div className="space-y-2">
-          <label className={`text-sm font-medium flex items-center gap-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
-            <Upload size={16} /> {`Logo Overlay (Optional)`}
-          </label>
-          <div className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-colors ${isDarkMode ? "border-zinc-600 hover:bg-zinc-700" : "border-gray-300 hover:bg-gray-50"}`}>
-             <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            {logoSrc ? (
-              <div className="flex items-center justify-center gap-2 text-green-500">
-                <span className="text-sm font-medium">Logo Uploaded</span>
-                <button 
-                  onClick={(e) => { e.preventDefault(); setLogoSrc(null); }}
-                  className="text-xs underline text-red-500 z-10 relative"
-                >
-                  Remove
-                </button>
-              </div>
-            ) : (
-              <span className={`text-sm ${textSub}`}>Click to upload a logo (PNG/JPG)</span>
-            )}
-          </div>
-        </div>
-
-        {/* Sliders */}
-        <div className="space-y-4">
             <div className="space-y-2">
-                <div className="flex justify-between">
-                    <label className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Size (px)</label>
-                    <span className={`text-xs ${textSub}`}>{size}px</span>
+                <label className={`text-sm font-semibold ${textMain}`}>QR Color</label>
+                <div className={`flex items-center gap-2 p-2 border rounded-lg ${isDarkMode ? "border-zinc-700 bg-zinc-900" : "bg-white"}`}>
+                    <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-8 h-8 cursor-pointer bg-transparent border-none" />
+                    <span className={`text-xs font-mono ${textSub}`}>{color}</span>
                 </div>
-                <input
-                    type="range"
-                    min="128"
-                    max="500"
-                    value={size}
-                    onChange={(e) => setSize(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                />
             </div>
-            
-            <div className="flex items-center gap-2 mt-4">
-                <input 
-                    type="checkbox" 
-                    id="margin"
-                    checked={includeMargin}
-                    onChange={(e) => setIncludeMargin(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                />
-                <label htmlFor="margin" className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Include White Margin</label>
+            <div className="space-y-2">
+                <label className={`text-sm font-semibold ${textMain}`}>Background</label>
+                <div className={`flex items-center gap-2 p-2 border rounded-lg ${isDarkMode ? "border-zinc-700 bg-zinc-900" : "bg-white"}`}>
+                    <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-8 h-8 cursor-pointer bg-transparent border-none" />
+                    <span className={`text-xs font-mono ${textSub}`}>{bgColor}</span>
+                </div>
             </div>
+        </div>
+
+        {/* 5. Logo */}
+        <div className="space-y-2">
+             <label className={`text-sm font-semibold flex items-center gap-2 ${textMain}`}>
+                <Upload size={16} /> Brand Logo
+            </label>
+            <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileChange} 
+                className={`block w-full text-sm ${textSub}
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-blue-50 file:text-blue-700
+                  hover:file:bg-blue-100
+                `}
+            />
         </div>
       </div>
 
-      {/* RIGHT: Preview Panel */}
-      <div className={`w-full md:w-1/2 flex flex-col items-center justify-center p-6 rounded-2xl shadow-sm border relative ${cardClass}`}>
-        <div className="absolute top-4 right-4">
-            <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
-                Live Preview
-            </div>
+      {/* --- RIGHT PANEL: Preview --- */}
+      <div className={`w-full md:w-7/12 flex flex-col items-center justify-center p-8 rounded-2xl border ${cardClass} relative`}>
+        
+        <div className={`p-8 rounded-xl shadow-lg mb-8 bg-white transition-all duration-300`}>
+             {/* This div is where the library injects the canvas/svg */}
+             <div ref={ref} />
         </div>
 
-        {/* The Actual QR Component */}
-        <div className={`p-4 border-2 rounded-xl shadow-lg mb-8 ${isDarkMode ? "bg-white border-zinc-600" : "bg-white border-gray-100"}`}>
-           {/* Note: The QR container background is intentionally kept white (or based on QR settings) 
-               so the QR code remains readable regardless of the dark mode setting of the app */}
-            <QRCodeCanvas
-                id="qr-canvas"
-                value={url}
-                size={size}
-                bgColor={bgColor}
-                fgColor={fgColor}
-                includeMargin={includeMargin}
-                level={"H"}
-                imageSettings={logoSrc ? {
-                    src: logoSrc,
-                    x: undefined,
-                    y: undefined,
-                    height: size * 0.2,
-                    width: size * 0.2,
-                    excavate: true,
-                } : undefined}
-            />
+        {/* Download Actions */}
+        <div className="flex gap-3 w-full max-w-sm">
+            <button
+                onClick={() => onDownloadClick('png')}
+                className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-bold transition-all shadow-lg shadow-blue-500/30"
+            >
+                <Download size={18} /> PNG
+            </button>
+             <button
+                onClick={() => onDownloadClick('svg')}
+                className={`flex-1 flex items-center justify-center gap-2 border py-3 px-6 rounded-xl font-bold transition-all ${isDarkMode ? "border-zinc-600 text-gray-200 hover:bg-zinc-800" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}
+            >
+                <Download size={18} /> SVG
+            </button>
         </div>
-
-        {/* Actions */}
-        <div className="flex gap-4 w-full max-w-xs">
-          <button
-            onClick={downloadQR}
-            className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors shadow-lg shadow-blue-200"
-          >
-            <Download size={18} />
-            Download PNG
-          </button>
-          <button
+        
+        <button
             onClick={() => {
-                setUrl('https://example.com');
-                setFgColor('#000000');
-                setBgColor('#ffffff');
-                setLogoSrc(null);
+                setUrl('https://Daplink.online');
+                setColor('#2563eb');
+                setDotType('rounded');
+                setCornerType('extra-rounded');
+                setLogo(null);
             }}
-            className={`flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-colors ${isDarkMode ? "bg-zinc-700 hover:bg-zinc-600 text-gray-200" : "bg-gray-100 hover:bg-gray-200 text-gray-700"}`}
-            title="Reset"
-          >
-            <RefreshCcw size={18} />
-          </button>
-        </div>
+            className={`mt-6 flex items-center gap-2 text-sm ${textSub} hover:text-blue-500 transition-colors`}
+        >
+            <RefreshCcw size={14} /> Reset to Defaults
+        </button>
+
       </div>
     </div>
   );

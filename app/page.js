@@ -5,6 +5,7 @@ import HeroSection from '@/Components/heroSection';
 import FeaturesSection from '@/Components/FeatureShowcase';
 import TestimonialsSection from '@/Components/Testimonial';
 import Footer from '@/Components/Footer';
+import Realanalytics from '@/Components/Realanalytics';
 
 // 👇 1. Import your custom hook (adjust path if needed)
 import { useTheme } from '@/context/ThemeContext';
@@ -34,6 +35,7 @@ export default function DapLinkApp() {
       <main>
         <HeroSection theme={theme} />
         <FeaturesSection theme={theme} />
+        <Realanalytics theme={theme}/>
         <TestimonialsSection theme={theme} />
       </main>
 
