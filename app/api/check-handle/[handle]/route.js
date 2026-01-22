@@ -5,7 +5,7 @@ import Link from "@/models/Link";
 export async function GET(request, { params }) {
   await connectDB();
 
-  const { handle } = params;
+  const { handle } = await params;
 
   if (!handle || handle.trim() === "") {
     return Response.json({ available: false, message: "Invalid handle" });
