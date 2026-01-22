@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/mongodb";
-import theme from "@/models/theme";
+import theme from "@/models/Theme";
 
 import { NextResponse } from "next/server";
 
