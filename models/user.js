@@ -15,11 +15,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    theme:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Theme",
+    },
     daplinkID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Link",
         default: null
     },
+    plan: { type: String, default: "free" },
     isProfileComplete: {
         type: Boolean,
         default: false
@@ -32,6 +37,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
+    onboarding: {
+    completed: { type: Boolean, default: false },
+    currentStep: { type: Number, default: 0 }
+  },
 
 }, { timestamps: true }
 );
