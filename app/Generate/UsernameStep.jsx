@@ -1,15 +1,43 @@
-import { AtSign, Check } from "lucide-react";
+"use client";
+
+import { AtSign, Check, X } from "lucide-react";
 import StepWrapper from "@/Components/ui/StepWrapper";
+import { checkUsername } from "@/lib/api/onboarding";
+import { useEffect, useState } from "react";
 
 const UsernameStep = ({
   step,
   username,
   setUsername,
-  isValid,
   isChecking,
   onNext,
   onBack
 }) => {
+  const [status, setStatus] = useState("idle"); 
+  // idle | checking | available | taken
+
+  useEffect(() => {
+    if (username.length < 3) {
+      setStatus("idle");
+      return;
+    }
+
+    setStatus("checking");
+
+    const timeout = setTimeout(async () => {
+      try {
+        const { available } = await checkUsername(username);
+        setStatus(available ? "available" : "taken");
+      } catch {
+        setStatus("taken");
+      }
+    }, 500); // debounce (important)
+
+    return () => clearTimeout(timeout);
+  }, [username]);
+
+  const canContinue = status === "available" && !isChecking;
+
   return (
     <StepWrapper
       step={step}
@@ -17,42 +45,66 @@ const UsernameStep = ({
       subtitle="This will be your public DapLink URL."
       onContinue={onNext}
       onBack={onBack}
-      continueDisabled={!isValid || isChecking}
+      continueDisabled={!canContinue}
     >
       <div className="relative">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black flex items-center gap-1">
-          <AtSign size={16} />
-          <span className="text-sm">daplink.bio/</span>
+        {/* Prefix */}
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black pointer-events-none">
+          daplink.online/
         </div>
 
+        {/* Input */}
         <input
           autoFocus
           value={username}
+          disabled={isChecking}
           onChange={(e) =>
             setUsername(
               e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "")
             )
           }
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && canContinue) {
+              onNext();
+            }
+          }}
           placeholder="username"
-          className={`w-full pl-[110px] pr-12 py-5 rounded-2xl border-2 font-black outline-none transition-all
+          className={`w-full pl-[150px] pr-12 py-5 rounded-2xl border-2 font-black outline-none transition-all
             ${
-              isValid
+              status === "available"
                 ? "border-green-500 bg-green-50"
+                : status === "taken"
+                ? "border-red-500 bg-red-50"
                 : "border-slate-100 focus:border-purple-600"
-            }`}
+            }
+          `}
         />
 
+        {/* Status icon */}
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
-          {isChecking && (
+          {status === "checking" && (
             <div className="w-5 h-5 border-2 border-slate-200 border-t-purple-600 rounded-full animate-spin" />
           )}
-          {isValid && !isChecking && (
-            <div className="bg-green-500 text-white p-1 rounded-full">
-              <Check size={12} />
-            </div>
+          {status === "available" && (
+            <Check size={18} className="text-green-600" />
+          )}
+          {status === "taken" && (
+            <X size={18} className="text-red-600" />
           )}
         </div>
       </div>
+
+      {/* Helper text */}
+      {status === "available" && (
+        <p className="mt-3 text-sm font-semibold text-green-600">
+          Username is available
+        </p>
+      )}
+      {status === "taken" && (
+        <p className="mt-3 text-sm font-semibold text-red-600">
+          Username is already taken
+        </p>
+      )}
     </StepWrapper>
   );
 };
