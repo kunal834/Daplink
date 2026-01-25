@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDb from "@/db/connectDB";
+import { connectDB } from "@/lib/mongodb";
 import User from "@/models/user"; // Use your actual path
 
 export async function GET(request) {
