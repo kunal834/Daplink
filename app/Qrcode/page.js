@@ -36,7 +36,7 @@ const themeData = useTheme();
               isDarkmode ? 'text-white' : 'text-gray-900'
             }`}
           >
-           {` Next.js QR Creator`}
+           {` DapLink QR Creator`}
           </h1>
           
           <p

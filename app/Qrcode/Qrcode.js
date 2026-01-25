@@ -100,7 +100,7 @@ export default function AdvancedQRGenerator({ isDarkMode = false }) {
             <Settings className="w-6 h-6 text-blue-600" />
             DapLink Creator
           </h2>
-          <p className={`${textSub} text-sm mt-1`}>Advanced customization for your Bitly links.</p>
+          <p className={`${textSub} text-sm mt-1`}>Advanced customization .</p>
         </div>
 
         {/* 1. Content Input */}

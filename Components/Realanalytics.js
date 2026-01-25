@@ -315,7 +315,7 @@ export default function Realanalytics({ theme }) {
         {/* Dashboard Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           <OverviewChart isDark={isDark} />
-          <MetricBlocks isDark={isDark} />
+          {/* <MetricBlocks isDark={isDark} /> */}
           <HighValueVisitorsCard isDark={isDark} />
           <RealTimeMap isDark={isDark} />
           <DataTables isDark={isDark} />
