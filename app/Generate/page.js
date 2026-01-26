@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import GoalStep from "./GoalStep";
 import UsernameStep from "./UsernameStep";
@@ -18,6 +18,8 @@ import {
   saveTheme,
   completeOnboarding
 } from "@/lib/api/onboarding";
+import axios from "axios";
+import SuccessStep from "./SuccessStep";
 
 const STEPS = {
   GOALS: 0,
@@ -26,7 +28,8 @@ const STEPS = {
   PLATFORMS: 3,
   LINKS: 4,
   THEME: 5,
-  PUBLISH: 6
+  PUBLISH: 6,
+  SUCCESS: 7
 };
 
 export default function OnboardingPage() {
@@ -45,6 +48,7 @@ export default function OnboardingPage() {
     theme: { id: "classic", color: "bg-white" }
   });
 
+  /* ---------------- HELPERS ---------------- */
 
   const update = (key, value) =>
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -65,8 +69,8 @@ export default function OnboardingPage() {
     }));
   };
 
+  /* ---------------- ACTIONS ---------------- */
 
-  // USERNAME
   const handleUsernameNext = async () => {
     try {
       setLoading(true);
@@ -87,7 +91,6 @@ export default function OnboardingPage() {
     }
   };
 
-  // PROFILE
   const handleProfileNext = async () => {
     try {
       setLoading(true);
@@ -107,7 +110,6 @@ export default function OnboardingPage() {
     }
   };
 
-  // LINKS
   const handleLinksNext = async () => {
     try {
       setLoading(true);
@@ -129,7 +131,6 @@ export default function OnboardingPage() {
     }
   };
 
-  // THEME
   const handleThemeNext = async () => {
     try {
       setLoading(true);
@@ -144,7 +145,6 @@ export default function OnboardingPage() {
     }
   };
 
-  // FINAL PUBLISH
   const handlePublish = async () => {
     try {
       setLoading(true);
@@ -159,26 +159,45 @@ export default function OnboardingPage() {
     }
   };
 
-  const CheckUsername = async (username) => {
-    try {
-      setLoading(true);
-      setError("");
-      const { available } = await checkUsername(username);
-      return available;
-    } catch (err) {
-      setError(err.message);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const syncStep = async () => {
+      const res = await axios.get("/api/onboarding/status");
+      if (!res) return;
 
-  /* ---------------- RENDER ---------------- */
+      const data = await res.data;
+
+      if (data.completed) {
+        window.location.href = "/dashboard";
+        return;
+      }
+      setStep(data.step);
+    };
+    syncStep();
+  }, []);
+
+  useEffect(() => {
+    if (step === STEPS.PUBLISH) {
+      const t = setTimeout(() => {
+        setStep(STEPS.SUCCESS);
+      }, 2500);
+
+      return () => clearTimeout(t);
+    }
+  }, [step]);
+
+
 
   return (
-    <main className="min-h-screen max-w-md mx-auto px-6 pt-12 pb-24">
+    <div
+      className={
+        step === STEPS.SUCCESS
+          ? "min-h-screen bg-white"
+          : "fixed inset-0 bg-white overflow-hidden"
+      }
+    >
+
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-600">
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm font-bold text-red-600 shadow-lg">
           {error}
         </div>
       )}
@@ -197,7 +216,6 @@ export default function OnboardingPage() {
           step={step}
           username={formData.username}
           setUsername={(v) => update("username", v)}
-          // isValid={CheckUsername}
           isChecking={loading}
           onBack={() => setStep(STEPS.GOALS)}
           onNext={handleUsernameNext}
@@ -249,19 +267,21 @@ export default function OnboardingPage() {
           selected={formData.theme}
           setTheme={(t) => update("theme", t)}
           onBack={() => setStep(STEPS.LINKS)}
-          onNext={handleThemeNext}
+          onNext={() => setStep(STEPS.PUBLISH)}
         />
       )}
 
       {step === STEPS.PUBLISH && (
-        <PublishStep
-          username={formData.username}
-          theme={formData.theme}
-          loading={loading}
-          onBack={() => setStep(STEPS.THEME)}
-          onComplete={handlePublish}
+        <PublishStep username={formData.handle} />
+      )}
+
+      {step === STEPS.SUCCESS && (
+        <SuccessStep
+          data={formData}
+          onContinue={() => router.push("/Dashboard")}
         />
       )}
-    </main>
+
+    </div>
   );
 }

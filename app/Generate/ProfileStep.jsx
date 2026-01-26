@@ -24,46 +24,75 @@ const ProfileStep = ({
   return (
     <StepWrapper
       step={step}
-      title="Tell us about yourself"
-      subtitle="This is how people see you."
+      title="Introduce yourself."
+      subtitle="This is how your page will look to others."
       onContinue={onNext}
       onBack={onBack}
       continueDisabled={!displayName}
     >
-      <div className="flex flex-col items-center mb-8">
-        <div className="relative">
-          <div className="w-28 h-28 rounded-full bg-purple-50 flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
-            {avatar ? (
-              <img src={avatar} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-4xl font-black text-purple-600">
-                {displayName?.[0] || "?"}
-              </span>
-            )}
+      <div className="w-full max-w-[560px] mx-auto">
+
+        {/* Avatar */}
+        <div className="flex justify-center mb-10">
+          <div className="relative group">
+            <div className="w-28 h-28 rounded-[2.5rem] bg-slate-50 border-2 border-slate-100 flex items-center justify-center overflow-hidden shadow-[0_20px_40px_-20px_rgba(0,0,0,0.15)] transition group-hover:scale-[1.02]">
+              {avatar ? (
+                <img
+                  src={avatar}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-4xl font-black text-slate-700">
+                  {displayName?.[0] || "?"}
+                </span>
+              )}
+            </div>
+
+            <label className="absolute -bottom-2 -right-2 bg-slate-900 text-white p-3 rounded-[1.25rem] cursor-pointer shadow-xl hover:bg-black transition active:scale-95 ring-8 ring-white">
+              <Camera size={18} strokeWidth={2.5} />
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleImage}
+              />
+            </label>
+          </div>
+        </div>
+
+        {/* Inputs */}
+        <div className="space-y-6">
+
+          {/* Name */}
+          <div className="space-y-2">
+            <label className="ml-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-300">
+              Your name
+            </label>
+            <input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Enter your display name"
+              className="w-full px-7 py-5 rounded-[1.75rem] border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-slate-900 outline-none font-black text-lg transition-all"
+            />
           </div>
 
-          <label className="absolute bottom-1 right-1 bg-slate-900 text-white p-2 rounded-full cursor-pointer">
-            <Camera size={16} />
-            <input type="file" hidden accept="image/*" onChange={handleImage} />
-          </label>
+          {/* Bio */}
+          <div className="space-y-2">
+            <label className="ml-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-300">
+              Bio
+            </label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="A short bio about you…"
+              rows={2}
+              className="w-full px-7 py-5 rounded-[1.75rem] border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-slate-900 outline-none resize-none text-base font-medium leading-relaxed transition-all"
+            />
+          </div>
+
         </div>
-      </div>
 
-      <div className="space-y-4">
-        <input
-          placeholder="Full name"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 font-black"
-        />
-
-        <textarea
-          placeholder="Short bio (optional"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          rows={2}
-          className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 resize-none"
-        />
       </div>
     </StepWrapper>
   );
