@@ -96,10 +96,10 @@ export default function Login() {
   };
 
   const handlegooglelogin = async() =>{
-const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+ const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
   const options = {
-    redirect_uri: "http://localhost:3000/api/auth/google/callback",
-   client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    redirect_uri: `${process.env.NEXT_PUBLIC_HOST}/api/auth/google/callback`,
+   client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID, 
     access_type: "offline",
     response_type: "code",
     prompt: "consent",
@@ -110,10 +110,12 @@ const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   };
 
   const qs = new URLSearchParams(options);
+
   window.location.href = `${rootUrl}?${qs.toString()}`;
   console.log("Full Google URL:", fullUrl); // CHECK YOUR CONSOLE FOR THIS
   }
-
+  
+  console.log("client id " , process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
   // Dynamic Styles based on theme
   const styles = {
     pageBg: theme === 'dark' ? 'bg-[#020202]' : 'bg-white',
@@ -160,7 +162,7 @@ const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
             {/* Social Login */}
             <div className="space-y-3">
-              <button className={styles.socialBtn} onClick={handlegooglelogin}>
+              <button className={styles.socialBtn} >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.087 0 12 0 7.31 0 3.256 2.74 1.307 6.704l3.959 3.06z" />
                   <path fill="#34A853" d="M16.04 18.013c-1.09.703-2.474 1.078-4.04 1.078a7.077 7.077 0 0 1-6.723-4.823l-3.96 3.066C4.257 21.26 7.847 24 12 24c3.314 0 6.213-1.207 8.302-3.239l-4.262-2.748z" />
