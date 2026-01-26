@@ -1,21 +1,21 @@
-import {
-  Instagram,
-  Twitter,
-  Youtube,
-  Globe
-} from "lucide-react";
+import { Instagram, Globe } from "lucide-react";
 import StepWrapper from "@/Components/ui/StepWrapper";
-import { FiFacebook, FiLinkedin, FiTwitch, FiTwitter, FiYoutube } from "react-icons/fi";
+import {
+  FiFacebook,
+  FiLinkedin,
+  FiTwitch,
+  FiTwitter,
+  FiYoutube
+} from "react-icons/fi";
 
 const PLATFORMS = [
-  { id: 'instagram', name: 'Instagram', icon: Instagram, placeholder: 'instagram.com/username' },
-  // { id: 'tiktok', name: 'TikTok', icon: Music, placeholder: 'tiktok.com/@username' },
-  { id: 'twitter', name: 'Twitter', icon: FiTwitter, placeholder: 'twitter.com/username' },
-  { id: 'youtube', name: 'YouTube', icon: FiYoutube, placeholder: 'youtube.com/c/channel' },
-  { id: 'twitch', name: 'Twitch', icon: FiTwitch, placeholder: 'twitch.tv/username' },
-  { id: 'facebook', name: 'Facebook', icon: FiFacebook, placeholder: 'facebook.com/username' },
-  { id: 'linkedin', name: 'LinkedIn', icon: FiLinkedin, placeholder: 'linkedin.com/in/username' },
-  { id: 'website', name: 'Website', icon: Globe, placeholder: 'https://yourwebsite.com' },
+  { id: "instagram", name: "Instagram", icon: Instagram },
+  { id: "twitter", name: "Twitter", icon: FiTwitter },
+  { id: "youtube", name: "YouTube", icon: FiYoutube },
+  { id: "twitch", name: "Twitch", icon: FiTwitch },
+  { id: "facebook", name: "Facebook", icon: FiFacebook },
+  { id: "linkedin", name: "LinkedIn", icon: FiLinkedin },
+  { id: "website", name: "Website", icon: Globe }
 ];
 
 const PlatformStep = ({
@@ -35,23 +35,44 @@ const PlatformStep = ({
       continueDisabled={selected.length === 0}
       skipLabel="Skip"
     >
-      <div className="grid grid-cols-2 gap-3">
+      <div className="w-full max-w-[560px] mx-auto grid grid-cols-2 gap-4">
+
         {PLATFORMS.map((p) => {
           const isSelected = selected.includes(p.id);
+
           return (
             <button
               key={p.id}
               onClick={() => toggle(p.id)}
-              className={`p-4 rounded-2xl border-2 flex items-center gap-3
-                ${isSelected ? "border-purple-600 bg-purple-50" : "border-slate-100"}`}
+              className={`flex items-center gap-4 p-5 rounded-[1.75rem] border-2 transition-all
+                ${
+                  isSelected
+                    ? "border-slate-900 bg-white shadow-md"
+                    : "border-slate-100 bg-white hover:border-slate-200"
+                }
+              `}
             >
-              <div className={`p-2 rounded-lg ${isSelected ? "bg-purple-600 text-white" : "bg-slate-100"}`}>
-                <p.icon size={18} />
+              {/* Icon */}
+              <div
+                className={`p-3 rounded-xl transition
+                  ${
+                    isSelected
+                      ? "bg-slate-900 text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }
+                `}
+              >
+                <p.icon size={20} />
               </div>
-              <span className="font-black text-xs">{p.name}</span>
+
+              {/* Name */}
+              <span className="font-black text-sm text-slate-900">
+                {p.name}
+              </span>
             </button>
           );
         })}
+
       </div>
     </StepWrapper>
   );
