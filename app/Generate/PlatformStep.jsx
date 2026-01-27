@@ -1,3 +1,6 @@
+"use client";
+
+import React from "react";
 import { Instagram, Globe } from "lucide-react";
 import StepWrapper from "@/Components/ui/StepWrapper";
 import {

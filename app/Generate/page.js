@@ -9,6 +9,7 @@ import PlatformStep from "./PlatformStep";
 import LinksStep from "./LinkStep";
 import ThemeStep from "./ThemeStep";
 import PublishStep from "./PublishStep";
+import { useRouter } from "next/navigation";
 
 import {
   checkUsername,
@@ -36,6 +37,8 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(STEPS.GOALS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+ 
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     goal: null,
