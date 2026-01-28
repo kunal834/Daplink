@@ -97,6 +97,7 @@ export default function Login() {
 
   const handlegooglelogin = async() =>{
  const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
+ // Query parameters
   const options = {
     redirect_uri: `${process.env.NEXT_PUBLIC_HOST}/api/auth/google/callback`,
    client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID, 
@@ -109,6 +110,7 @@ export default function Login() {
     ].join(" "),
   };
 
+  //URLSearchParams is a built-in tool that takes a simple JavaScript object and prepares it to be put into a URL.
   const qs = new URLSearchParams(options);
 
   window.location.href = `${rootUrl}?${qs.toString()}`;
@@ -162,7 +164,7 @@ export default function Login() {
 
             {/* Social Login */}
             <div className="space-y-3">
-              <button className={styles.socialBtn} >
+              <button className={styles.socialBtn} onClick={handlegooglelogin}>
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.087 0 12 0 7.31 0 3.256 2.74 1.307 6.704l3.959 3.06z" />
                   <path fill="#34A853" d="M16.04 18.013c-1.09.703-2.474 1.078-4.04 1.078a7.077 7.077 0 0 1-6.723-4.823l-3.96 3.066C4.257 21.26 7.847 24 12 24c3.314 0 6.213-1.207 8.302-3.239l-4.262-2.748z" />

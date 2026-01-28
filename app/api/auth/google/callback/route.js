@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/user"; 
+import { cookies } from 'next/headers'; // Use Next.js built-in cookie utility
+import jwt from 'jsonwebtoken'
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
+  const code = searchParams.get('code');//Temporary Hand-off: Instead of sending sensitive data like an email directly to the browser (which is insecure),
+  console.log("code" , code)
 
   if (!code) return NextResponse.json({ error: "No code provided" }, { status: 400 });
 
@@ -22,7 +25,7 @@ export async function GET(request) {
   });
 
   const tokenData = await tokenResponse.json();
-  console.log(tokenData)
+  console.log("tokendata" , tokenData)
 
   if (!tokenResponse.ok) {
   
@@ -42,24 +45,36 @@ console.log("Using Client ID:", process.env.GOOGLE_CLIENT_ID);
     
     await connectDB();
     let user = await User.findOne({ email: googleUser.email });
- 
+    console.log("user of daplink" , user)
     if (!user) {
       user = await User.create({
         name: googleUser.name,
         email: googleUser.email,
-        image: googleUser.picture,
-        username: googleUser.email.split("@")[0],
       });
     }
 
     console.log(user);
     
+ const token = jwt.sign(
+  { id: user._id, email: user.email },
+    process.env.JWT_SECRET, // Make sure this is in your .env
+    
+ )
+  const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_HOST}/Dashboard`);
 
+response.cookies.set("authtoken", token, {
+    httpOnly: true, // Prevents JS access (security)
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 60 * 60, // 1 hour
+  });
 
-  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_HOST}/Dashboard`);
+ return response;
+
 
   } catch (error) {
-    console.error("Google Auth Error:", error);
+    console.log("Google Auth Error:", error);
     return NextResponse.redirect(new URL('/login?error=auth_failed', request.url));
   }
 }

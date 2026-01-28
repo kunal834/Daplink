@@ -11,11 +11,15 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password: {
-        type: String,
-        required: true
-    },
-    theme:{
+    password: { 
+    type: String, 
+    required: function() {
+      // Only require password if there is no googleId (or similar flag)
+      // For now, just making it optional is easiest
+      return false; 
+    }
+  },
+    theme:{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: "Theme",
     },
@@ -37,6 +41,7 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
+    isGoogleuser : { type: Boolean , default: false},
     onboarding: {
     completed: { type: Boolean, default: false },
     currentStep: { type: Number, default: 0 }
