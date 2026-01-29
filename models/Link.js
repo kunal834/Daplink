@@ -26,6 +26,11 @@ const LinkSchema = new mongoose.Schema(
       lowercase: true,
       trim: true
     },
+    name: {
+      type: String,
+      default: ""
+    },
+    
     profile: {
       type: String // avatar URL
     },

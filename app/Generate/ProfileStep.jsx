@@ -8,7 +8,9 @@ const ProfileStep = ({
   avatar,
   setDisplayName,
   setBio,
+  isSyncing,
   setAvatar,
+  isSaving,
   onNext,
   onBack
 }) => {
@@ -27,8 +29,10 @@ const ProfileStep = ({
       title="Introduce yourself."
       subtitle="This is how your page will look to others."
       onContinue={onNext}
+      isLocked={isSyncing}
       onBack={onBack}
-      continueDisabled={!displayName}
+      isSaving={isSaving}
+      continueDisabled={!displayName || isSaving}
     >
       <div className="w-full max-w-[560px] mx-auto">
 
@@ -87,7 +91,7 @@ const ProfileStep = ({
               onChange={(e) => setBio(e.target.value)}
               placeholder="A short bio about you…"
               rows={2}
-              className="w-full px-7 py-5 rounded-[1.75rem] border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-slate-900 outline-none resize-none text-base font-medium leading-relaxed transition-all"
+              className="w-full px-7 py-5 rounded-[1.75rem] border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-slate-900 outline-none text-base font-black transition-all"
             />
           </div>
 

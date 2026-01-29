@@ -7,16 +7,20 @@ const LinksStep = ({
   links,
   setLink,
   onNext,
+  isSaving,
+  isSyncing,
   onBack
 }) => {
   return (
     <StepWrapper
       step={step}
+      isLocked={isSyncing}
       title="Add your links"
       subtitle="Paste profile URLs."
       onContinue={onNext}
       onBack={onBack}
-      continueDisabled={Object.keys(links).length === 0}
+      isSaving={isSaving}
+      continueDisabled={Object.keys(links).length === 0 || isSaving}
     >
       <div className="w-full max-w-[560px] mx-auto space-y-6">
 

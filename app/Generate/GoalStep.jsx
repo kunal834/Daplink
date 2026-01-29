@@ -8,12 +8,13 @@ const GOALS = [
   { id: "store", name: "E-commerce", icon: Store, desc: "Shops & Products" }
 ];
 
-const GoalStep = ({ step, goal, setGoal, onNext }) => {
+const GoalStep = ({ step, goal, setGoal, onNext, isSyncing }) => {
   return (
     <StepWrapper
       step={step}
       title="What's your focus?"
       subtitle="Choose a goal to personalize your page."
+      isLocked={isSyncing}
       onContinue={onNext}
       continueDisabled={!goal}
     >

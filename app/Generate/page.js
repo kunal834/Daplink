@@ -37,7 +37,9 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(STEPS.GOALS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
- 
+  const [userData, setUserData] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(true);
+
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -85,7 +87,7 @@ export default function OnboardingPage() {
         return;
       }
 
-      await saveUsername(formData.username);
+      await saveUsername({ username: formData.username, profession: formData.goal });
       setStep(STEPS.PROFILE);
     } catch (err) {
       setError(err.message);
@@ -94,6 +96,7 @@ export default function OnboardingPage() {
     }
   };
 
+  // profile step
   const handleProfileNext = async () => {
     try {
       setLoading(true);
@@ -102,7 +105,7 @@ export default function OnboardingPage() {
       await saveProfile({
         profile: formData.avatar,
         script: formData.bio,
-        profession: formData.goal
+        // profession: formData.goal
       });
 
       setStep(STEPS.PLATFORMS);
@@ -113,6 +116,7 @@ export default function OnboardingPage() {
     }
   };
 
+  // links step
   const handleLinksNext = async () => {
     try {
       setLoading(true);
@@ -134,12 +138,15 @@ export default function OnboardingPage() {
     }
   };
 
+  // theme step
   const handleThemeNext = async () => {
     try {
       setLoading(true);
       setError("");
 
-      await saveTheme(formData.theme.id);
+      const data = await saveTheme(formData.theme.id);
+      console.log("Theme saved:", data.data);
+      setUserData(data.data);
       setStep(STEPS.PUBLISH);
     } catch (err) {
       setError(err.message);
@@ -148,13 +155,12 @@ export default function OnboardingPage() {
     }
   };
 
+  // publish step
   const handlePublish = async () => {
     try {
       setLoading(true);
       setError("");
-
       await completeOnboarding();
-      window.location.href = "/Dashboard";
     } catch (err) {
       setError(err.message);
     } finally {
@@ -162,32 +168,64 @@ export default function OnboardingPage() {
     }
   };
 
+  // console.log("userData:", userData);
+  /* ---------------- USE EFFECTS ---------------- */
+
+  // Sync onboarding step with server
   useEffect(() => {
+    let cancelled = false;
+
     const syncStep = async () => {
-      const res = await axios.get("/api/onboarding/status");
-      if (!res) return;
+      try {
+        setIsSyncing(true);
 
-      const data = await res.data;
+        const res = await axios.get("/api/onboarding/status");
+        if (!res?.data || cancelled) return;
 
-      if (data.completed) {
-        window.location.href = "/dashboard";
-        return;
+        const data = res.data;
+
+        if (data.completed) {
+          window.location.replace("/Dashboard");
+          return;
+        }
+
+        setStep(data.step);
+      } catch (err) {
+        console.error("Onboarding status sync failed:", err);
+      } finally {
+        if (!cancelled) setIsSyncing(false);
       }
-      setStep(data.step);
     };
+
     syncStep();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+
   useEffect(() => {
-    if (step === STEPS.PUBLISH) {
-      const t = setTimeout(() => {
+    if (step !== STEPS.PUBLISH) return;
+
+    let cancelled = false;
+
+    const runPublish = async () => {
+      try {
+        await handlePublish();
+
+        if (cancelled) return;
+
         setStep(STEPS.SUCCESS);
-      }, 2500);
-
-      return () => clearTimeout(t);
-    }
+      } catch (err) {
+        console.error("Publish failed:", err);
+      }
+    };
+    runPublish();
+    return () => {
+      cancelled = true;
+    };
   }, [step]);
-
 
 
   return (
@@ -211,6 +249,7 @@ export default function OnboardingPage() {
           goal={formData.goal}
           setGoal={(v) => update("goal", v)}
           onNext={() => setStep(STEPS.USERNAME)}
+          isSyncing={isSyncing}
         />
       )}
 
@@ -222,6 +261,7 @@ export default function OnboardingPage() {
           isChecking={loading}
           onBack={() => setStep(STEPS.GOALS)}
           onNext={handleUsernameNext}
+          isSyncing={isSyncing}
         />
       )}
 
@@ -233,7 +273,9 @@ export default function OnboardingPage() {
           avatar={formData.avatar}
           setDisplayName={(v) => update("displayName", v)}
           setBio={(v) => update("bio", v)}
+          isSyncing={isSyncing}
           setAvatar={(v) => update("avatar", v)}
+          isSaving={loading}
           onBack={() => setStep(STEPS.USERNAME)}
           onNext={handleProfileNext}
         />
@@ -242,8 +284,10 @@ export default function OnboardingPage() {
       {step === STEPS.PLATFORMS && (
         <PlatformStep
           step={step}
+          isSyncing={isSyncing}
           selected={formData.platforms}
           toggle={togglePlatform}
+          onSkip={() => setStep(STEPS.THEME)}
           onBack={() => setStep(STEPS.PROFILE)}
           onNext={() => setStep(STEPS.LINKS)}
         />
@@ -252,35 +296,40 @@ export default function OnboardingPage() {
       {step === STEPS.LINKS && (
         <LinksStep
           step={step}
+          isSyncing={isSyncing}
           platforms={formData.platforms}
           links={formData.links}
           setLink={setLink}
+          isSaving={loading}
           onBack={() => setStep(STEPS.PLATFORMS)}
           onNext={handleLinksNext}
         />
       )}
 
       {step === STEPS.THEME && (
+        // console.log(formData.platforms,formData.links),
         <ThemeStep
           step={step}
+          isSyncing={isSyncing}
           themes={[
             { id: "classic", color: "bg-white" },
             { id: "dark", color: "bg-slate-900" }
           ]}
           selected={formData.theme}
+          isSaving={loading}
           setTheme={(t) => update("theme", t)}
-          onBack={() => setStep(STEPS.LINKS)}
-          onNext={() => setStep(STEPS.PUBLISH)}
+          onBack={formData.platforms.length === 0 ? () => setStep(STEPS.PLATFORMS) : () => setStep(STEPS.LINKS)}
+          onNext={handleThemeNext}
         />
       )}
 
       {step === STEPS.PUBLISH && (
-        <PublishStep username={formData.handle} />
+        <PublishStep username={userData?.handle || formData.username} />
       )}
 
       {step === STEPS.SUCCESS && (
         <SuccessStep
-          data={formData}
+          data={userData}
           onContinue={() => router.push("/Dashboard")}
         />
       )}

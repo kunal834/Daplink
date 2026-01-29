@@ -27,9 +27,11 @@ export async function POST(req) {
     );
   }
 
+  const { profession } = await req.json();
   const linkDoc = await Link.create({
     userId: user._id,
-    handle: username.toLowerCase()
+    handle: username.toLowerCase(),
+    profession
   });
 
   await User.updateOne(
