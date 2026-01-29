@@ -10,6 +10,7 @@ const UsernameStep = ({
   username,
   setUsername,
   isChecking,
+  isSyncing,
   onNext,
   onBack
 }) => {
@@ -43,6 +44,7 @@ const UsernameStep = ({
       step={step}
       title="Claim your username"
       subtitle="This will be your public DapLink URL."
+      isLocked={isSyncing}
       onContinue={onNext}
       onBack={onBack}
       continueDisabled={!canContinue}

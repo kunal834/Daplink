@@ -19,5 +19,7 @@ export async function POST(req) {
     { theme }
   );
 
-  return NextResponse.json({ success: true });
+  const data= await Link.findOne({userId: user._id});
+  // console.log("Theme updated for user:", data);
+  return NextResponse.json({ success: true , data : data});
 }

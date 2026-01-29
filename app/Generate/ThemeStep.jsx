@@ -1,13 +1,15 @@
 import { Check } from "lucide-react";
 import StepWrapper from "@/Components/ui/StepWrapper";
 
-const ThemeStep = ({ step, themes, selected, setTheme, onNext, onBack }) => {
+const ThemeStep = ({ step, themes, selected, setTheme, onNext, isSaving, onBack ,isSyncing}) => {
   return (
     <StepWrapper
       step={step}
       title="Pick your style."
       subtitle="Choose how your page will look."
       onContinue={onNext}
+      isSaving={isSaving}
+      isLocked={isSyncing}
       onBack={onBack}
     >
       <div className="w-full max-w-[640px] mx-auto grid grid-cols-2 gap-5">

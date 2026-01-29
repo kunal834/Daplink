@@ -16,7 +16,7 @@ const SuccessStep = ({ data, onContinue }) => {
       colors: ["#0f172a", "#334155", "#64748b", "#94a3b8"]
     });
   }, []);
-console.log(data);
+  // console.log(data);
   return (
     <div className="w-full min-h-screen bg-white">
 
@@ -40,7 +40,7 @@ console.log(data);
             It’s ready.
           </h1>
           <p className="text-lg text-slate-500 font-bold uppercase tracking-widest">
-            daplink.online/{data.username}
+            daplink.online/{data.handle}
           </p>
         </div>
 
@@ -59,14 +59,14 @@ console.log(data);
             <div className="space-y-10 mt-6">
               <div className="flex flex-col items-center gap-6">
                 <div className="w-24 h-24 rounded-[2.5rem] bg-white/10 flex items-center justify-center overflow-hidden">
-                  {data.avatar ? (
+                  {data.profile ? (
                     <img
                       src={data.profile}
                       className="w-full h-full object-cover rounded-[2rem]"
                     />
                   ) : (
                     <span className="text-4xl font-black">
-                      {data.displayName?.[0] || data.username[0]}
+                      {data.name?.[0] || data.handle[0]}
                     </span>
                   )}
                 </div>
@@ -82,17 +82,20 @@ console.log(data);
               </div>
 
               <div className="space-y-3">
-                {data.platforms.slice(0, 3).map((p) => (
-                  <div
-                    key={p}
-                    className={`w-full py-4 rounded-2xl border ${data.theme.border}
-                    bg-white/5 backdrop-blur-md text-[10px]
-                    font-black uppercase tracking-[0.2em] text-center`}
-                  >
-                    {p}
-                  </div>
-                ))}
+                {data?.links?.length > 0 &&
+                  data.links.slice(0, 3).map((p) => (
+                    <div
+                      key={p.link}
+                      className={`w-full py-4 rounded-2xl border ${data?.theme?.border}
+        bg-white/5 backdrop-blur-md text-[10px]
+        font-black uppercase tracking-[0.2em] text-center`}
+                    >
+                      {p.linktext}
+                    </div>
+                  ))}
               </div>
+
+
             </div>
           </div>
         </div>

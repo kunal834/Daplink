@@ -26,6 +26,8 @@ const PlatformStep = ({
   selected,
   toggle,
   onNext,
+  onSkip,
+  isSyncing,
   onBack
 }) => {
   return (
@@ -35,8 +37,10 @@ const PlatformStep = ({
       subtitle="Choose up to 5 platforms."
       onContinue={onNext}
       onBack={onBack}
+      isLocked={isSyncing}
       continueDisabled={selected.length === 0}
       skipLabel="Skip"
+      SkipClick={onSkip}
     >
       <div className="w-full max-w-[560px] mx-auto grid grid-cols-2 gap-4">
 
