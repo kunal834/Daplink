@@ -97,8 +97,7 @@ export default function Login() {
 
   const handlegooglelogin = async() =>{
  const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
- // Query parameters
- // Use window.location.origin to automatically detect if you are on localhost or production
+ 
   const callbackUrl = `${window.location.origin}/api/auth/google/callback`;
   const options = {
     redirect_uri: callbackUrl,
