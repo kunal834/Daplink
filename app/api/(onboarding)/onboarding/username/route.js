@@ -11,7 +11,7 @@ export async function POST(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { username } = await req.json();
+  const { username,profession } = await req.json();
   if (!username) {
     return NextResponse.json({ error: "Username required" }, { status: 400 });
   }
@@ -26,8 +26,6 @@ export async function POST(req) {
       { status: 403 }
     );
   }
-
-  const { profession } = await req.json();
   const linkDoc = await Link.create({
     userId: user._id,
     handle: username.toLowerCase(),
