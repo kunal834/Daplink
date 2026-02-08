@@ -19,7 +19,7 @@ export default function TestimonialCard({ theme, name, role, text }) {
       </div>
       
       {/* Quote Text */}
-      <p className={`leading-relaxed mb-6 flex-grow ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>"{text}"</p>
+      <p className={`leading-relaxed mb-6 flex-grow ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>&ldquo;{text}&rdquo;</p>
       
       {/* Star Rating */}
       <div className="text-teal-500 text-xs flex gap-1">

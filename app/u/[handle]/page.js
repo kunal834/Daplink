@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Link as LinkIcon, Brain, Wrench, Share2, ExternalLink,
@@ -11,12 +11,10 @@ import {
   MessageSquare,
   Globe
 } from 'lucide-react';
+import { usePostHog } from "posthog-js/react";
 
 import { useTheme } from '../../../context/ThemeContext';
-import Modal from "@/Components/Modal";
 import { useAuth } from "@/context/Authenticate";
-import { set } from "mongoose";
-import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -109,7 +107,9 @@ const PageStyles = ({ theme }) => (
 
 export default function ProfilePage({ params }) {
 
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
+  const posthog = usePostHog();
+  const hasTrackedView = useRef(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -197,6 +197,56 @@ export default function ProfilePage({ params }) {
     getHandle();
   }, [params]);
 
+  const viewStartRef = useRef(null);
+  const durationSentRef = useRef(false);
+
+  useEffect(() => {
+    if (!data?._id || !data?.handle) return;
+    if (!posthog || hasTrackedView.current) return;
+
+    posthog.capture("bio_page_view", {
+      handle: data.handle,
+      profile_id: data._id,
+      link_count: Array.isArray(data.links) ? data.links.length : 0,
+    });
+
+    viewStartRef.current = Date.now();
+    hasTrackedView.current = true;
+  }, [data?._id, data?.handle, data?.links, posthog]);
+
+  useEffect(() => {
+    if (!data?._id || !data?.handle) return;
+    if (!posthog || !hasTrackedView.current) return;
+
+    const sendDuration = () => {
+      if (!viewStartRef.current || durationSentRef.current) return;
+      const durationSeconds = Math.max(
+        1,
+        Math.round((Date.now() - viewStartRef.current) / 1000)
+      );
+      posthog.capture("bio_page_view_duration", {
+        handle: data.handle,
+        profile_id: data._id,
+        $duration: durationSeconds,
+      });
+      durationSentRef.current = true;
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        sendDuration();
+      }
+    };
+
+    window.addEventListener("beforeunload", sendDuration);
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      sendDuration();
+      window.removeEventListener("beforeunload", sendDuration);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [data?._id, data?.handle, posthog]);
 
   useEffect(() => {
     async function checkFollow() {
@@ -482,6 +532,16 @@ export default function ProfilePage({ params }) {
                   <a
                     key={idx}
                     href={item.link}
+                    onClick={() => {
+                      posthog?.capture("bio_link_clicked", {
+                        handle: data?.handle,
+                        profile_id: data?._id,
+                        link_id: item?._id || item?.id || null,
+                        link_url: item.link,
+                        link_text: item.linktext,
+                        position: idx,
+                      });
+                    }}
                     className={`block glass p-4 rounded-[24px] flex items-center group transition-all hover:translate-y-[-1px] ${idx === 2 ? 'md:col-span-2' : ''
                       }`}
                   >

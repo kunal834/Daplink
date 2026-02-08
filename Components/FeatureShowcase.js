@@ -43,7 +43,7 @@ export default function FeaturesSection({ theme }) {
           <Reveal>
             <h2 className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
               Everything you need. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-800">Nothing you don't.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-800">Nothing you do not.</span>
             </h2>
           </Reveal>
           <Reveal delayClass="stagger-1">
