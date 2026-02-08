@@ -115,10 +115,9 @@ export default function Login() {
   const qs = new URLSearchParams(options);
 
   window.location.href = `${rootUrl}?${qs.toString()}`;
-  console.log("Full Google URL:", fullUrl); // CHECK YOUR CONSOLE FOR THIS
+  // console.log("Full Google URL:", fullUrl); // CHECK YOUR CONSOLE FOR THIS
   }
   
-  console.log("client id " , process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
   // Dynamic Styles based on theme
   const styles = {
     pageBg: theme === 'dark' ? 'bg-[#020202]' : 'bg-white',

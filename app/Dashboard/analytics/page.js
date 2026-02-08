@@ -19,7 +19,7 @@ import {
   Flame,
   HelpCircle,
 } from "lucide-react";
-import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
+import WorldMap from "@/Components/DashboardComponents/WorldMap";
 
 export default function AnalyticsTab() {
   const { theme } = useTheme();
@@ -130,11 +130,12 @@ export default function AnalyticsTab() {
     : "--";
 
   const highlightCountries = useMemo(() => {
-    return new Set(
-      (stats.countries || [])
-        .map((country) => String(country.label || "").toLowerCase().trim())
-        .filter(Boolean)
-    );
+    return (stats.countries || [])
+      .map((country) => ({
+        label: String(country.label || "").trim(),
+        count: Number(country.count || 0),
+      }))
+      .filter((country) => country.label);
   }, [stats.countries]);
 
   const formatHourTick = (hour) => {
@@ -145,12 +146,17 @@ export default function AnalyticsTab() {
 
 
   const cityMarkers = useMemo(() => {
-    return (stats.locationPoints || []).filter(
-      (point) =>
-        Number.isFinite(point.lat) &&
-        Number.isFinite(point.lon) &&
-        point.label
-    );
+    return (stats.locationPoints || [])
+      .filter(
+        (point) =>
+          Number.isFinite(point.lat) &&
+          Number.isFinite(point.lon) &&
+          point.label
+      )
+      .map((point) => ({
+        ...point,
+        count: Number.isFinite(Number(point.count)) ? Number(point.count) : 0,
+      }));
   }, [stats.locationPoints]);
 
   const shortLinks = Array.isArray(shortLinksQuery.data)
@@ -264,7 +270,7 @@ export default function AnalyticsTab() {
             {activeHoursMode === "unique" ? "users" : "pageviews"}
           </p>
           <p className="text-xs text-slate-400 mt-1">
-            on {activeHoursTab=== "Hours"
+            on {activeHoursTab === "Hours"
               ? `${((payload[0].payload.name % 12))} ${payload[0].payload.name >= 12 ? "PM" : "AM"}`
               : payload[0].payload.name}
           </p>
@@ -330,8 +336,6 @@ export default function AnalyticsTab() {
   const cardClass = isDarkMode
     ? "bg-gradient-to-b from-slate-900/80 to-slate-950/90 border-slate-800/80 shadow-[0_12px_30px_rgba(0,0,0,0.45)] ring-1 ring-white/5 backdrop-blur-sm"
     : "bg-gradient-to-b from-white to-slate-50 border-slate-200 shadow-[0_10px_24px_rgba(15,23,42,0.12)]";
-  const geographyUrl =
-    "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -571,8 +575,8 @@ export default function AnalyticsTab() {
                     </div>
                   </div>
 
-                  <div className="h-[320px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                  <div className="h-[320px] min-h-[320px] w-full min-w-0">
+                    <ResponsiveContainer width="100%" height={320} minWidth={0}>
                       <BarChart data={activeHoursChartData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }} barGap={8}>
                         <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }} dy={12} tickFormatter={activeHoursTab === "Hours" ? formatHourTick : undefined} />
@@ -704,7 +708,7 @@ export default function AnalyticsTab() {
                     </div>
                   </div>
                   <div
-                    className={`relative h-64 rounded-2xl border overflow-hidden mb-4 ${isDarkMode ? "bg-slate-50 border-slate-200" : "bg-slate-50 border-slate-200"
+                    className={`relative h-64 rounded-2xl border overflow-hidden mb-4 ${isDarkMode ? "bg-slate-900 border-slate-700" : "bg-slate-50 border-slate-200"
                       }`}
                   >
                     <div
@@ -714,43 +718,13 @@ export default function AnalyticsTab() {
                           "radial-gradient(circle at 20% 30%, rgba(59,130,246,0.08), transparent 55%), radial-gradient(circle at 80% 70%, rgba(16,185,129,0.06), transparent 55%)",
                       }}
                     />
-                    <ComposableMap
-                      projectionConfig={{ scale: 225 }}
-                      className="absolute inset-0 w-full h-full"
-                    >
-                      <Geographies geography={geographyUrl}>
-                        {({ geographies }) =>
-                          geographies.map((geo) => (
-                            <Geography
-                              key={geo.rsmKey}
-                              geography={geo}
-                              fill={
-                                mapMode === "countries" &&
-                                  highlightCountries.has(
-                                    String(geo.properties?.name || "")
-                                      .toLowerCase()
-                                      .trim()
-                                  )
-                                  ? "#1d4ed8"
-                                  : "#d1d5db"
-                              }
-                              stroke="#ffffff"
-                              strokeWidth={0.6}
-                            />
-                          ))
-                        }
-                      </Geographies>
-                      {mapMode === "cities" &&
-                        cityMarkers.map((point) => (
-                          <Marker
-                            key={`${point.label}-${point.lat}-${point.lon}`}
-                            coordinates={[point.lon, point.lat]}
-                          >
-                            <circle r={3.5} fill="#1d4ed8" />
-                            <circle r={7} fill="rgba(29,78,216,0.25)" />
-                          </Marker>
-                        ))}
-                    </ComposableMap>
+                    {/* map wise analytics */}
+                    <WorldMap
+                      mapMode={mapMode}
+                      highlightCountries={highlightCountries}
+                      cityMarkers={cityMarkers}
+                      isDarkMode={isDarkMode}
+                    />
                   </div>
                   <div className="space-y-2 text-xs">
                     {(mapMode === "cities" ? stats.locations : topCountries).map((item, idx) => (
