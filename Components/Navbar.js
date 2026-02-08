@@ -12,6 +12,7 @@ import { useAuth } from '@/context/Authenticate';
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+
 export default function   Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);

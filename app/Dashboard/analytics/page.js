@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -21,7 +21,8 @@ import {
 } from "lucide-react";
 import WorldMap from "@/Components/DashboardComponents/WorldMap";
 
-export default function AnalyticsTab() {
+
+function AnalyticsContent() {
   const { theme } = useTheme();
   const { user, loading: authLoading } = useAuth();
   const isDarkMode = theme === "dark";
@@ -31,12 +32,14 @@ export default function AnalyticsTab() {
     { key: "linkinbio", label: "Link in Bio" },
     { key: "urlshortener", label: "URL Shortener" },
   ];
+
   const activeSection = useMemo(() => {
     const candidate = (searchParams.get("section") || "profile").toLowerCase();
     return sections.some((section) => section.key === candidate)
       ? candidate
       : "profile";
   }, [searchParams]);
+
   const needsBioAnalytics = activeSection !== "urlshortener";
 
   const [range, setRange] = useState(30);
@@ -901,5 +904,13 @@ export default function AnalyticsTab() {
         </>
       )}
     </div>
+  );
+}
+
+export default function AnalyticsTab() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AnalyticsContent />
+    </Suspense>
   );
 }
