@@ -30,7 +30,7 @@
     "next": "^15.5.7",
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.6",
-    "posthog-js": "^1.341.1",
+    "posthog-js": "^1.343.1",
     "qr-code-styling": "^1.9.2",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.1",
