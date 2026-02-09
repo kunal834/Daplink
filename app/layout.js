@@ -8,6 +8,7 @@ import ClientLayout from "@/Components/ClientLayout";
 import ClientAnalytics from "@/Components/ClientAnalytics";
 import PostHogProviderWrapper from "@/Components/PostHogProvider";
 import QueryProvider from "@/lib/QueryProvider";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -78,8 +79,10 @@ export default function RootLayout({ children }) {
                 <ClientLayout>
                   {children}
                 </ClientLayout>
-
-                <ClientAnalytics />
+             <Suspense fallback={null}>
+                  <ClientAnalytics />
+                </Suspense>
+               
               </QueryProvider>
             </AuthContextProvider>
           </ThemeProvider>
