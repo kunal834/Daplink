@@ -66,11 +66,12 @@ export default function   Navbar() {
   // Mega Menu Data Configuration
   const megaMenuData = {
     products: [
-      { name: "URL Shortener", desc: "Customize, share and track links", icon: LinkIcon },
+      { name: "URL Shortener", desc: "Customize, share and track links", icon: LinkIcon , },
       { name: "QR Code Generator", desc: "Dynamic solutions for business", icon: Grid },
       { name: "2D Barcodes", desc: "GS1 Digital Link for packaging", icon: Package },
       { name: "Analytics", desc: "Track and analyze performance", icon: BarChart2 },
       { name: "Pages", desc: "Mobile-friendly landing pages", icon: Layout },
+    
     ],
     features: [
       { name: "Link-in-bio", desc: "Curate links for social profiles", icon: FileText },
