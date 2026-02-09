@@ -76,8 +76,11 @@ export default function RootLayout({ children }) {
               <QueryProvider>
 
                 {/* Client-only UI shell */}
+
                 <ClientLayout>
-                  {children}
+                  <Suspense fallback={null}>
+                    {children}
+                  </Suspense>
                 </ClientLayout>
              <Suspense fallback={null}>
                   <ClientAnalytics />
