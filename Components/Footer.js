@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
 import { Link as LinkIcon, Twitter, Instagram, Youtube } from 'lucide-react';
 import FooterColumn from './ui/FooterColumn';
 import Image from 'next/image';
@@ -82,8 +83,8 @@ export default function Footer() {
                 }`}>
                     <div>&copy; {new Date().getFullYear()} DapLink. All rights reserved.</div>
                     <div className="flex gap-6">
-                        <a href="/status" className="hover:text-gray-400">Status</a>
-                        <a href="/sitemap" className="hover:text-gray-400">Sitemap</a>
+                        <Link href="/status" className="hover:text-gray-400">Status</Link>
+                        <Link href="/sitemap" className="hover:text-gray-400">Sitemap</Link>
                     </div>
                 </div>
             </div>

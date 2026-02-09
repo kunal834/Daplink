@@ -17,7 +17,8 @@
     "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "canvas-confetti": "^1.9.4",
-    "d3-geo": "^3.1.1",
+    "echarts": "^6.0.0",
+    "echarts-for-react": "^3.0.6",
     "framer-motion": "^12.26.2",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -29,6 +30,7 @@
     "next": "^15.5.7",
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.6",
+    "posthog-js": "^1.343.1",
     "qr-code-styling": "^1.9.2",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.1",
@@ -39,7 +41,8 @@
     "recharts": "^3.6.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "topojson-client": "^3.1.0"
+    "topojson-client": "^3.1.0",
+    "ua-parser-js": "^2.0.9"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

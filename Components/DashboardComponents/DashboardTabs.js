@@ -94,7 +94,7 @@ export const MindsetTab = ({ isDarkMode }) => {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {mindsetQuotes.map((quote) => (
-          <div key={quote.id} className={`p-6 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-md shadow-sm transform hover:-translate-y-1 transition-transform ${quote.color} min-h-[160px] flex flex-col justify-between`}><Sticker className="w-5 h-5 opacity-20 mb-2" /><p className="font-bold text-lg leading-tight">"{quote.text}"</p><p className="text-xs font-bold opacity-60 mt-4">{quote.author}</p></div>
+          <div key={quote.id} className={`p-6 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-md shadow-sm transform hover:-translate-y-1 transition-transform ${quote.color} min-h-[160px] flex flex-col justify-between`}><Sticker className="w-5 h-5 opacity-20 mb-2" /><p className="font-bold text-lg leading-tight">&ldquo;{quote.text}&rdquo;</p><p className="text-xs font-bold opacity-60 mt-4">{quote.author}</p></div>
         ))}
       </div>
     </div>

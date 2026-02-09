@@ -99,7 +99,7 @@ export default function Pricing() {
         </Reveal>
         <Reveal delayClass="stagger-1">
           <p className={`text-lg max-w-2xl mx-auto ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-            Choose the plan that's right for you. All plans include a 14-day free trial.
+            Choose the plan that is right for you. All plans include a 14-day free trial.
           </p>
         </Reveal>
 

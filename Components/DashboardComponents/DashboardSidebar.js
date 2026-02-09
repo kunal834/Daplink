@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Layout, User, BarChart3, Users, RefreshCw,
   Briefcase, Brain, QrCode, Settings, StarIcon,
@@ -14,9 +14,20 @@ import axios from 'axios';
 
 const Sidebar = ({ isDarkMode }) => {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const analyticsSection = (searchParams.get('section') || 'profile').toLowerCase();
 
   const menuItems = [
-    { href: '/Dashboard/analytics', icon: BarChart3, label: 'Analytics' },
+    {
+      href: '/Dashboard/analytics',
+      icon: BarChart3,
+      label: 'Analytics',
+      children: [
+        { href: '/Dashboard/analytics?section=profile', label: 'My Profile', section: 'profile' },
+        { href: '/Dashboard/analytics?section=linkinbio', label: 'Link in Bio', section: 'linkinbio' },
+        { href: '/Dashboard/analytics?section=urlshortener', label: 'URL Shortener', section: 'urlshortener' },
+      ],
+    },
     { href: '/Dashboard/features', icon: Layout, label: 'features' },
     { href: '/Dashboard/bioPage', icon: User, label: 'Bio Page' },
     { href: '/Dashboard/community', icon: Users, label: 'Community', badge: '1,204' },
@@ -29,6 +40,7 @@ const Sidebar = ({ isDarkMode }) => {
   ];
 
   const isActive = (href) => pathname.startsWith(href);
+  const isAnalyticsRoute = pathname.startsWith('/Dashboard/analytics');
 
   return (
     <nav
@@ -46,45 +58,71 @@ const Sidebar = ({ isDarkMode }) => {
         {menuItems.map(item => {
           const active = isActive(item.href);
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group relative ${
-                active
-                  ? (isDarkMode
-                      ? 'bg-zinc-800 text-white'
-                      : 'bg-zinc-900 text-white shadow-lg shadow-zinc-900/20')
-                  : (isDarkMode
-                      ? 'text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300'
-                      : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900')
-              }`}
-            >
-              <item.icon
-                className={`w-5 h-5 ${
+            <div key={item.href} className="space-y-1">
+              <Link
+                href={item.href}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group relative ${
                   active
-                    ? 'text-white'
-                    : isDarkMode
-                      ? 'text-zinc-600 group-hover:text-zinc-400'
-                      : 'text-zinc-400 group-hover:text-zinc-900'
+                    ? (isDarkMode
+                        ? 'bg-zinc-800 text-white'
+                        : 'bg-zinc-900 text-white shadow-lg shadow-zinc-900/20')
+                    : (isDarkMode
+                        ? 'text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300'
+                        : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900')
                 }`}
-              />
-
-              <span className="hidden md:block">{item.label}</span>
-
-              {item.badge && (
-                <span
-                  className={`hidden md:flex ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+              >
+                <item.icon
+                  className={`w-5 h-5 ${
                     active
-                      ? 'bg-indigo-500 text-white'
+                      ? 'text-white'
                       : isDarkMode
-                        ? 'bg-zinc-800 text-zinc-400'
-                        : 'bg-indigo-100 text-indigo-600'
+                        ? 'text-zinc-600 group-hover:text-zinc-400'
+                        : 'text-zinc-400 group-hover:text-zinc-900'
                   }`}
-                >
-                  {item.badge}
-                </span>
+                />
+
+                <span className="hidden md:block">{item.label}</span>
+
+                {item.badge && (
+                  <span
+                    className={`hidden md:flex ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                      active
+                        ? 'bg-indigo-500 text-white'
+                        : isDarkMode
+                          ? 'bg-zinc-800 text-zinc-400'
+                          : 'bg-indigo-100 text-indigo-600'
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+
+              {item.children && (
+                <div className="hidden md:flex flex-col gap-1 pl-11">
+                  {item.children.map((child) => {
+                    const childActive = isAnalyticsRoute && analyticsSection === child.section;
+                    return (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={`text-xs font-semibold tracking-wide px-3 py-2 rounded-lg transition-all ${
+                          childActive
+                            ? (isDarkMode
+                                ? 'bg-zinc-900 text-white'
+                                : 'bg-zinc-900 text-white shadow-md shadow-zinc-900/20')
+                            : (isDarkMode
+                                ? 'text-zinc-500 hover:bg-zinc-900 hover:text-zinc-200'
+                                : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900')
+                        }`}
+                      >
+                        {child.label}
+                      </Link>
+                    );
+                  })}
+                </div>
               )}
-            </Link>
+            </div>
           );
         })}
       </div>

@@ -6,7 +6,9 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthContextProvider } from "@/context/Authenticate";
 import ClientLayout from "@/Components/ClientLayout";
 import ClientAnalytics from "@/Components/ClientAnalytics";
+import PostHogProviderWrapper from "@/Components/PostHogProvider";
 import QueryProvider from "@/lib/QueryProvider";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,26 +65,31 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <PostHogProviderWrapper>
+          {/* UI-level provider */}
+          <ThemeProvider>
 
-        {/* UI-level provider */}
-        <ThemeProvider>
+            {/* Auth-level provider */}
+            <AuthContextProvider>
 
-          {/* Auth-level provider */}
-          <AuthContextProvider>
+              {/* Data-fetching provider */}
+              <QueryProvider>
 
-            {/* Data-fetching provider */}
-            <QueryProvider>
+                {/* Client-only UI shell */}
 
-              {/* Client-only UI shell */}
-              <ClientLayout>
-                {children}
-              </ClientLayout>
-
-            </QueryProvider>
-          </AuthContextProvider>
-        </ThemeProvider>
-
-        <ClientAnalytics />
+                <ClientLayout>
+                  <Suspense fallback={null}>
+                    {children}
+                  </Suspense>
+                </ClientLayout>
+             <Suspense fallback={null}>
+                  <ClientAnalytics />
+                </Suspense>
+               
+              </QueryProvider>
+            </AuthContextProvider>
+          </ThemeProvider>
+        </PostHogProviderWrapper>
       </body>
     </html>
   );
