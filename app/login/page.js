@@ -95,29 +95,29 @@ export default function Login() {
     }
   };
 
-  const handlegooglelogin = async() =>{
- const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
- 
-  const callbackUrl = `${window.location.origin}/api/auth/google/callback`;
-  const options = {
-    redirect_uri: callbackUrl,
-   client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID, 
-    access_type: "offline",
-    response_type: "code",
-    prompt: "consent",
-    scope: [
+  const handlegooglelogin = async () => {
+    const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
+
+    const callbackUrl = `${window.location.origin}/api/auth/google/callback`;
+    const options = {
+      redirect_uri: callbackUrl,
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      access_type: "offline",
+      response_type: "code",
+      prompt: "consent",
+      scope: [
         "https://www.googleapis.com/auth/userinfo.profile",
         "https://www.googleapis.com/auth/userinfo.email",
-    ].join(" "),
-  };
+      ].join(" "),
+    };
 
-  //URLSearchParams is a built-in tool that takes a simple JavaScript object and prepares it to be put into a URL.
-  const qs = new URLSearchParams(options);
+    //URLSearchParams is a built-in tool that takes a simple JavaScript object and prepares it to be put into a URL.
+    const qs = new URLSearchParams(options);
 
-  window.location.href = `${rootUrl}?${qs.toString()}`;
-  // console.log("Full Google URL:", fullUrl); // CHECK YOUR CONSOLE FOR THIS
+    window.location.href = `${rootUrl}?${qs.toString()}`;
+    // console.log("Full Google URL:", fullUrl); // CHECK YOUR CONSOLE FOR THIS
   }
-  
+
   // Dynamic Styles based on theme
   const styles = {
     pageBg: theme === 'dark' ? 'bg-[#020202]' : 'bg-white',
@@ -143,8 +143,8 @@ export default function Login() {
 
         {/* Background Effects */}
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[600px] h-[600px] bg-purple-900/20 top-[-10%] left-[-10%] rounded-full blur-[100px] animate-aurora"></div>
-          <div className="absolute w-[500px] h-[500px] bg-teal-900/20 bottom-[-10%] right-[-10%] rounded-full blur-[100px] animate-aurora" style={{ animationDelay: '-5s' }}></div>
+          <div className="absolute w-150 h-150 bg-purple-900/20 top-[-10%] left-[-10%] rounded-full blur-[100px] animate-aurora"></div>
+          <div className="absolute w-125 h-125 bg-teal-900/20 bottom-[-10%] right-[-10%] rounded-full blur-[100px] animate-aurora" style={{ animationDelay: '-5s' }}></div>
           {theme === 'light' && <div className="absolute inset-0 bg-white/40 z-[-1]"></div>}
         </div>
 
