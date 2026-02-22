@@ -31,7 +31,8 @@ const ChatWidget = ({
   const [newMessage, setNewMessage] = useState("");
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef(null);
-  const socketRef = useRef(null);
+
+
 
   const widgetColors = {
     bg: theme === "dark" ? "bg-[#1a1a1a]" : "bg-white",
@@ -51,9 +52,9 @@ const ChatWidget = ({
         : "bg-slate-200 text-slate-800",
     border: theme === "dark" ? "border-slate-700" : "border-slate-200",
   };
-
+  
 useEffect(() => {
-  console.log("Connecting socket...");
+  console.log("🔌 Connecting socket...");
 
   const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
     withCredentials: true,
@@ -202,8 +203,11 @@ if (!recipient?._id || !currentUserId) return;
       minute: "2-digit",
     }),
   };
+
+  // ✅ 1. Add message immediately
   setMessages((prev) => [...prev, optimisticMessage]);
 
+  // ✅ 2. Emit to backend
   socket.emit("send_message", {
     receiverId: recipient._id,
   text: newMessage.trim(),
