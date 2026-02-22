@@ -226,7 +226,7 @@ const ChatWidget = ({
                <User className={`w-6 h-6 ${widgetColors.text}`} />
             </div>
             <p className={`text-sm font-medium ${widgetColors.text}`}>Start the conversation</p>
-            <p className={`text-xs mt-1 ${widgetColors.subtext}`}>Say hello to @{recipient.handle}!</p>
+            <p className={`text-xs mt-1 ${widgetColors.subtext}`}>Say hello to @{recipient.handle}</p>
           </div>
         ) : (
           messages.map((msg, idx) => {
@@ -450,7 +450,7 @@ const UserProfile = ({ params }) => {
               </div>
               <h3 className={`text-base font-semibold ${colors.text}`}>No creators found yet</h3>
               <p className={`mt-2 text-sm ${colors.subtext}`}>
-                Click the "Explore Directory" button above to fetch users.
+                Click the Explore Directory button above to fetch users.
               </p>
             </div>
           )}

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
 import GoalStep from "./GoalStep";
 import UsernameStep from "./UsernameStep";
 import ProfileStep from "./ProfileStep";

@@ -35,7 +35,7 @@ export async function POST(req) {
   await User.updateOne(
     { _id: user._id },
     {
-      daplinkID: linkDoc._id,
+      daplinkID: linkDoc.userId,
       "onboarding.currentStep": 2
     }
   );
