@@ -31,7 +31,8 @@ const ChatWidget = ({
   const [newMessage, setNewMessage] = useState("");
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef(null);
-  const socketRef = useRef(null);
+
+
 
   const widgetColors = {
     bg: theme === "dark" ? "bg-[#1a1a1a]" : "bg-white",
@@ -51,9 +52,17 @@ const ChatWidget = ({
         : "bg-slate-200 text-slate-800",
     border: theme === "dark" ? "border-slate-700" : "border-slate-200",
   };
+  
+useEffect(() => {
+  console.log("🔌 Connecting socket...");
 
-  useEffect(() => {
-    console.log("Connecting socket...");
+  const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
+    withCredentials: true,
+  });
+
+  newSocket.on("connect", () => {
+    console.log("✅ Connected:", newSocket.id);
+  });
 
     const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
       withCredentials: true,
@@ -192,24 +201,27 @@ const ChatWidget = ({
 
     const tempId = Date.now(); // temporary id
 
-    const optimisticMessage = {
-      _id: tempId,
-      message: newMessage.trim(),
-      author: currentUserHandle,
-      status: "sending",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setMessages((prev) => [...prev, optimisticMessage]);
-
-    socket.emit("send_message", {
-      receiverId: recipient._id,
-      text: newMessage.trim(),
-    });
-    setNewMessage("");
+  const optimisticMessage = {
+    _id: tempId,
+    message: newMessage.trim(),
+    author: currentUserHandle,
+    status: "sending",
+    time: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
   };
+
+  // ✅ 1. Add message immediately
+  setMessages((prev) => [...prev, optimisticMessage]);
+
+  // ✅ 2. Emit to backend
+  socket.emit("send_message", {
+    receiverId: recipient._id,
+  text: newMessage.trim(),
+});
+  setNewMessage("");
+};
   if (isMinimized) {
     return (
       <div
