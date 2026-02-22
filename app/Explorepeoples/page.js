@@ -79,11 +79,11 @@ const ChatWidget = ({
         };
 
         setMessages((prev) => {
-          // 1. Prevent exact duplicates from server
+          // Prevent duplicates
           if (prev.some((m) => String(m._id) === String(newMsg._id))) {
             return prev;
           }
-          // 2. Remove the "optimistic" temp message if it matches what the server just sent back
+          // Remove optimistic message
           const filtered = prev.filter(
             (m) => !(String(m._id).startsWith("temp-") && m.message === newMsg.message)
           );
@@ -98,6 +98,7 @@ const ChatWidget = ({
 
   useEffect(() => {
     if (!recipient?._id || !currentUserId) return;
+    
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
@@ -125,7 +126,8 @@ const ChatWidget = ({
       }
     };
     fetchMessages();
-  }, [recipient._id, currentUserId, currentUserHandle]);
+  // 🐛 FIX 2: Added optional chaining to recipient._id in dependency array
+  }, [recipient?._id, currentUserId, currentUserHandle]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -135,7 +137,6 @@ const ChatWidget = ({
     e.preventDefault();
     if (!socket || !socket.connected || !newMessage.trim()) return;
 
-    // Use a specific "temp-" prefix to identify optimistic updates
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage = {
       _id: tempId,
@@ -169,7 +170,8 @@ const ChatWidget = ({
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 relative z-10"></div>
           </div>
           @{recipient.handle}
-          <div className={`p-1.5 ml-2 rounded-full ${theme === 'dark' ? 'hover:bg-zinc-800' : 'hover:bg-zinc-100'} transition-colors`}>
+          {/* 🐛 FIX 4: Fixed dynamic tailwind classes for hover state */}
+          <div className={`p-1.5 ml-2 rounded-full transition-colors ${theme === 'dark' ? 'hover:bg-zinc-800 hover:text-zinc-200' : 'hover:bg-zinc-100 hover:text-zinc-800'}`}>
             <Maximize2 className="w-4 h-4" />
           </div>
         </div>
@@ -179,18 +181,19 @@ const ChatWidget = ({
 
   return (
     <div
-      className={`fixed bottom-0 right-4 sm:right-8 w-full sm:w-[380px] h-[550px] max-h-[80vh] flex flex-col rounded-t-2xl shadow-2xl border-x border-t z-50 overflow-hidden transition-colors ${widgetColors.bg} ${widgetColors.border}`}
+      className={`fixed bottom-0 right-4 sm:right-8 w-full sm:w-95 h-137.5 max-h-[80vh] flex flex-col rounded-t-2xl shadow-2xl border-x border-t z-50 overflow-hidden transition-colors ${widgetColors.bg} ${widgetColors.border}`}
     >
-      {/* HEADER (Glassmorphism) */}
+      {/* HEADER */}
       <div
         className={`px-4 py-3.5 flex items-center justify-between border-b backdrop-blur-xl z-10 ${widgetColors.header} ${widgetColors.text}`}
       >
         <div className="flex items-center gap-3">
           <div className="relative">
-             <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                {recipient.handle.substring(0, 2).toUpperCase()}
+             <div className="w-9 h-9 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                {recipient.handle ? recipient.handle.substring(0, 2).toUpperCase() : "??"}
              </div>
-             <div className="absolute bottom-0 right-0 w-3 h-3 border-2 border-[#09090b] bg-emerald-500 rounded-full"></div>
+             {/* 🐛 FIX 3: Dynamic border color for the online indicator */}
+             <div className={`absolute bottom-0 right-0 w-3 h-3 border-2 ${theme === 'dark' ? 'border-[#09090b]' : 'border-white'} bg-emerald-500 rounded-full`}></div>
           </div>
           <div className="flex flex-col">
             <h4 className="text-[15px] font-semibold leading-none">@{recipient.handle}</h4>
@@ -199,9 +202,10 @@ const ChatWidget = ({
         </div>
 
         <div className="flex items-center gap-1 text-zinc-400">
+          {/* 🐛 FIX 4: Fixed dynamic tailwind classes for hover state */}
           <button
             onClick={() => setIsMinimized(true)}
-            className={`p-2 rounded-full hover:${theme === 'dark' ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-100 text-zinc-800'} transition-colors`}
+            className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'hover:bg-zinc-800 hover:text-zinc-200' : 'hover:bg-zinc-100 hover:text-zinc-800'}`}
           >
             <Minimize2 className="w-4 h-4" />
           </button>
@@ -242,7 +246,7 @@ const ChatWidget = ({
                       : `${widgetColors.receivedBubble} rounded-2xl rounded-tl-sm`
                     }`}
                 >
-                  <p className="whitespace-pre-wrap break-words">{msg.message}</p>
+                  <p className="whitespace-pre-wrap wrap-break-word">{msg.message}</p>
                 </div>
                 <span className={`text-[10px] mt-1.5 px-1 font-medium ${widgetColors.subtext}`}>
                   {msg.time} {isSending && "• Sending"}
@@ -283,9 +287,6 @@ const ChatWidget = ({
 };
 
 // --- MAIN COMPONENT ---
-// (Your Main Component remains exactly as previously provided, 
-// seamlessly passing props into this enhanced ChatWidget)
-
 const UserProfile = ({ params }) => {
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -294,7 +295,6 @@ const UserProfile = ({ params }) => {
 
   const { theme } = useTheme();
 
-  // Clean, minimalist UI palette for the main page
   const colors = {
     bg: theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fafafa]',
     text: theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900',
@@ -320,8 +320,13 @@ const UserProfile = ({ params }) => {
     }
   };
 
+  // 🐛 FIX 1: Transform user object so `handle` and `profile` sit exactly where ChatWidget expects them.
   const handleOpenChat = (user) => {
-    setActiveChat(user);
+    setActiveChat({
+      _id: user._id,
+      handle: user.daplinkID?.handle,
+      profile: user.daplinkID?.profile,
+    });
   };
 
   useEffect(() => {
