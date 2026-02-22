@@ -6,7 +6,7 @@ export async function GET() {
   try {
     await connectDB();
 
-    const alluser = await User.find({}).select("-password");
+    const alluser = await User.find({}).select("-password").populate("daplinkID");
 
     return NextResponse.json({
       success: true,
