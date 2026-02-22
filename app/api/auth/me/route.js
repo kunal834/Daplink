@@ -31,8 +31,8 @@ export async function GET() {
       return NextResponse.json({ user: null });
     }
 
-    const user = await User.findById(decoded.id).select("-password");
-    console.log("userin me", user);
+    const user = await User.findById(decoded.id).select("-password").populate("daplinkID");
+    // console.log("userin me", user);
 
     if (!user) {
       return NextResponse.json({ user: null });
