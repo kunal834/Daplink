@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import {
   Link as LinkIcon, Brain, Wrench, Share2, ExternalLink,
   CheckCircle, Moon, Sun, MapPin, Briefcase, Search,
@@ -9,7 +10,8 @@ import {
   Edit,
   Heart,
   MessageSquare,
-  Globe
+  Globe,
+
 } from 'lucide-react';
 import { usePostHog } from "posthog-js/react";
 
@@ -20,6 +22,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import FollowModal from "@/Components/modals/followModals";
 import { FiGithub, FiInstagram, FiLinkedin, FiYoutube } from "react-icons/fi";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 /* -------------------------------------------------------------------------- */
 /* STYLES & ANIMATIONS                                                        */
@@ -105,59 +108,101 @@ const PageStyles = ({ theme }) => (
 );
 
 
-export default function ProfilePage({ params }) {
+export default function ProfilePage() {
 
   const { theme } = useTheme();
+  const router = useRouter();
+  const routeParams = useParams();
+  const queryClient = useQueryClient();
   const posthog = usePostHog();
-  const hasTrackedView = useRef(false);
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [followCount, setFollowCount] = useState({
-    follower: 0,
-    following: 0
-  });
   const [followLoading, setFollowLoading] = useState(false);
-  const [targetUserId, setTargetUserId] = useState(null);
   const [modalState, setModalState] = useState({ isOpen: false, tab: 'followers' });
   const [activeTab, setActiveTab] = useState('links');
-
-  const openFollowers = () => setModalState({ isOpen: true, tab: 'followers' });
-  const openFollowing = () => setModalState({ isOpen: true, tab: 'following' });
   const closeModal = () => setModalState(prev => ({ ...prev, isOpen: false }));
-  const [followData, setFollowData] = useState({
-    followers: [],
-    following: []
-  });
 
   const { user } = useAuth();
+  const routeHandle = Array.isArray(routeParams?.handle)
+    ? routeParams.handle[0]
+    : routeParams?.handle;
 
-  useEffect(() => {
-    const getUserId = async () => {
-      try {
-        const res = await axios.get(`/api/getuser?daplinkID=${data?._id}`);
-        const json = await res.data;
-
-        console.log(json, res)
-        if (res.data) {
-          setTargetUserId(json.userId);
-          setFollowCount({
-            follower: json.follower.length,
-            following: json.following.length
-          });
-        }
-      } catch (error) {
-        // console.error("Error fetching user ID:", error);
-      }
-    };
-
-    if (data && data._id) {
-      getUserId();
+  const {
+    data,
+    isLoading: profileLoading,
+    isError: profileError
+  } = useQuery({
+    queryKey: ["profile-by-handle", routeHandle],
+    enabled: Boolean(routeHandle),
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const res = await axios.get(`/api/links/${routeHandle}`);
+      if (!res.data?.result) throw new Error("Profile not found");
+      return res.data.result;
     }
-  }, [data]);
+  });
+  const loading = profileLoading;
+
+  useQuery({
+    queryKey: ["bio-page-view", data?._id],
+    enabled: Boolean(data?._id && data?.handle && posthog),
+    staleTime: Infinity,
+    queryFn: async () => {
+      posthog.capture("bio_page_view", {
+        handle: data.handle,
+        profile_id: data._id,
+        link_count: Array.isArray(data.links) ? data.links.length : 0,
+      });
+      return true;
+    }
+  });
+
+  const followQueryKey = ["follow-data", data?._id];
+
+  const {
+    data: followInfo,
+    refetch: refetchFollowData
+  } = useQuery({
+    queryKey: followQueryKey,
+    enabled: Boolean(data?._id),
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const res = await axios.get(`/api/getuser?daplinkID=${data._id}`);
+      return res.data;
+    }
+  });
+
+  const targetUserId = followInfo?.userId || null;
+  const followData = {
+    followers: Array.isArray(followInfo?.follower) ? followInfo.follower : [],
+    following: Array.isArray(followInfo?.following) ? followInfo.following : []
+  };
+  const followCount = {
+    follower: followData.followers.length,
+    following: followData.following.length
+  };
+
+  const isFollowingQueryKey = ["is-following", user?._id, targetUserId];
+  const { data: isFollowing = false } = useQuery({
+    queryKey: isFollowingQueryKey,
+    enabled: Boolean(user?._id && targetUserId),
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const res = await axios.get(
+        `/api/isFollowing?followerId=${user?._id}&followingId=${targetUserId}`
+      );
+      return Boolean(res.data?.isFollowing);
+    }
+  });
+
+  const openFollowers = () => {
+    setModalState({ isOpen: true, tab: 'followers' });
+    if (data?._id) refetchFollowData();
+  };
+  const openFollowing = () => {
+    setModalState({ isOpen: true, tab: 'following' });
+    if (data?._id) refetchFollowData();
+  };
 
 
   // Dynamic Colors
@@ -167,99 +212,6 @@ export default function ProfilePage({ params }) {
     subtext: theme === 'dark' ? 'text-gray-400' : 'text-gray-600',
     mutedText: theme === 'dark' ? 'text-gray-500' : 'text-gray-500',
   };
-
-  useEffect(() => {
-    const getHandle = async () => {
-      try {
-        const resolvedParams = await params;
-        const handle = resolvedParams?.handle;
-
-        if (!handle) return;
-
-        const res = await axios.get(`/api/links/${handle}`);
-
-        // console.log("handlepage:", res.data);
-
-        if (res.data?.result) {
-          setData(res.data.result);
-        } else {
-          setError(true);
-        }
-
-      } catch (err) {
-        console.error("Error loading profile:", err);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getHandle();
-  }, [params]);
-
-  const viewStartRef = useRef(null);
-  const durationSentRef = useRef(false);
-
-  useEffect(() => {
-    if (!data?._id || !data?.handle) return;
-    if (!posthog || hasTrackedView.current) return;
-
-    posthog.capture("bio_page_view", {
-      handle: data.handle,
-      profile_id: data._id,
-      link_count: Array.isArray(data.links) ? data.links.length : 0,
-    });
-
-    viewStartRef.current = Date.now();
-    hasTrackedView.current = true;
-  }, [data?._id, data?.handle, data?.links, posthog]);
-
-  useEffect(() => {
-    if (!data?._id || !data?.handle) return;
-    if (!posthog || !hasTrackedView.current) return;
-
-    const sendDuration = () => {
-      if (!viewStartRef.current || durationSentRef.current) return;
-      const durationSeconds = Math.max(
-        1,
-        Math.round((Date.now() - viewStartRef.current) / 1000)
-      );
-      posthog.capture("bio_page_view_duration", {
-        handle: data.handle,
-        profile_id: data._id,
-        $duration: durationSeconds,
-      });
-      durationSentRef.current = true;
-    };
-
-    const handleVisibility = () => {
-      if (document.visibilityState === "hidden") {
-        sendDuration();
-      }
-    };
-
-    window.addEventListener("beforeunload", sendDuration);
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => {
-      sendDuration();
-      window.removeEventListener("beforeunload", sendDuration);
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, [data?._id, data?.handle, posthog]);
-
-  useEffect(() => {
-    async function checkFollow() {
-      // console.log("Checking follow status for user:", data);
-      const res = await axios.get(`/api/isFollowing?followerId=${user?._id}&followingId=${targetUserId}`);
-
-      const json = await res.data;
-      // console.log("Follow status response:", json);
-      setIsFollowing(json.isFollowing);
-    }
-
-    if (user?._id) checkFollow();
-  }, [user?._id, targetUserId]);
 
   // console.log(isFollowing, "isFollowing");
   const handleFollow = async () => {
@@ -278,14 +230,8 @@ export default function ProfilePage({ params }) {
 
       const json = await res.data;
 
-      setIsFollowing(json.isFollowing);
-
-      // --- FIX STARTS HERE ---
-      setFollowCount(prev => ({
-        ...prev, // This keeps the existing 'following' count
-        follower: json.followersCount // This updates only the 'follower' count
-      }));
-      // --- FIX ENDS HERE ---
+      queryClient.setQueryData(isFollowingQueryKey, Boolean(json.isFollowing));
+      await queryClient.invalidateQueries({ queryKey: followQueryKey });
 
     } catch (err) {
       console.error("Error following user:", err);
@@ -302,37 +248,6 @@ export default function ProfilePage({ params }) {
     });
   };
 
-  useEffect(() => {
-    if (modalState.isOpen && targetUserId) {
-      fetchFollowData(targetUserId);
-    }
-  }, [modalState.isOpen, targetUserId]);
-
-  // console.log(modalState.isOpen)
-
-  const fetchFollowData = async (userId) => {
-    try {
-      // setLoading(true);
-      // console.log("fetchStart")
-      const res = await axios.get(`/api/getFollow/${userId}`, {
-        cache: "no-store"
-      });
-
-      if (!res.data) {
-        throw new Error("Failed to fetch follow data");
-      }
-
-      const data = await res.data;
-
-      setFollowData({
-        followers: data.followers || [],
-        following: data.following || []
-      });
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong");
-    }
-  };
 
 
   if (loading) {
@@ -352,7 +267,7 @@ export default function ProfilePage({ params }) {
     );
   }
 
-  if (error || !data) {
+  if (profileError || !data) {
     return (
       <div className={`min-h-screen flex flex-col items-center justify-center ${colors.bg} ${colors.text}`}>
         <PageStyles theme={theme} />
@@ -452,14 +367,14 @@ export default function ProfilePage({ params }) {
           <section className="space-y-4 max-w-md mx-auto">
             <div className="flex items-center justify-center gap-3">
               <button
-                onClick={() => setModalState({ isOpen: true, tab: 'followers' })}
+                onClick={openFollowers}
                 className="flex-1 glass rounded-[24px] py-3 px-4 flex flex-col items-center hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
                 <span className="text-base md:text-lg font-bold">{followCount.follower.toLocaleString()}</span>
                 <span className={`text-[7px] md:text-[8px] uppercase tracking-[0.1em] font-black transition-colors ${theme === 'dark' ? 'text-zinc-600' : 'text-gray-400'}`}>Followers</span>
               </button>
               <button
-                onClick={() => setModalState({ isOpen: true, tab: 'following' })}
+                onClick={openFollowing}
                 className="flex-1 glass rounded-[24px] py-3 px-4 flex flex-col items-center hover:bg-black/5 dark:hover:bg-white/5 transition-all"
               >
                 <span className="text-base md:text-lg font-bold">{followCount.following}</span>
@@ -467,25 +382,49 @@ export default function ProfilePage({ params }) {
               </button>
             </div>
 
-            <div className="flex gap-4">
+            {targetUserId !== user?._id ? (
+              <div className="flex gap-4">
+                <button
+                  onClick={handleFollow}
+                  disabled={followLoading}
+                  className={`flex-1 py-3 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 hover:scale-110 ${isFollowing
+                    ? theme === "dark"
+                      ? "bg-zinc-900 border border-zinc-800 text-zinc-500"
+                      : "bg-gray-100 text-gray-400"
+                    : theme === "dark"
+                      ? "bg-white text-black hover:bg-zinc-200"
+                      : "bg-black text-white hover:bg-gray-800"
+                    } active:scale-95`}
+                >
+                  {followLoading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : isFollowing ? (
+                    <UserCheck size={14} />
+                  ) : (
+                    <UserPlus size={14} />
+                  )}
+                  {isFollowing ? "Following" : "Follow"}
+                </button>
+
+                <button
+                  className="glass flex-1 py-3 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 active:scale-95 hover:bg-black/5 dark:hover:bg-white/5"
+                >
+                  <MessageSquare
+                    size={14}
+                    className={theme === "dark" ? "text-zinc-400" : "text-gray-600"}
+                  />
+                  <span>Message</span>
+                </button>
+              </div>
+            ) : (
               <button
-                onClick={handleFollow}
-                disabled={followLoading}
-                className={`flex-1 py-3 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 hover:scale-110 ${isFollowing
-                  ? (theme === 'dark' ? 'bg-zinc-900 border border-zinc-800 text-zinc-500' : 'bg-gray-100 text-gray-400')
-                  : (theme === 'dark' ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-gray-800')
-                  } active:scale-95`}
+                onClick={() => router.push("/edit-profile")}
+                className={`w-full py-3 rounded-2xl font-bold uppercase tracking-widest text-[10px] text-white hover:bg-gray-800  active:scale-95 transition-all pointer ${theme === "dark" ? "bg-gray-300 text-zinc-900 hover:text-gray-300" : "bg-gray-700 text-zinc-300 hover:text-gray-400"
+                  }`}
               >
-                {followLoading ? <Loader2 size={14} className="animate-spin" /> : isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
-                {isFollowing ? 'Following' : 'Follow'}
+                Edit Profile
               </button>
-              <button
-                className="glass flex-1 py-3 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 active:scale-95 hover:bg-black/5 dark:hover:bg-white/5"
-              >
-                <MessageSquare size={14} className={theme === 'dark' ? "text-zinc-400" : "text-gray-600"} />
-                <span>Message</span>
-              </button>
-            </div>
+            )}
           </section>
 
           {/* Social Bar - Compact Icons */}

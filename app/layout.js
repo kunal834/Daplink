@@ -69,11 +69,11 @@ export default function RootLayout({ children }) {
           {/* UI-level provider */}
           <ThemeProvider>
 
-            {/* Auth-level provider */}
-            <AuthContextProvider>
+            {/* Data-fetching provider */}
+            <QueryProvider>
 
-              {/* Data-fetching provider */}
-              <QueryProvider>
+              {/* Auth-level provider */}
+              <AuthContextProvider>
 
                 {/* Client-only UI shell */}
 
@@ -82,12 +82,12 @@ export default function RootLayout({ children }) {
                     {children}
                   </Suspense>
                 </ClientLayout>
-             <Suspense fallback={null}>
+                <Suspense fallback={null}>
                   <ClientAnalytics />
                 </Suspense>
                
-              </QueryProvider>
-            </AuthContextProvider>
+              </AuthContextProvider>
+            </QueryProvider>
           </ThemeProvider>
         </PostHogProviderWrapper>
       </body>

@@ -19,7 +19,7 @@ export async function POST(req) {
         }
 
         //Checking if user exists
-        const user = await User.findOne({ email: email.toLowerCase() }).select("+password");
+        const user = await User.findOne({ email: email.toLowerCase() }).select("+password").populate('daplinkID');
 
         if (!user) {
             return NextResponse.json(

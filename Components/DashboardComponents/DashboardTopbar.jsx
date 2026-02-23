@@ -16,18 +16,10 @@ import { useAuth } from '@/context/Authenticate';
 const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const router = useRouter();
   const { user, logout } = useAuth();
+  const daplink = user?.daplinkID;
 
-  const { data: daplink, isPending } = useQuery({
-    queryKey: ['daplink', user?.daplinkID],
-    queryFn: async () => {
-      const res = await axios.get(
-        `/api/getDaplink?daplinkID=${user?.daplinkID}`
-      );
-      return res.data;
-    },
-    enabled: !!user?.daplinkID,
-    staleTime: 10 * 60 * 1000,
-  });
+  console.log(daplink);
+  
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -50,7 +42,7 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     router.replace('/login');
   };
 
-  if (isPending) {
+  if (!daplink) {
     return (
       <header className="h-16 flex items-center px-6 border-b">
         <div className="w-36 h-6 bg-zinc-200 rounded animate-pulse" />

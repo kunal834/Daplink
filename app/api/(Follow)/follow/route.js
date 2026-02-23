@@ -10,6 +10,9 @@ export async function POST(req) {
     if (!currentUserId || !targetUserId) {
       return Response.json({ error: "Missing IDs" }, { status: 400 });
     }
+     if(currentUserId === targetUserId){
+      return Response.json({ error: "You cannot follow Yourself "},{ status:404 })
+    }
     
     const currentUser = await User.findById(currentUserId);
     const targetUser = await User.findById(targetUserId);
@@ -17,6 +20,8 @@ export async function POST(req) {
     if (!currentUser || !targetUser) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
+
+   
 
     const alreadyFollowing = currentUser.following.includes(targetUserId);
 
