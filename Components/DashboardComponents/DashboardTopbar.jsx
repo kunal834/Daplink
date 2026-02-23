@@ -18,7 +18,6 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const { user, logout } = useAuth();
   const daplink = user?.daplinkID;
 
-  console.log(daplink);
   
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);

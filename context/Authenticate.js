@@ -56,7 +56,10 @@ export function AuthContextProvider({ children }) {
     const setIsAuthenticated = (value) => {
         if (!value) {
             queryClient.setQueryData(authQueryKey, { user: null });
+            return;
         }
+        // For truthy values, re-derive auth state from the server/session.
+        void refreshAuth();
     };
     const setLoading = () => { };
 

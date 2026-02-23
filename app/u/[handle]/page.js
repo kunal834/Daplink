@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -142,19 +142,15 @@ export default function ProfilePage() {
   });
   const loading = profileLoading;
 
-  useQuery({
-    queryKey: ["bio-page-view", data?._id],
-    enabled: Boolean(data?._id && data?.handle && posthog),
-    staleTime: Infinity,
-    queryFn: async () => {
+  useEffect(() => {
+    if (data?._id && data?.handle && posthog) {
       posthog.capture("bio_page_view", {
         handle: data.handle,
         profile_id: data._id,
         link_count: Array.isArray(data.links) ? data.links.length : 0,
       });
-      return true;
     }
-  });
+  }, [data?._id, data?.handle, posthog]);
 
   const followQueryKey = ["follow-data", data?._id];
 
