@@ -11,7 +11,7 @@ export async function POST(req) {
       return Response.json({ error: "Missing IDs" }, { status: 400 });
     }
      if(currentUserId === targetUserId){
-      return Response.json({ error: "You cannot follow Yourself "},{ status:404 })
+      return Response.json({ error: "You cannot follow Yourself "},{ status:400 })
     }
     
     const currentUser = await User.findById(currentUserId);
