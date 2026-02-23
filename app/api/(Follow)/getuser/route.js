@@ -13,7 +13,24 @@ export async function GET(request) {
         }
         const user = await User.findOne({
             daplinkID: new mongoose.Types.ObjectId(userid)
-        });
+        })
+            .populate({
+                path: 'followers',
+                select: 'name daplinkID',
+                populate: {
+                    path: 'daplinkID',
+                    select: 'handle profile'
+                }
+            })
+            .populate({
+                path: 'following',
+                select: 'name daplinkID',
+                populate: {
+                    path: 'daplinkID',
+                    select: 'handle profile'
+                }
+            })
+            .lean();
 
         if (!user) {
             return Response.json({ error: "User not found" }, { status: 404 });

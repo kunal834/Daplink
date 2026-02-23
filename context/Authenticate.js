@@ -1,20 +1,41 @@
 // context/Authenticate.js
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext } from "react";
 import axios from "axios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const AuthContext = createContext();
 
 export function AuthContextProvider({ children }) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const queryClient = useQueryClient();
+    const authQueryKey = ["auth", "me"];
 
-    // Login function (set user manually)
+    const {
+        data: authData,
+        isLoading: loading,
+        refetch: refreshAuth,
+    } = useQuery({
+        queryKey: authQueryKey,
+        refetchOnWindowFocus: false,
+        retry: false,
+        queryFn: async () => {
+            try {
+                const res = await axios.get("/api/auth/me");
+                return { user: res.data?.user || null };
+            } catch (error) {
+                console.error("Auth check failed:", error);
+                return { user: null };
+            }
+        },
+    });
+
+    const user = authData?.user || null;
+    const isAuthenticated = Boolean(user);
+
+    // Login function (set user in query cache)
     const login = (userData) => {
-        setIsAuthenticated(true);
-        setUser(userData);
+        queryClient.setQueryData(authQueryKey, { user: userData || null });
     };
 
     // Logout function
@@ -24,35 +45,23 @@ export function AuthContextProvider({ children }) {
         } catch (err) {
             console.error("Logout error:", err);
         }
-        setIsAuthenticated(false);
-        setUser(null);
+        queryClient.setQueryData(authQueryKey, { user: null });
+        await queryClient.invalidateQueries({ queryKey: authQueryKey });
     };
 
-    // Check user session
-    useEffect(() => {
-        const checkAuth = async () => {
-            setLoading(true);
-            try {
-                const res = await axios.get("/api/auth/me");
-
-                if (res.data?.user) {
-                    setIsAuthenticated(true);
-                    setUser(res.data.user);
-                } else {
-                    setIsAuthenticated(false);
-                    setUser(null);
-                }
-            } catch (error) {
-                console.error("Auth check failed:", error);
-                setIsAuthenticated(false);
-                setUser(null);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkAuth();
-    }, []);
+    // Compatibility setters for existing consumers
+    const setUser = (userData) => {
+        queryClient.setQueryData(authQueryKey, { user: userData || null });
+    };
+    const setIsAuthenticated = (value) => {
+        if (!value) {
+            queryClient.setQueryData(authQueryKey, { user: null });
+            return;
+        }
+        // For truthy values, re-derive auth state from the server/session.
+        void refreshAuth();
+    };
+    const setLoading = () => { };
 
     const contextValue = {
         isAuthenticated,
@@ -63,6 +72,7 @@ export function AuthContextProvider({ children }) {
         setUser,
         setIsAuthenticated,
         setLoading,
+        refreshAuth,
     };
 
     return (
