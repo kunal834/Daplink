@@ -11,9 +11,9 @@ export async function GET() {
 
     // MUST await in Next.js 15
     const cookieStore = await cookies();
-     console.log("Cookies:", cookieStore);
+    //  console.log("Cookies:", cookieStore);
     const token = cookieStore.get("authtoken")?.value;
-    console.log("Token from google:", token);
+    // console.log("Token from google:", token);
 
     if (!token) {
       return NextResponse.json({ user: null });
@@ -33,7 +33,7 @@ export async function GET() {
     }
 
     const user = await User.findById(decoded.id).select("-password").populate("daplinkID");
-    // console.log("userin me", user);
+    console.log("userin me", user);
 
     if (!user) {
       return NextResponse.json({ user: null });
