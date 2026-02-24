@@ -11,6 +11,7 @@ export async function POST(req) {
   }
 
   await connectDB();
+  
 
   await User.updateOne(
     { _id: user._id },

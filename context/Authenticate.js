@@ -1,79 +1,104 @@
 // context/Authenticate.js
 "use client";
 
-import React, { createContext, useContext } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const AuthContext = createContext();
+const AUTH_QUERY_KEY = ["auth", "me"];
+
+async function fetchAuthState() {
+    try {
+        const res = await axios.get("/api/auth/me", { withCredentials: true });
+        return { user: res?.data?.user || null };
+    } catch (error) {
+        console.error("Auth check failed:", error);
+        return { user: null };
+    }
+}
 
 export function AuthContextProvider({ children }) {
     const queryClient = useQueryClient();
-    const authQueryKey = ["auth", "me"];
 
     const {
         data: authData,
         isLoading: loading,
-        refetch: refreshAuth,
+        refetch: rawRefetch,
+        isFetching,
     } = useQuery({
-        queryKey: authQueryKey,
-        refetchOnWindowFocus: false,
-        retry: false,
-        queryFn: async () => {
-            try {
-                const res = await axios.get("/api/auth/me");
-                return { user: res.data?.user || null };
-            } catch (error) {
-                console.error("Auth check failed:", error);
-                return { user: null };
-            }
-        },
+        queryKey: AUTH_QUERY_KEY,
+        queryFn: fetchAuthState,
+        staleTime: 2 * 60 * 1000,
+        gcTime: 30 * 60 * 1000,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        retry: 1,
     });
 
     const user = authData?.user || null;
     const isAuthenticated = Boolean(user);
 
-    // Login function (set user in query cache)
-    const login = (userData) => {
-        queryClient.setQueryData(authQueryKey, { user: userData || null });
-    };
+    // Force server revalidation when caller needs immediate freshness.
+    const refreshAuth = useCallback(async () => {
+        const result = await rawRefetch();
+        return result.data || { user: null };
+    }, [rawRefetch]);
 
-    // Logout function
-    const logout = async () => {
+    const login = useCallback((userData) => {
+        queryClient.setQueryData(AUTH_QUERY_KEY, { user: userData || null });
+        void queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY, exact: true, refetchType: "active" });
+    }, [queryClient]);
+
+    const logout = useCallback(async () => {
         try {
-            await axios.get("/api/auth/logout");
+            await axios.get("/api/auth/logout", { withCredentials: true });
         } catch (err) {
             console.error("Logout error:", err);
+        } finally {
+            queryClient.setQueryData(AUTH_QUERY_KEY, { user: null });
+            await queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY, exact: true });
         }
-        queryClient.setQueryData(authQueryKey, { user: null });
-        await queryClient.invalidateQueries({ queryKey: authQueryKey });
-    };
+    }, [queryClient]);
 
-    // Compatibility setters for existing consumers
-    const setUser = (userData) => {
-        queryClient.setQueryData(authQueryKey, { user: userData || null });
-    };
-    const setIsAuthenticated = (value) => {
+    const setUser = useCallback((userData) => {
+        queryClient.setQueryData(AUTH_QUERY_KEY, { user: userData || null });
+    }, [queryClient]);
+
+    const setIsAuthenticated = useCallback((value) => {
         if (!value) {
-            queryClient.setQueryData(authQueryKey, { user: null });
+            queryClient.setQueryData(AUTH_QUERY_KEY, { user: null });
             return;
         }
-        // For truthy values, re-derive auth state from the server/session.
         void refreshAuth();
-    };
-    const setLoading = () => { };
+    }, [queryClient, refreshAuth]);
 
-    const contextValue = {
+    const setLoading = useCallback(() => {
+        // Kept for backward compatibility with existing consumers.
+    }, []);
+
+    const contextValue = useMemo(() => ({
         isAuthenticated,
         user,
-        loading,
+        loading: loading || isFetching,
         login,
         logout,
         setUser,
         setIsAuthenticated,
         setLoading,
         refreshAuth,
-    };
+    }), [
+        isAuthenticated,
+        user,
+        loading,
+        isFetching,
+        login,
+        logout,
+        setUser,
+        setIsAuthenticated,
+        setLoading,
+        refreshAuth,
+    ]);
 
     return (
         <AuthContext.Provider value={contextValue}>

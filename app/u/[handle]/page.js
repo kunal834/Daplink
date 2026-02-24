@@ -378,7 +378,7 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            {targetUserId !== user?._id ? (
+            {targetUserId == null ? null : targetUserId !== user?._id ? (
               <div className="flex gap-4">
                 <button
                   onClick={handleFollow}
@@ -554,3 +554,4 @@ export default function ProfilePage() {
     </>
   );
 }
+

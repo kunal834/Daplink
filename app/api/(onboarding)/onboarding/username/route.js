@@ -32,13 +32,17 @@ export async function POST(req) {
     profession
   });
 
+  console.log("Created linkDoc:", linkDoc);
+
   await User.updateOne(
     { _id: user._id },
     {
-      daplinkID: linkDoc.userId,
+      daplinkID: linkDoc._id,
       "onboarding.currentStep": 2
     }
   );
+
+  console.log("Updated user with daplinkID:", user);
 
   return NextResponse.json({ success: true });
 }

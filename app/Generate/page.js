@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import GoalStep from "./GoalStep";
 import UsernameStep from "./UsernameStep";
 import ProfileStep from "./ProfileStep";
@@ -20,6 +20,7 @@ import {
 } from "@/lib/api/onboarding";
 import axios from "axios";
 import SuccessStep from "./SuccessStep";
+import { useAuth } from "@/context/Authenticate";
 
 const STEPS = {
   GOALS: 0,
@@ -40,6 +41,7 @@ export default function OnboardingPage() {
   const [isSyncing, setIsSyncing] = useState(true);
 
   const router = useRouter();
+  const { refreshAuth } = useAuth();
 
   const [formData, setFormData] = useState({
     goal: null,
@@ -155,17 +157,23 @@ export default function OnboardingPage() {
   };
 
   // publish step
-  const handlePublish = async () => {
+  const handlePublish = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
       await completeOnboarding();
+      await refreshAuth();
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [refreshAuth]);
+
+  const handleContinueToDashboard = useCallback(async () => {
+    await refreshAuth();
+    router.replace("/Dashboard");
+  }, [refreshAuth, router]);
 
   // console.log("userData:", userData);
   /* ---------------- USE EFFECTS ---------------- */
@@ -224,7 +232,7 @@ export default function OnboardingPage() {
     return () => {
       cancelled = true;
     };
-  }, [step]);
+  }, [step, handlePublish]);
 
 
   return (
@@ -329,7 +337,7 @@ export default function OnboardingPage() {
       {step === STEPS.SUCCESS && (
         <SuccessStep
           data={userData}
-          onContinue={() => router.push("/Dashboard")}
+          onContinue={handleContinueToDashboard}
         />
       )}
 
