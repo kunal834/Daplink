@@ -18,8 +18,6 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const { user, logout } = useAuth();
   const daplink = user?.daplinkID;
 
-  
-
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -47,6 +45,11 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
         <div className="w-36 h-6 bg-zinc-200 rounded animate-pulse" />
       </header>
     );
+  }
+
+  if(!user?.isProfileComplete) {
+    router.replace("/Generate");
+    return null;
   }
 
 
