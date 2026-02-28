@@ -47,7 +47,7 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     );
   }
 
-  if(!user.isProfileComplete) {
+  if(!user?.isProfileComplete) {
     router.replace("/Generate");
     return null;
   }
