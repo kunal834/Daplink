@@ -3,8 +3,56 @@ import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 import worldJson from "@/public/geography/world.json";
 
+const KASHMIR_BOUNDS = {
+  minLon: 72,
+  maxLon: 80,
+  minLat: 31,
+  maxLat: 38,
+};
+
+const flattenCoordinates = (coords) => {
+  if (!Array.isArray(coords)) return [];
+  if (coords.length >= 2 && typeof coords[0] === "number" && typeof coords[1] === "number") {
+    return [coords];
+  }
+  return coords.flatMap((entry) => flattenCoordinates(entry));
+};
+
+const isUnnamedKashmirFeature = (feature) => {
+  const name = String(feature?.properties?.name || "").trim();
+  if (name) return false;
+
+  const points = flattenCoordinates(feature?.geometry?.coordinates);
+  if (!points.length) return false;
+
+  return points.some(([lon, lat]) => (
+    Number.isFinite(lon) &&
+    Number.isFinite(lat) &&
+    lon >= KASHMIR_BOUNDS.minLon &&
+    lon <= KASHMIR_BOUNDS.maxLon &&
+    lat >= KASHMIR_BOUNDS.minLat &&
+    lat <= KASHMIR_BOUNDS.maxLat
+  ));
+};
+
+const patchedWorldJson = {
+  ...worldJson,
+  features: (worldJson?.features || []).map((feature) => {
+    if (isUnnamedKashmirFeature(feature)) {
+      return {
+        ...feature,
+        properties: {
+          ...(feature.properties || {}),
+          name: "India",
+        },
+      };
+    }
+    return feature;
+  }),
+};
+
 if (!echarts.getMap("world")) {
-  echarts.registerMap("world", worldJson);
+  echarts.registerMap("world", patchedWorldJson);
 }
 
 const NAME_LOWER_MAP = new Map();
@@ -77,7 +125,7 @@ const ALIASES = {
 };
 
 const worldNames =
-  worldJson?.features?.map((feature) => feature?.properties?.name).filter(Boolean) || [];
+  patchedWorldJson?.features?.map((feature) => feature?.properties?.name).filter(Boolean) || [];
 
 worldNames.forEach((name) => {
   const lower = String(name).toLowerCase();
@@ -134,11 +182,9 @@ export default function WorldMap({
     ? highlightCountries
     : Array.from(highlightCountries || []);
 
-  const redScale = isDarkMode
-    ? ["#fecaca", "#f87171", "#ef4444", "#dc2626", "#b91c1c", "#7f1d1d"]
-    : ["#fca5a5", "#f87171", "#ef4444", "#dc2626", "#b91c1c", "#991b1b"];
-  const baseArea = isDarkMode ? "#1f2937" : "#9ca3af";
-  const baseBorder = isDarkMode ? "#334155" : "#ffffff";
+  const highlightColor = "#2f55ff";
+  const baseArea = "#cfd1c9";
+  const baseBorder = "#f3f4f0";
 
   const mappedCountries = countryList
     .map((item) => {
@@ -165,18 +211,12 @@ export default function WorldMap({
     })
     .filter(Boolean);
 
-  const ranked = [...mappedCountries].sort(
-    (a, b) => Number(b.rawCount || b.value) - Number(a.rawCount || a.value)
-  );
-
   const coloredCountries = mappedCountries.map((item) => {
-    const rank = ranked.findIndex((row) => row.name === item.name);
-    const colorIndex = rank === -1 ? 0 : rank % redScale.length;
     return {
       ...item,
       itemStyle: {
-        areaColor: redScale[colorIndex],
-        color: redScale[colorIndex],
+        areaColor: highlightColor,
+        color: highlightColor,
         borderColor: "#ffffff",
         borderWidth: 0.6,
       },
@@ -207,9 +247,9 @@ export default function WorldMap({
               name,
               value: count,
               rawCount: count,
-              itemStyle: {
-                areaColor: redScale[0],
-                color: redScale[0],
+                itemStyle: {
+                areaColor: highlightColor,
+                color: highlightColor,
                 borderColor: "#ffffff",
                 borderWidth: 0.6,
               },
@@ -217,8 +257,6 @@ export default function WorldMap({
           })
           .filter(Boolean)
       : coloredCountries;
-
-    //   console.log(fallbackCountries)
 
   const baseGeo = {
     map: "world",
@@ -247,7 +285,7 @@ export default function WorldMap({
   };
 
   const option = {
-    backgroundColor: "transparent",
+    backgroundColor: "#f6f7f3",
     tooltip: {
       trigger: "item",
       formatter: (params) => {
@@ -332,7 +370,7 @@ export default function WorldMap({
       option={option}
       notMerge
       lazyUpdate
-      style={{ height: "100%", width: "100%" }}
+      style={{ height: "100%", width: "100%", borderRadius: "14px" }}
     />
   );
 }

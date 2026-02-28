@@ -319,7 +319,7 @@ FROM (
     toString(uniqExact(distinct_id)) as v4,
     '' as v5
   FROM events
-  WHERE event='bio_page_view' AND properties.profile_id='${profileId}' AND timestamp >= ${since}
+  WHERE event IN ('bio_page_view','bio_link_clicked') AND properties.profile_id='${profileId}' AND timestamp >= ${since}
   GROUP BY toDayOfWeek(timestamp), toHour(timestamp)
 
   UNION ALL
@@ -427,7 +427,7 @@ function getFallbackQuerySpecs(profileId, since) {
     },
     {
       name: "bio_day_hour",
-      query: `SELECT toDayOfWeek(timestamp) as day, toHour(timestamp) as hour, count() as views, uniqExact(distinct_id) as unique_visitors FROM events WHERE event='bio_page_view' AND properties.profile_id='${profileId}' AND timestamp >= ${since} GROUP BY day, hour ORDER BY day, hour`,
+      query: `SELECT toDayOfWeek(timestamp) as day, toHour(timestamp) as hour, count() as views, uniqExact(distinct_id) as unique_visitors FROM events WHERE event IN ('bio_page_view','bio_link_clicked') AND properties.profile_id='${profileId}' AND timestamp >= ${since} GROUP BY day, hour ORDER BY day, hour`,
     },
     {
       name: "bio_avg_time",
