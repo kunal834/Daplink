@@ -15,7 +15,8 @@ import { useAuth } from '@/context/Authenticate';
 
 const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout,loading } = useAuth();
+  console.log(loading)
   const daplink = user?.daplinkID;
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -39,6 +40,11 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     router.replace('/login');
   };
 
+  if (!user?.isProfileComplete || !daplink && !loading) {
+    router.replace("/Generate");
+    return null;
+  }
+
   if (!daplink) {
     return (
       <header className="h-16 flex items-center px-6 border-b">
@@ -47,10 +53,7 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     );
   }
 
-  if(!user?.isProfileComplete) {
-    router.replace("/Generate");
-    return null;
-  }
+
 
 
   return (
@@ -125,9 +128,9 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
           </div>
         ) : (
           <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
-              {initial}
-            </div>
-          )}
+            {initial}
+          </div>
+        )}
       </div>
     </header>
   );
