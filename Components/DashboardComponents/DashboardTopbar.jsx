@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Link as LinkIcon, Search as SearchIcon, Sun, Moon,
   Bell, Share2, LogOut, BarChart3, RefreshCw, Zap
@@ -16,7 +16,7 @@ import { useAuth } from '@/context/Authenticate';
 const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const router = useRouter();
   const { user, logout,loading } = useAuth();
-  console.log(loading)
+  // console.log(loading)
   const daplink = user?.daplinkID;
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -40,12 +40,13 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     router.replace('/login');
   };
 
-  if (!user?.isProfileComplete || !daplink && !loading) {
-    router.replace("/Generate");
-    return null;
-  }
+  useEffect(() => {
+    if (!loading && (!user?.isProfileComplete || !daplink)) {
+      router.replace("/Generate");
+    }
+  }, [user, daplink, loading, router]);
 
-  if (!daplink) {
+  if (!user || loading) {
     return (
       <header className="h-16 flex items-center px-6 border-b">
         <div className="w-36 h-6 bg-zinc-200 rounded animate-pulse" />
