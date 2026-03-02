@@ -43,11 +43,6 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { refreshAuth ,loading:authLoading,user} = useAuth();
 
-  if(!user && !authLoading){
-    router.replace("/login");
-    return null;
-  }
-
   const [formData, setFormData] = useState({
     goal: null,
     username: "",
@@ -58,7 +53,22 @@ export default function OnboardingPage() {
     links: {},
     theme: { id: "classic", color: "bg-white" }
   });
+  
+  if(!user && !authLoading){
+    router.replace("/login");
+    return null;
+  }
 
+
+  useEffect(() => {
+    if (!user && !authLoading) {
+      router.replace("/login");
+    }
+  }, [user, authLoading, router]);
+
+  if (!user && !authLoading) {
+    return null;
+  }
   /* ---------------- HELPERS ---------------- */
 
   const update = (key, value) =>
