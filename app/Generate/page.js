@@ -34,6 +34,8 @@ const STEPS = {
 };
 
 export default function OnboardingPage() {
+  /* ---------------- 1. ALL HOOKS MUST BE AT THE TOP ---------------- */
+  
   const [step, setStep] = useState(STEPS.GOALS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -41,7 +43,7 @@ export default function OnboardingPage() {
   const [isSyncing, setIsSyncing] = useState(true);
 
   const router = useRouter();
-  const { refreshAuth ,loading:authLoading,user} = useAuth();
+  const { refreshAuth, loading: authLoading, user } = useAuth();
 
   const [formData, setFormData] = useState({
     goal: null,
@@ -53,23 +55,84 @@ export default function OnboardingPage() {
     links: {},
     theme: { id: "classic", color: "bg-white" }
   });
+
+  /* --- IMPORTANT: Memoized functions must be declared before any return --- */
   
-  if(!user && !authLoading){
-    router.replace("/login");
-    return null;
-  }
+  const handlePublish = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+      await completeOnboarding();
+      await refreshAuth();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [refreshAuth]);
 
+  const handleContinueToDashboard = useCallback(async () => {
+    await refreshAuth();
+    router.replace("/Dashboard");
+  }, [refreshAuth, router]);
 
+  /* --- IMPORTANT: All useEffects must be declared before any return --- */
+
+  // Sync onboarding step with server
+  useEffect(() => {
+    let cancelled = false;
+    const syncStep = async () => {
+      try {
+        setIsSyncing(true);
+        const res = await axios.get("/api/onboarding/status");
+        if (!res?.data || cancelled) return;
+        const data = res.data;
+        if (data.completed) {
+          window.location.replace("/Dashboard");
+          return;
+        }
+        setStep(data.step);
+      } catch (err) {
+        console.error("Onboarding status sync failed:", err);
+      } finally {
+        if (!cancelled) setIsSyncing(false);
+      }
+    };
+    syncStep();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Run Publish logic
+  useEffect(() => {
+    if (step !== STEPS.PUBLISH) return;
+    let cancelled = false;
+    const runPublish = async () => {
+      try {
+        await handlePublish();
+        if (cancelled) return;
+        setStep(STEPS.SUCCESS);
+      } catch (err) {
+        console.error("Publish failed:", err);
+      }
+    };
+    runPublish();
+    return () => { cancelled = true; };
+  }, [step, handlePublish]);
+
+  // Auth redirect effect
   useEffect(() => {
     if (!user && !authLoading) {
       router.replace("/login");
     }
   }, [user, authLoading, router]);
 
+  /* ---------------- 2. CONDITIONAL RENDERING ---------------- */
+  // Only after ALL hooks are registered can we return early
   if (!user && !authLoading) {
     return null;
   }
-  /* ---------------- HELPERS ---------------- */
+
+  /* ---------------- 3. HELPERS & ACTIONS ---------------- */
 
   const update = (key, value) =>
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -90,19 +153,15 @@ export default function OnboardingPage() {
     }));
   };
 
-  /* ---------------- ACTIONS ---------------- */
-
   const handleUsernameNext = async () => {
     try {
       setLoading(true);
       setError("");
-
       const { available } = await checkUsername(formData.username);
       if (!available) {
         setError("Username already taken");
         return;
       }
-
       await saveUsername({ username: formData.username, profession: formData.goal });
       setStep(STEPS.PROFILE);
     } catch (err) {
@@ -112,18 +171,14 @@ export default function OnboardingPage() {
     }
   };
 
-  // profile step
   const handleProfileNext = async () => {
     try {
       setLoading(true);
       setError("");
-
       await saveProfile({
         profile: formData.avatar,
         script: formData.bio,
-        // profession: formData.goal
       });
-
       setStep(STEPS.PLATFORMS);
     } catch (err) {
       setError(err.message);
@@ -132,19 +187,16 @@ export default function OnboardingPage() {
     }
   };
 
-  // links step
   const handleLinksNext = async () => {
     try {
       setLoading(true);
       setError("");
-
       const formattedLinks = Object.entries(formData.links).map(
         ([platform, url]) => ({
           link: url,
           linktext: platform
         })
       );
-
       await saveLinks(formattedLinks);
       setStep(STEPS.THEME);
     } catch (err) {
@@ -154,14 +206,11 @@ export default function OnboardingPage() {
     }
   };
 
-  // theme step
   const handleThemeNext = async () => {
     try {
       setLoading(true);
       setError("");
-
       const data = await saveTheme(formData.theme.id);
-      console.log("Theme saved:", data.data);
       setUserData(data.data);
       setStep(STEPS.PUBLISH);
     } catch (err) {
@@ -171,84 +220,7 @@ export default function OnboardingPage() {
     }
   };
 
-  // publish step
-  const handlePublish = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError("");
-      await completeOnboarding();
-      await refreshAuth();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [refreshAuth]);
-
-  const handleContinueToDashboard = useCallback(async () => {
-    await refreshAuth();
-    router.replace("/Dashboard");
-  }, [refreshAuth, router]);
-
-  // console.log("userData:", userData);
-  /* ---------------- USE EFFECTS ---------------- */
-
-  // Sync onboarding step with server
-  useEffect(() => {
-    let cancelled = false;
-
-    const syncStep = async () => {
-      try {
-        setIsSyncing(true);
-
-        const res = await axios.get("/api/onboarding/status");
-        if (!res?.data || cancelled) return;
-
-        const data = res.data;
-
-        if (data.completed) {
-          window.location.replace("/Dashboard");
-          return;
-        }
-
-        setStep(data.step);
-      } catch (err) {
-        console.error("Onboarding status sync failed:", err);
-      } finally {
-        if (!cancelled) setIsSyncing(false);
-      }
-    };
-
-    syncStep();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-
-  useEffect(() => {
-    if (step !== STEPS.PUBLISH) return;
-
-    let cancelled = false;
-
-    const runPublish = async () => {
-      try {
-        await handlePublish();
-
-        if (cancelled) return;
-
-        setStep(STEPS.SUCCESS);
-      } catch (err) {
-        console.error("Publish failed:", err);
-      }
-    };
-    runPublish();
-    return () => {
-      cancelled = true;
-    };
-  }, [step, handlePublish]);
-
+  /* ---------------- 4. RENDER ---------------- */
 
   return (
     <div
@@ -258,7 +230,6 @@ export default function OnboardingPage() {
           : "fixed inset-0 bg-white overflow-hidden"
       }
     >
-
       {error && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm font-bold text-red-600 shadow-lg">
           {error}
@@ -329,7 +300,6 @@ export default function OnboardingPage() {
       )}
 
       {step === STEPS.THEME && (
-        // console.log(formData.platforms,formData.links),
         <ThemeStep
           step={step}
           isSyncing={isSyncing}
@@ -355,7 +325,6 @@ export default function OnboardingPage() {
           onContinue={handleContinueToDashboard}
         />
       )}
-
     </div>
   );
 }
