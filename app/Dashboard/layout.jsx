@@ -7,7 +7,8 @@ import { useTheme } from '@/context/ThemeContext';
 
 export default function DashboardLayout({ children }) {
   const {theme,toggleTheme}= useTheme();
-  console.log("Theme in layout:", theme);
+  
+  // console.log("Theme in layout:", theme);
 
   return (
     <div

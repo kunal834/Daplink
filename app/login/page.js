@@ -55,7 +55,11 @@ export default function Login() {
       if (data.user) {
         toast.success("Login Successful!");
         login(data.user);
-        router.replace("/Dashboard");
+        if (data.user.isProfileComplete) {
+          router.replace("/Dashboard");
+        } else {
+          router.replace("/Generate");
+        }
       }
       else {
         console.log("Login Failed:", data.message);

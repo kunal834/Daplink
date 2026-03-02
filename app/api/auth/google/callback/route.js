@@ -35,12 +35,12 @@ export async function GET(request) {
 
   const { id_token } = tokenData;
 
-console.log("Using Client ID:", process.env.GOOGLE_CLIENT_ID);
+// console.log("Using Client ID:", process.env.GOOGLE_CLIENT_ID);
     
     const userResponse = await fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${id_token}`);
     const googleUser = await userResponse.json();
 
-    console.log("google user" ,googleUser)
+    // console.log("google user" ,googleUser)
 
     
     await connectDB();
@@ -53,7 +53,7 @@ console.log("Using Client ID:", process.env.GOOGLE_CLIENT_ID);
       });
     }
 
-    console.log(user);
+    // console.log(user);
     
  const token = jwt.sign(
   { id: user._id, email: user.email },

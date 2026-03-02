@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Link as LinkIcon, Search as SearchIcon, Sun, Moon,
   Bell, Share2, LogOut, BarChart3, RefreshCw, Zap
@@ -15,10 +15,9 @@ import { useAuth } from '@/context/Authenticate';
 
 const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const router = useRouter();
-  const { user, logout } = useAuth();
-  const daplink = user?.daplinkID;
-
+  const { user, logout, loading } = useAuth();
   
+  const daplink = user?.daplinkID;
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,7 +40,13 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     router.replace('/login');
   };
 
-  if (!daplink) {
+  useEffect(() => {
+    if (!loading && (!user?.isProfileComplete || !daplink)) {
+      router.replace("/Generate");
+    }
+  }, [user, daplink, loading, router]);
+
+  if (!user || loading) {
     return (
       <header className="h-16 flex items-center px-6 border-b">
         <div className="w-36 h-6 bg-zinc-200 rounded animate-pulse" />
@@ -49,12 +54,11 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     );
   }
 
-
   return (
     <header className={`w-full h-16 border-b flex items-center justify-between px-6 shrink-0 z-30 sticky top-0 backdrop-blur-xl ${isDarkMode ? 'bg-zinc-900/80 border-zinc-800' : 'bg-white/80 border-zinc-200/60'}`}>
       <div className="flex items-center gap-3">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-lg hover:rotate-3 transition-transform cursor-pointer ${isDarkMode ? 'bg-white shadow-indigo-900/20' : 'bg-white shadow-zinc-900/10'}`}>
-          <Link href="/"> <Image src="/innovate.png" alt="" width={48} height={48} /> </Link>
+          <Link href="/"> <Image src="/innovate.png" alt="Logo" width={48} height={48} /> </Link>
         </div>
         <div>
           <Link href="/" className="font-bold text-lg hidden sm:block tracking-tight leading-none">DapLink</Link>
@@ -103,13 +107,22 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
         </div>
 
         <div className={`hidden md:flex items-center rounded-full pl-4 pr-1 py-1 text-sm border shadow-sm hover:shadow transition-all group ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200/60 text-zinc-600'}`}>
-
-          <span className={`truncate max-w-37.5 font-medium transition-colors ${isDarkMode ? 'group-hover:text-white' : 'group-hover:text-black'}`}>daplink.app/u/{username}</span>
-          <button onClick={copyLink} className={`ml-2 w-7 h-7 flex items-center justify-center rounded-full border shadow-sm hover:scale-105 active:scale-95 transition-all ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-indigo-400' : 'bg-white border-zinc-200 text-zinc-500 hover:text-indigo-600'}`}><Share2 className="w-3.5 h-3.5" /></button>
+          {/* 🚀 FIXED: Wrapped handle in template literal for dynamic rendering */}
+          <span className={`truncate max-w-[150px] font-medium transition-colors ${isDarkMode ? 'group-hover:text-white' : 'group-hover:text-black'}`}>
+            {`daplink.app/u/${username}`}
+          </span>
+          <button onClick={copyLink} className={`ml-2 w-7 h-7 flex items-center justify-center rounded-full border shadow-sm hover:scale-105 active:scale-95 transition-all ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-indigo-400' : 'bg-white border-zinc-200 text-zinc-500 hover:text-indigo-600'}`}>
+            <Share2 className="w-3.5 h-3.5" />
+          </button>
         </div>
+        
         <div className={`h-6 w-px mx-1 hidden sm:block ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
-        <button onClick={handleLogout} className={`transition-colors ${isDarkMode ? 'text-zinc-500 hover:text-white' : 'text-zinc-500 hover:text-black'}`}><LogOut className="w-5 h-5" /></button>
+        
+        <button onClick={handleLogout} className={`transition-colors ${isDarkMode ? 'text-zinc-500 hover:text-white' : 'text-zinc-500 hover:text-black'}`}>
+          <LogOut className="w-5 h-5" />
+        </button>
 
+        {/* 🚀 FIXED: Merge conflict cleaned up smoothly */}
         {daplink?.profile ? (
           <div className="relative w-9 h-9 rounded-full overflow-hidden shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
             <Image
@@ -121,10 +134,10 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
             />
           </div>
         ) : (
-          <div className="w-9 h-9 rounded-full bg-linear-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
-              {initial}
-            </div>
-          )}
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
+            {initial}
+          </div>
+        )}
       </div>
     </header>
   );

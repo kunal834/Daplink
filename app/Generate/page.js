@@ -41,7 +41,12 @@ export default function OnboardingPage() {
   const [isSyncing, setIsSyncing] = useState(true);
 
   const router = useRouter();
-  const { refreshAuth } = useAuth();
+  const { refreshAuth ,loading:authLoading,user} = useAuth();
+
+  if(!user && !authLoading){
+    router.replace("/login");
+    return null;
+  }
 
   const [formData, setFormData] = useState({
     goal: null,
