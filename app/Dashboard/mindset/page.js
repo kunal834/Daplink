@@ -356,7 +356,6 @@ export default function DaplinkCommunityFeed() {
     : user?.daplinkID;
   const safeId = String(extractedId);
   
-  //Get the REAL User ID to send to the backend
   const userId = user?._id || user?.id;
 
   const { data: daplink } = useQuery({

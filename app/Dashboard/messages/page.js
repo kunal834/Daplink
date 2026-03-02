@@ -228,7 +228,7 @@ export default function MessagePage() {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-baseline mb-1">
                                         <h3 className={`font-semibold text-[15px] truncate ${ui.text}`}>
-                                            @{handle}
+                                            {handle}
                                         </h3>
                                         <span className={`text-[11px] whitespace-nowrap ${unread > 0 ? 'text-emerald-500 font-semibold' : ui.subtext}`}>
                                             {conv.lastMessageTime ? new Date(conv.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
