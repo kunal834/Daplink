@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import {
   Heart, MessageSquare, Repeat2, Share,
   Code2, MoreHorizontal, CheckCircle2,
@@ -27,9 +28,7 @@ const timeAgo = (date) => {
   return "now";
 };
 
-// ==========================================
 // INDIVIDUAL POST COMPONENT
-// ==========================================
 const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
   const queryClient = useQueryClient();
   const [showComments, setShowComments] = useState(false);
@@ -45,7 +44,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
   const textSecondary = isDarkMode ? 'text-[#71767b]' : 'text-[#536471]';
   const border = isDarkMode ? 'border-[#2f3336]' : 'border-[#eff3f4]';
   const hoverBg = isDarkMode ? 'hover:bg-white/[0.03]' : 'hover:bg-black/[0.03]';
-  
+
   const uId = currentUser?._id || currentUser?.id;
   const dId = typeof currentUser?.daplinkID === 'object' ? (currentUser.daplinkID._id || currentUser.daplinkID.id) : currentUser?.daplinkID;
   const currentHandle = currentUser?.handle || daplinkUser?.handle;
@@ -53,6 +52,28 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
   const isIdMatch = Boolean(post.authorId && (post.authorId.toString() === uId?.toString() || post.authorId.toString() === dId?.toString()));
   const isHandleMatch = Boolean(currentHandle && (post?.handle === `@${currentHandle}` || post?.handle === currentHandle));
   const isOwner = isIdMatch || isHandleMatch;
+
+  const authorObj = post.author || (typeof post.authorId === 'object' ? post.authorId : null);
+  
+  let displayName = post.name;
+  let displayHandle = post.handle;
+  let displayAvatar = post.avatar;
+
+  if (!displayName || displayName === "Unknown User") {
+    displayName = authorObj?.name || authorObj?.handle || authorObj?.daplinkID?.handle || "Unknown User";
+  }
+
+  if (!displayHandle || displayHandle === "@unknown" || displayHandle === "unknown") {
+    displayHandle = authorObj?.handle || authorObj?.daplinkID?.handle || "unknown";
+  }
+
+  if (displayHandle && !displayHandle.startsWith('@')) {
+    displayHandle = `@${displayHandle}`;
+  }
+
+  if (!displayAvatar || displayAvatar.includes('unknown')) {
+    displayAvatar = authorObj?.avatar || authorObj?.profile || authorObj?.daplinkID?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${displayHandle}`;
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -80,12 +101,18 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
 
   const repostMutation = useMutation({
     mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/repost`, {}, { withCredentials: true }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
+    onError: (error) => {
+      toast.error("Failed to repost");
+    }
   });
 
   const deletePostMutation = useMutation({
     mutationFn: async () => axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}`, { withCredentials: true }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
+    onError: (error) => {
+      toast.error("Failed to delete post");
+    }
   });
 
   const editPostMutation = useMutation({
@@ -93,6 +120,9 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
     onSuccess: () => {
       setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+    onError: (error) => {
+      toast.error("Failed to edit post");
     }
   });
 
@@ -106,7 +136,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
   });
 
   const postCommentMutation = useMutation({
-    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/comments`, { content: commentText, authorId: dId || uId }, { withCredentials: true }),
+    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/comments`, { content: commentText, authorId: uId }, { withCredentials: true }),
     onSuccess: () => {
       setCommentText("");
       queryClient.invalidateQueries({ queryKey: ['comments', post.id] });
@@ -132,7 +162,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
     <div className={`px-4 pt-3 pb-2 border-b ${border} ${hoverBg} transition-colors duration-200 cursor-pointer`}>
       <div className="flex gap-3 relative">
         <div className="flex flex-col items-center shrink-0">
-          <img src={post.avatar} className="w-10 h-10 rounded-full object-cover z-10" alt={post.name} />
+          <img src={displayAvatar} className="w-10 h-10 rounded-full object-cover z-10" alt={displayName} />
           {showComments && (
             <div className={`w-0.5 h-full mt-2 rounded-full ${isDarkMode ? 'bg-[#333639]' : 'bg-[#cfd9de]'}`}></div>
           )}
@@ -141,9 +171,9 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
         <div className="flex-1 min-w-0 pb-1">
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-1.5 truncate">
-              <span className={`font-bold text-[15px] hover:underline truncate ${textPrimary}`}>{post.name}</span>
+              <span className={`font-bold text-[15px] hover:underline truncate ${textPrimary}`}>{displayName}</span>
               {post.verified && <CheckCircle2 size={16} className="text-[#1d9bf0] fill-white dark:fill-black shrink-0 relative top-0.5" />}
-              <span className={`text-[15px] ${textSecondary} truncate`}>{post.handle}</span>
+              <span className={`text-[15px] ${textSecondary} truncate`}>{displayHandle}</span>
               <span className={`text-[15px] ${textSecondary}`}>·</span>
               <span className={`text-[15px] ${textSecondary} hover:underline`}>{timeAgo(post.time)}</span>
             </div>
@@ -282,7 +312,6 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
             <div className="space-y-0">
               {comments?.map((comment) => (
                 <div key={comment._id} className="flex gap-3 py-2">
-                  {/* FIX: Account for .profile field if .avatar is missing */}
                   <img src={comment.author?.avatar || comment.author?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.handle || 'unknown'}`} className="w-8 h-8 rounded-full object-cover shrink-0 mt-1" alt={comment.author?.handle} />
                   <div className="flex-1">
                     <div className="flex items-baseline gap-1.5">
@@ -301,9 +330,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
   );
 };
 
-// ==========================================
 // MAIN FEED COMPONENT
-// ==========================================
 export default function DaplinkCommunityFeed() {
   const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -327,8 +354,10 @@ export default function DaplinkCommunityFeed() {
   const extractedId = typeof user?.daplinkID === 'object'
     ? (user.daplinkID._id || user.daplinkID.id)
     : user?.daplinkID;
-
   const safeId = String(extractedId);
+  
+  //Get the REAL User ID to send to the backend
+  const userId = user?._id || user?.id;
 
   const { data: daplink } = useQuery({
     queryKey: ['daplink', safeId],
@@ -350,9 +379,10 @@ export default function DaplinkCommunityFeed() {
       formData.append('content', content);
       formData.append('tags', JSON.stringify(["Update"]));
 
-      if (safeId && safeId !== 'undefined') {
-        formData.append('authorId', safeId);
+      if (userId) {
+        formData.append('authorId', userId);
       }
+
       if (mediaFile) {
         formData.append('media', mediaFile);
       }
@@ -407,7 +437,6 @@ export default function DaplinkCommunityFeed() {
 
         <div className={`px-4 pt-4 pb-2 border-b ${border} flex gap-3`}>
           <div className="shrink-0 pt-1">
-            {/* FIX: Replaced Next/Image with regular img tag to prevent unconfigured host errors on custom avatars */}
             {daplink?.profile ? (
               <img src={daplink.profile} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
             ) : <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 animate-pulse" />}

@@ -36,8 +36,8 @@ export const BioPageTab = ({ isDarkMode, profile, updateProfile }) => (
       <h3 className={`text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-900'}`}><Smartphone className="w-4 h-4" /> Themes</h3>
       <div className="grid grid-cols-2 gap-5">
         {['modern', 'ocean', 'sunset', 'light'].map((t) => (
-          <button key={t} onClick={() => updateProfile('theme', t)} className={`relative h-44 rounded-[2rem] border-4 transition-all overflow-hidden text-left p-6 flex flex-col justify-end group ${profile.theme === t ? 'border-indigo-500 ring-4 ring-indigo-500/10' : isDarkMode ? 'border-transparent hover:border-zinc-700 bg-zinc-900' : 'border-transparent hover:border-zinc-200 hover:shadow-lg shadow-sm'}`}>
-            <div className={`absolute inset-0 transition-transform duration-700 group-hover:scale-110 ${t === 'modern' ? 'bg-zinc-900' : t === 'ocean' ? 'bg-gradient-to-br from-blue-900 to-indigo-900' : t === 'sunset' ? 'bg-gradient-to-br from-orange-900 via-red-800 to-rose-900' : 'bg-white border border-zinc-100'}`} />
+          <button key={t} onClick={() => updateProfile('theme', t)} className={`relative h-44 rounded-4xl border-4 transition-all overflow-hidden text-left p-6 flex flex-col justify-end group ${profile.theme === t ? 'border-indigo-500 ring-4 ring-indigo-500/10' : isDarkMode ? 'border-transparent hover:border-zinc-700 bg-zinc-900' : 'border-transparent hover:border-zinc-200 hover:shadow-lg shadow-sm'}`}>
+            <div className={`absolute inset-0 transition-transform duration-700 group-hover:scale-110 ${t === 'modern' ? 'bg-zinc-900' : t === 'ocean' ? 'bg-linear-to-br from-blue-900 to-indigo-900' : t === 'sunset' ? 'bg-linear-to-br from-orange-900 via-red-800 to-rose-900' : 'bg-white border border-zinc-100'}`} />
             <div className="relative z-10"><span className={`font-bold capitalize text-xl block mb-1 ${t === 'light' ? 'text-zinc-900' : 'text-white'}`}>{t}</span><span className={`text-xs font-medium uppercase tracking-wider ${t === 'light' ? 'text-zinc-400' : 'text-white/60'}`}>{t === 'modern' ? 'Minimal' : t === 'light' ? 'Clean' : 'Gradient'}</span></div>
             {profile.theme === t && (<div className="absolute top-5 right-5 bg-white text-black rounded-full p-1.5 shadow-xl animate-in zoom-in"><Check className="w-4 h-4" strokeWidth={4} /></div>)}
           </button>
@@ -51,18 +51,18 @@ export const AnalyticsTab = ({ isDarkMode }) => (
   <div className="space-y-6 animate-in fade-in duration-300">
     <div><h2 className="text-2xl font-bold tracking-tight">Analytics</h2><p className={`${isDarkMode ? 'text-zinc-500' : 'text-zinc-500'} text-sm`}>Track your growth and audience.</p></div>
     <div className="grid grid-cols-2 gap-4">
-      <div className={`p-6 rounded-[2rem] border shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+      <div className={`p-6 rounded-4xl border shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
         <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500"><ExternalLink className={`w-32 h-32 ${isDarkMode ? 'text-white' : 'text-black'}`} /></div>
         <p className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Lifetime Views</p><h3 className="text-5xl font-black tracking-tighter">1,204</h3>
-        <div className="text-emerald-600 text-xs font-bold mt-4 flex items-center gap-1 bg-emerald-500/10 w-fit px-2.5 py-1.5 rounded-lg border border-emerald-500/20"><div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[6px] border-b-emerald-600"></div>+12% <span className="text-emerald-600/70 font-medium ml-1">vs last week</span></div>
+        <div className="text-emerald-600 text-xs font-bold mt-4 flex items-center gap-1 bg-emerald-500/10 w-fit px-2.5 py-1.5 rounded-lg border border-emerald-500/20"><div className="w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-[6px] border-b-emerald-600"></div>+12% <span className="text-emerald-600/70 font-medium ml-1">vs last week</span></div>
       </div>
-      <div className={`p-6 rounded-[2rem] border shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+      <div className={`p-6 rounded-4xl border shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
         <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500"><Zap className={`w-32 h-32 ${isDarkMode ? 'text-white' : 'text-black'}`} /></div>
         <p className={`text-xs font-bold uppercase tracking-wider mb-2 ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Lifetime Clicks</p><h3 className="text-5xl font-black tracking-tighter">843</h3>
-        <div className="text-emerald-600 text-xs font-bold mt-4 flex items-center gap-1 bg-emerald-500/10 w-fit px-2.5 py-1.5 rounded-lg border border-emerald-500/20"><div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[6px] border-b-emerald-600"></div>+8% <span className="text-emerald-600/70 font-medium ml-1">vs last week</span></div>
+        <div className="text-emerald-600 text-xs font-bold mt-4 flex items-center gap-1 bg-emerald-500/10 w-fit px-2.5 py-1.5 rounded-lg border border-emerald-500/20"><div className="w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-[6px] border-b-emerald-600"></div>+8% <span className="text-emerald-600/70 font-medium ml-1">vs last week</span></div>
       </div>
     </div>
-    <div className={`p-8 rounded-[2rem] border shadow-sm ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+    <div className={`p-8 rounded-4xl border shadow-sm ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
       <div className="flex items-center justify-between mb-8"><h3 className="font-bold flex items-center gap-2"><BarChart3 className="w-5 h-5" /> Traffic Activity</h3><select className={`text-xs border rounded-lg px-3 py-1.5 font-bold outline-none cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100'}`}><option>Last 7 Days</option><option>Last 30 Days</option></select></div>
       <div className="h-64 flex items-end justify-between gap-2 sm:gap-4 px-2">
         {[30, 45, 25, 60, 75, 50, 80, 40, 70, 90, 65, 85].map((h, i) => (
@@ -94,7 +94,7 @@ export const MindsetTab = ({ isDarkMode }) => {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {mindsetQuotes.map((quote) => (
-          <div key={quote.id} className={`p-6 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-md shadow-sm transform hover:-translate-y-1 transition-transform ${quote.color} min-h-[160px] flex flex-col justify-between`}><Sticker className="w-5 h-5 opacity-20 mb-2" /><p className="font-bold text-lg leading-tight">&ldquo;{quote.text}&rdquo;</p><p className="text-xs font-bold opacity-60 mt-4">{quote.author}</p></div>
+          <div key={quote.id} className={`p-6 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-md shadow-sm transform hover:-translate-y-1 transition-transform ${quote.color} min-h-40 flex flex-col justify-between`}><Sticker className="w-5 h-5 opacity-20 mb-2" /><p className="font-bold text-lg leading-tight">&ldquo;{quote.text}&rdquo;</p><p className="text-xs font-bold opacity-60 mt-4">{quote.author}</p></div>
         ))}
       </div>
     </div>
@@ -114,9 +114,9 @@ export const CommunityTab = ({ isDarkMode }) => {
         <div><h2 className="text-2xl font-bold tracking-tight">Community Hub</h2><p className={`${isDarkMode ? 'text-zinc-500' : 'text-zinc-500'} text-sm`}>Find your tribe and collaborate.</p></div>
         <div className="flex items-center gap-2 text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full"><span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>1,204 Creators Online</div>
       </div>
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-500/20">
+      <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-4xl p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-500/20">
         <div className="relative z-10 max-w-md"><h3 className="text-2xl font-bold mb-2">Join the Creator Circle</h3><p className="text-indigo-100 text-sm mb-6 leading-relaxed">Exclusive access to brand deals, collaboration opportunities, and expert workshops.</p><Link href="/Explorepeoples" className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg">Explore Peoples</Link></div>
-        <div className="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-20"><Users className="w-64 h-64" /></div>
+        <div className="absolute -right-5 top-1/2 -translate-y-1/2 opacity-20"><Users className="w-64 h-64" /></div>
       </div>
       <div>
         <h3 className={`font-bold mb-4 px-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Trending Communities</h3>
@@ -137,7 +137,7 @@ export const CommunityTab = ({ isDarkMode }) => {
 export const QrCodeTab = ({ isDarkMode, profile }) => (
   <div className="space-y-6 animate-in fade-in duration-300">
     <div><h2 className="text-2xl font-bold tracking-tight">QR Code Studio</h2><p className={`${isDarkMode ? 'text-zinc-500' : 'text-zinc-500'} text-sm`}>Share your profile in the physical world.</p></div>
-    <div className={`rounded-[2rem] p-8 border shadow-sm flex flex-col items-center justify-center text-center ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+    <div className={`rounded-4xl p-8 border shadow-sm flex flex-col items-center justify-center text-center ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
       <div className="bg-white p-4 rounded-3xl shadow-2xl border border-zinc-100 mb-8 transform hover:scale-105 transition-transform duration-500">
         <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://daplink.app/${profile.username}&color=000000&bgcolor=ffffff`} alt="QR Code" className="w-48 h-48 rounded-lg mix-blend-multiply" />
       </div>
@@ -156,7 +156,7 @@ export const SettingsTab = ({ isDarkMode, profile }) => (
     <div className={`rounded-3xl border shadow-sm overflow-hidden ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
       <div className={`p-8 border-b ${isDarkMode ? 'bg-zinc-800/30 border-zinc-800' : 'bg-zinc-50/30 border-zinc-100'}`}>
         <div className="flex items-center gap-5">
-          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-xl border shadow-inner ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-500' : 'bg-gradient-to-tr from-zinc-200 to-zinc-100 border-white text-zinc-400'}`}>{profile.username ? profile.username[0].toUpperCase() : 'U'}</div>
+          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-xl border shadow-inner ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-500' : 'bg-linear-to-tr from-zinc-200 to-zinc-100 border-white text-zinc-400'}`}>{profile.username ? profile.username[0].toUpperCase() : 'U'}</div>
           <div><h3 className="font-bold text-lg">My Account</h3><p className="text-xs text-zinc-500 font-medium mt-1">Free Plan · <span className="text-indigo-500 cursor-pointer hover:underline">Upgrade</span></p></div>
         </div>
       </div>

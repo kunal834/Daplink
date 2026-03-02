@@ -675,7 +675,7 @@ function AnalyticsContent() {
     : "bg-white border-slate-200 shadow-[0_8px_20px_rgba(15,23,42,0.08)]";
 
   return (
-    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300 max-w-[1500px]">
+    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300 max-w-375">
       <div
         className={`relative overflow-hidden rounded-[2.5rem] border p-6 md:p-8 ${isDarkMode
           ? "bg-linear-to-br from-slate-950 via-slate-900 to-black border-slate-800"
@@ -850,7 +850,7 @@ function AnalyticsContent() {
                         </button>
                       </div>
                       {engagementMode === "hour" && (
-                        <div className={`inline-flex flex-wrap rounded-2xl border p-1 max-w-[360px] ${isDarkMode ? "border-slate-800 bg-slate-900/50" : "border-slate-200 bg-slate-50"}`}>
+                        <div className={`inline-flex flex-wrap rounded-2xl border p-1 max-w-90 ${isDarkMode ? "border-slate-800 bg-slate-900/50" : "border-slate-200 bg-slate-50"}`}>
                           {DAY_CHIP_ORDER.map((day) => (
                             <button
                               key={day}
@@ -902,7 +902,7 @@ function AnalyticsContent() {
                     </div>
                   </div>
 
-                  <div className="flex-1 min-h-[220px] md:min-h-[250px] w-full mt-auto">
+                  <div className="flex-1 min-h-55 md:min-h-62.5 w-full mt-auto">
                     {engagementMode === "hour" ? (
                       hasEngagementData ? (
                         <ResponsiveContainer width="100%" height="100%">
@@ -1012,7 +1012,7 @@ function AnalyticsContent() {
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs ${source.light} ${isDarkMode && 'bg-opacity-10'} ${source.color.replace('bg-', 'text-')}`}>
                             {source.icon}
                           </div>
-                          <span className="font-bold text-sm truncate max-w-[130px] sm:max-w-[170px]">{source.label}</span>
+                          <span className="font-bold text-sm truncate max-w-32.5 sm:max-w-42.5">{source.label}</span>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 w-16">
                           <span className="font-black text-sm">{source.pct}%</span>
@@ -1113,7 +1113,7 @@ function AnalyticsContent() {
 
                         {fullDetailsTab === "links" ? (
                           <div className="overflow-x-auto">
-                            <table className="w-full min-w-[520px] text-left">
+                            <table className="w-full min-w-130 text-left">
                               <thead>
                                 <tr className={`text-[10px] uppercase tracking-[0.12em] ${isDarkMode ? "text-slate-500 bg-slate-950" : "text-slate-400 bg-slate-50"}`}>
                                   <th className="px-4 py-3">Link</th>
@@ -1130,8 +1130,8 @@ function AnalyticsContent() {
                                   return (
                                     <tr key={`${link.linkUrl}-${idx}`} className={isDarkMode ? "hover:bg-slate-950/70" : "hover:bg-slate-50"}>
                                       <td className="px-4 py-3 min-w-0">
-                                        <p className="font-semibold text-sm truncate max-w-[180px] sm:max-w-[260px]">{link.linkText || link.linkUrl || "Untitled link"}</p>
-                                        <p className={`text-xs truncate max-w-[180px] sm:max-w-[280px] ${isDarkMode ? "text-slate-500" : "text-slate-400"}`}>{link.linkUrl || "No URL"}</p>
+                                        <p className="font-semibold text-sm truncate max-w-45 sm:max-w-65">{link.linkText || link.linkUrl || "Untitled link"}</p>
+                                        <p className={`text-xs truncate max-w-45 sm:max-w-70 ${isDarkMode ? "text-slate-500" : "text-slate-400"}`}>{link.linkUrl || "No URL"}</p>
                                       </td>
                                       <td className="px-4 py-3 text-sm font-bold">{Number(link.count || 0).toLocaleString()}</td>
                                       <td className="px-4 py-3">
@@ -1309,7 +1309,7 @@ function AnalyticsContent() {
                     </div>
 
                     <div
-                      className={`h-[230px] sm:h-64 w-full relative rounded-2xl overflow-hidden border ${
+                      className={`h-57.5 sm:h-64 w-full relative rounded-2xl overflow-hidden border ${
                         isDarkMode
                           ? "bg-[#f6f7f3] border-slate-700/40"
                           : "bg-[#f6f7f3] border-slate-200"
@@ -1323,13 +1323,13 @@ function AnalyticsContent() {
                       />
                     </div>
                   </div>
-                  <div className="w-full md:w-[350px] flex flex-col justify-center space-y-4 md:space-y-6">
+                  <div className="w-full md:w-87.5 flex flex-col justify-center space-y-4 md:space-y-6">
                     {countryList.length > 0 ? countryList.map((country, idx) => (
                       <div key={idx} className="flex flex-col gap-2">
                         <div className="flex items-center justify-between font-bold text-sm">
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-slate-400 text-xs w-6">{country.code}</span>
-                            <span className="truncate max-w-[180px]">{country.label}</span>
+                            <span className="truncate max-w-45">{country.label}</span>
                           </div>
                           <span>{country.pct}%</span>
                         </div>
@@ -1353,7 +1353,7 @@ function AnalyticsContent() {
                       <div key={link.linkUrl} className={`p-4 rounded-2xl flex items-center justify-between gap-3 ${isDarkMode ? "bg-slate-900/50" : "bg-slate-50"}`}>
                         <div className="flex items-center gap-3 min-w-0">
                           <span className="font-bold text-slate-400 w-4">{idx + 1}</span>
-                          <span className="font-semibold truncate max-w-[160px] sm:max-w-[260px] md:max-w-md">{link.linkText || link.linkUrl}</span>
+                          <span className="font-semibold truncate max-w-40 sm:max-w-65 md:max-w-md">{link.linkText || link.linkUrl}</span>
                         </div>
                         <span className="font-bold">{link.count} <span className="text-slate-400 text-xs font-normal">views</span></span>
                       </div>
@@ -1606,7 +1606,7 @@ function AnalyticsContent() {
               </div>
 
               <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-[1fr_320px]">
-                <div className={`relative h-[42vh] min-h-[250px] sm:min-h-[300px] lg:h-auto lg:min-h-0 ${isDarkMode ? "bg-[#f6f7f3]" : "bg-[#f6f7f3]"}`}>
+                <div className={`relative h-[42vh] min-h-62.5 sm:min-h-75 lg:h-auto lg:min-h-0 ${isDarkMode ? "bg-[#f6f7f3]" : "bg-[#f6f7f3]"}`}>
                   <WorldMap
                     mapMode={fullMapView}
                     highlightCountries={highlightCountries}
