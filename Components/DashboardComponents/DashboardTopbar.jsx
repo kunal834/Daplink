@@ -104,7 +104,7 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
 
         <div className={`hidden md:flex items-center rounded-full pl-4 pr-1 py-1 text-sm border shadow-sm hover:shadow transition-all group ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200/60 text-zinc-600'}`}>
 
-          <span className={`truncate max-w-[150px] font-medium transition-colors ${isDarkMode ? 'group-hover:text-white' : 'group-hover:text-black'}`}>daplink.app/u/{username}</span>
+          <span className={`truncate max-w-37.5 font-medium transition-colors ${isDarkMode ? 'group-hover:text-white' : 'group-hover:text-black'}`}>daplink.app/u/{username}</span>
           <button onClick={copyLink} className={`ml-2 w-7 h-7 flex items-center justify-center rounded-full border shadow-sm hover:scale-105 active:scale-95 transition-all ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-indigo-400' : 'bg-white border-zinc-200 text-zinc-500 hover:text-indigo-600'}`}><Share2 className="w-3.5 h-3.5" /></button>
         </div>
         <div className={`h-6 w-px mx-1 hidden sm:block ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
@@ -121,7 +121,7 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
             />
           </div>
         ) : (
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
+          <div className="w-9 h-9 rounded-full bg-linear-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
               {initial}
             </div>
           )}

@@ -344,8 +344,8 @@ function AnalyticsContent() {
     <div className="space-y-6 animate-in fade-in duration-300">
       <div
         className={`relative overflow-hidden rounded-[2.5rem] border p-6 md:p-8 ${isDarkMode
-          ? "bg-gradient-to-br from-slate-950 via-slate-900 to-black border-slate-800"
-          : "bg-gradient-to-br from-white via-slate-50 to-slate-100 border-slate-200"
+          ? "bg-linear-to-br from-slate-950 via-slate-900 to-black border-slate-800"
+          : "bg-linear-to-br from-white via-slate-50 to-slate-100 border-slate-200"
           }`}
       >
         <div className="relative z-10">
@@ -406,7 +406,7 @@ function AnalyticsContent() {
 
       {showLoading && (
         <div
-          className={`rounded-[2rem] border p-6 flex items-center gap-3 text-sm font-semibold ${isDarkMode
+          className={`rounded-4xl border p-6 flex items-center gap-3 text-sm font-semibold ${isDarkMode
             ? "bg-slate-900 border-slate-800 text-slate-300"
             : "bg-white border-slate-200 text-slate-700"
             }`}
@@ -418,7 +418,7 @@ function AnalyticsContent() {
 
       {!authLoading && !profileId && needsBioAnalytics && (
         <div
-          className={`rounded-[2rem] border p-6 text-sm font-semibold ${isDarkMode
+          className={`rounded-4xl border p-6 text-sm font-semibold ${isDarkMode
             ? "bg-slate-900 border-slate-800 text-slate-300"
             : "bg-white border-slate-200 text-slate-700"
             }`}
@@ -429,7 +429,7 @@ function AnalyticsContent() {
 
       {(error || shortLinksError) && (
         <div
-          className={`rounded-[2rem] border p-6 text-sm font-semibold ${isDarkMode
+          className={`rounded-4xl border p-6 text-sm font-semibold ${isDarkMode
             ? "bg-slate-900 border-slate-800 text-rose-300"
             : "bg-white border-slate-200 text-rose-600"
             }`}
@@ -555,7 +555,7 @@ function AnalyticsContent() {
 
                 </div>
 
-                <div className={`rounded-[2rem] border p-6 ${isDarkMode ? "border-white/10 bg-slate-950/40" : "border-slate-200 bg-white"}`}>
+                <div className={`rounded-4xl border p-6 ${isDarkMode ? "border-white/10 bg-slate-950/40" : "border-slate-200 bg-white"}`}>
                   <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                     <div className={`inline-flex rounded-xl border ${isDarkMode ? "border-white/10 bg-slate-900/60" : "border-slate-100 bg-slate-50"}`}>
                       {["Weekdays", "Days of week", "Hours"].map((tab) => (
@@ -572,13 +572,13 @@ function AnalyticsContent() {
                       ))}
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-24 h-2.5 bg-gradient-to-r from-blue-100 to-blue-500 rounded-full"></div>
+                      <div className="w-24 h-2.5 bg-linear-to-r from-blue-100 to-blue-500 rounded-full"></div>
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">High</span>
                       <HelpCircle size={14} className="text-slate-300" />
                     </div>
                   </div>
 
-                  <div className="h-[320px] min-h-[320px] w-full min-w-0">
+                  <div className="h-80 min-h-80 w-full min-w-0">
                     <ResponsiveContainer width="100%" height={320} minWidth={0}>
                       <BarChart data={activeHoursChartData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }} barGap={8}>
                         <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
@@ -597,7 +597,7 @@ function AnalyticsContent() {
                   <div className="flex justify-end mt-8">
                     <div className="inline-flex items-center gap-3 bg-slate-50/80 backdrop-blur-sm px-5 py-2.5 rounded-full border border-slate-100">
                       <span className="text-xs font-bold text-slate-400 uppercase">Low</span>
-                      <div className="relative w-40 h-2.5 bg-gradient-to-r from-blue-100 via-blue-400 to-blue-600 rounded-full"></div>
+                      <div className="relative w-40 h-2.5 bg-linear-to-r from-blue-100 via-blue-400 to-blue-600 rounded-full"></div>
                       <span className="text-sm font-bold text-slate-800">High</span>
                     </div>
                   </div>
@@ -652,7 +652,7 @@ function AnalyticsContent() {
                               <div className="mt-1 text-[11px] space-y-1">
                                 {item.data.slices.slice(0, 2).map((slice) => (
                                   <div key={slice.label} className="flex items-center gap-2">
-                                    <span className="truncate max-w-[110px]">
+                                    <span className="truncate max-w-27.5">
                                       {slice.label}
                                     </span>
                                     <span className="font-semibold">
@@ -776,7 +776,7 @@ function AnalyticsContent() {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             <div
-              className={`p-6 rounded-[2rem] border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
+              className={`p-6 rounded-4xl border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
                 }`}
             >
               <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider mb-2 text-slate-400" : "text-xs font-bold uppercase tracking-wider mb-2 text-slate-500"}>
@@ -788,7 +788,7 @@ function AnalyticsContent() {
               </div>
             </div>
             <div
-              className={`p-6 rounded-[2rem] border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
+              className={`p-6 rounded-4xl border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
                 }`}
             >
               <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider mb-2 text-slate-400" : "text-xs font-bold uppercase tracking-wider mb-2 text-slate-500"}>
@@ -800,7 +800,7 @@ function AnalyticsContent() {
               </div>
             </div>
             <div
-              className={`p-6 rounded-[2rem] border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
+              className={`p-6 rounded-4xl border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
                 }`}
             >
               <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider mb-2 text-slate-400" : "text-xs font-bold uppercase tracking-wider mb-2 text-slate-500"}>
@@ -812,7 +812,7 @@ function AnalyticsContent() {
               </div>
             </div>
             <div
-              className={`p-6 rounded-[2rem] border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
+              className={`p-6 rounded-4xl border shadow-sm ${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200"
                 }`}
             >
               <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider mb-2 text-slate-400" : "text-xs font-bold uppercase tracking-wider mb-2 text-slate-500"}>
@@ -825,7 +825,7 @@ function AnalyticsContent() {
 
           {totalShortLinks === 0 ? (
             <div
-              className={`p-10 rounded-[2rem] border shadow-sm text-center ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+              className={`p-10 rounded-4xl border shadow-sm text-center ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
                 }`}
             >
               <h3 className="text-xl font-bold mb-2">No short links yet</h3>
@@ -843,7 +843,7 @@ function AnalyticsContent() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div
-                className={`p-8 rounded-[2rem] border shadow-sm ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+                className={`p-8 rounded-4xl border shadow-sm ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
                   }`}
               >
                 <h3 className="font-bold mb-6">Top Short Links</h3>
@@ -855,10 +855,10 @@ function AnalyticsContent() {
                         }`}
                     >
                       <div className="min-w-0">
-                        <p className="font-semibold text-sm truncate max-w-[220px]">
+                        <p className="font-semibold text-sm truncate max-w-55">
                           {link.title || link.shortCode}
                         </p>
-                        <p className={isDarkMode ? "text-slate-500 text-xs truncate max-w-[220px]" : "text-slate-500 text-xs truncate max-w-[220px]"}>
+                        <p className={isDarkMode ? "text-slate-500 text-xs truncate max-w-55" : "text-slate-500 text-xs truncate max-w-55"}>
                           /{link.shortCode}
                         </p>
                       </div>
@@ -871,7 +871,7 @@ function AnalyticsContent() {
               </div>
 
               <div
-                className={`p-8 rounded-[2rem] border shadow-sm ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+                className={`p-8 rounded-4xl border shadow-sm ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
                   }`}
               >
                 <h3 className="font-bold mb-6">Click Distribution</h3>
@@ -883,7 +883,7 @@ function AnalyticsContent() {
                     return (
                       <div key={link._id} className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium truncate max-w-[220px]">
+                          <span className="font-medium truncate max-w-55">
                             {link.title || link.shortCode}
                           </span>
                           <span className="text-xs font-bold text-indigo-500">{link.clicks}</span>
