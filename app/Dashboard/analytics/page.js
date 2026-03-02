@@ -12,6 +12,7 @@ import {
   ComposedChart,
   Area,
   Line,
+  Cell
 } from "recharts";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -54,7 +55,6 @@ const ANALYTICS_SECTIONS = [
   { key: "linkinbio", label: "Link in Bio" },
   { key: "urlshortener", label: "URL Shortener" },
 ];
-
 
 function AnalyticsContent() {
   const { theme } = useTheme();
@@ -125,13 +125,11 @@ function AnalyticsContent() {
         `/api/posthog/analytics?profileId=${profileId}&range=${range}`
       );
       const data = await res.json();
-      console.log("posthog analytics data", data);
       if (!res.ok) throw new Error(data?.error || "Failed to load analytics.");
       return data;
     },
   });
 
-  
   React.useEffect(() => {
     if (!analyticsQuery.data) return;
     setStats(analyticsQuery.data);
@@ -169,23 +167,10 @@ function AnalyticsContent() {
     ? Math.round((rangeTotals.clicks / rangeTotals.views) * 100)
     : 0;
 
-  const topCountries = stats.countries.slice(0, 5);
   const avgTimeSeconds = Number(stats.avgTimeSeconds || 0);
   const avgTimeLabel = avgTimeSeconds
     ? `${Math.floor(avgTimeSeconds / 60)}m ${String(Math.round(avgTimeSeconds % 60)).padStart(2, "0")}s`
     : "--";
-
-  // const sparklineData = useMemo(() => {
-  //   return (stats.series && stats.series.length > 0)
-  //     ? stats.series.slice(-7).map(d => ({ value: Number(d.count || 0) }))
-  //     : [...Array(7)].map(() => ({ value: 1 }));
-  // }, [stats.series]);
-
-  // const visitorsSparklineData = useMemo(() => {
-  //   return (stats.visitorsSeries && stats.visitorsSeries.length > 0)
-  //     ? stats.visitorsSeries.slice(-7).map(d => ({ value: Number(d.count || 0) }))
-  //     : [...Array(7)].map(() => ({ value: 1 }));
-  // }, [stats.visitorsSeries]);
 
   const countryList = useMemo(() => {
     const total = stats.countries.reduce((sum, c) => sum + Number(c.count || 0), 0);
@@ -225,7 +210,6 @@ function AnalyticsContent() {
   }, [stats.countries]);
 
   const formatHourTick = (hour) => `${String(hour).padStart(2, "0")}:00`;
-
 
   const cityMarkers = useMemo(() => {
     return (stats.locationPoints || [])
@@ -367,17 +351,6 @@ function AnalyticsContent() {
     }
   }, [dayHasHourlyDataMap, selectedDay]);
 
-  const hourlyTotals = useMemo(() => {
-    return activeHoursChartData.reduce(
-      (acc, row) => {
-        acc.views += Number(row.views || 0);
-        acc.uniques += Number(row.uniques || 0);
-        return acc;
-      },
-      { views: 0, uniques: 0 }
-    );
-  }, [activeHoursChartData]);
-
   const hourlyPeak = useMemo(() => {
     if (!activeHoursChartData.length) return null;
     return activeHoursChartData.reduce((max, row) =>
@@ -484,10 +457,7 @@ function AnalyticsContent() {
           <p className="text-sm font-bold leading-tight">{label}</p>
           <p className="text-xs text-slate-300 mt-1">Views: {views}</p>
           <p className="text-xs text-slate-300">Uniques: {uniques}</p>
-
         </div>
-
-        {/* Arrow */}
         <div className="absolute left-1/4 -bottom-2 -translate-x-1/2 w-4 h-4 bg-[#1e293b] rotate-45 rounded-sm" />
       </div>
     );
@@ -525,8 +495,6 @@ function AnalyticsContent() {
       </div>
     );
   };
-
-
 
   const buildSlices = (rows, limit = 4) => {
     const total = rows.reduce((sum, row) => sum + Number(row.count || 0), 0);
@@ -618,7 +586,6 @@ function AnalyticsContent() {
       label: "Total Views",
       value: rangeTotals.views.toLocaleString(),
       helper: `${formatCompactNumber(recentViews)} recent views`,
-      // spark: sparklineData,
       barColor: "#6366f1",
       tone:
         viewsDelta.trend === "up"
@@ -643,7 +610,6 @@ function AnalyticsContent() {
       label: "Unique Visitors",
       value: stats.uniqueVisitors.toLocaleString(),
       helper: `${formatCompactNumber(recentVisitors)} recent uniques`,
-      // spark: visitorsSparklineData,
       barColor: "#0ea5e9",
       tone:
         visitorsDelta.trend === "up"
@@ -668,7 +634,6 @@ function AnalyticsContent() {
       label: "Average CTR",
       value: `${ctr}%`,
       helper: `${rangeTotals.clicks.toLocaleString()} clicks captured`,
-      // spark: sparklineData,
       barColor: "#10b981",
       tone:
         ctrDelta.trend === "up"
@@ -693,7 +658,6 @@ function AnalyticsContent() {
       label: "Avg. Duration",
       value: avgTimeLabel,
       helper: "Average time spent per visitor",
-      // spark: sparklineData,
       barColor: "#f59e0b",
       tone: isDarkMode ? "text-slate-400" : "text-slate-500",
       deltaLabel: "Engagement depth",
@@ -712,9 +676,45 @@ function AnalyticsContent() {
 
   return (
     <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300 max-w-[1500px]">
-      <h1 className={`text-2xl md:text-3xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-        Analtyics
-      </h1>
+      <div
+        className={`relative overflow-hidden rounded-[2.5rem] border p-6 md:p-8 ${isDarkMode
+          ? "bg-linear-to-br from-slate-950 via-slate-900 to-black border-slate-800"
+          : "bg-linear-to-br from-white via-slate-50 to-slate-100 border-slate-200"
+          }`}
+      >
+        <div className="relative z-10">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className={`text-2xl md:text-3xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                Analytics
+              </h2>
+              <p
+                className={`text-sm mt-1 ${isDarkMode ? "text-slate-400" : "text-slate-600"
+                  }`}
+              >
+                Know who is visiting, clicking, and converting.
+              </p>
+            </div>
+            <div
+              className={`hidden md:flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-full ${isDarkMode
+                ? "bg-white/5 text-slate-300 border border-white/10"
+                : "bg-black/5 text-slate-700 border border-black/5"
+                }`}
+            >
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              Live Tracking
+            </div>
+          </div>
+        </div>
+        <div
+          className={`absolute -top-16 -right-12 w-52 h-52 rounded-full blur-3xl opacity-40 ${isDarkMode ? "bg-indigo-500" : "bg-indigo-300"
+            }`}
+        ></div>
+        <div
+          className={`absolute -bottom-20 -left-10 w-56 h-56 rounded-full blur-3xl opacity-40 ${isDarkMode ? "bg-emerald-500" : "bg-emerald-300"
+            }`}
+        ></div>
+      </div>
 
       <div className={`grid grid-cols-1 sm:grid-cols-3 gap-2 p-1.5 rounded-2xl border ${isDarkMode ? "border-slate-800 bg-slate-900/70" : "border-slate-200 bg-slate-50"}`}>
         {ANALYTICS_SECTIONS.map((section) => {
@@ -795,11 +795,14 @@ function AnalyticsContent() {
                           <p className={`text-xs mt-2 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>{card.helper}</p>
                         </div>
                         <div className="w-20 h-12">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={card.spark}>
-                              <Bar dataKey="value" fill={card.barColor} radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                          </ResponsiveContainer>
+                          {/* Sparkline placeholder for layout consistency */}
+                          {card.spark && (
+                            <ResponsiveContainer width="100%" height="100%">
+                              <BarChart data={card.spark}>
+                                <Bar dataKey="value" fill={card.barColor} radius={[4, 4, 0, 0]} />
+                              </BarChart>
+                            </ResponsiveContainer>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1344,9 +1347,6 @@ function AnalyticsContent() {
                 <div id="content-performance" className={`xl:col-span-2 rounded-3xl border p-4 md:p-6 flex flex-col ${cardClass}`}>
                   <div className="flex items-center justify-between mb-5 md:mb-6">
                     <h3 className="text-xl font-bold">Content Performance</h3>
-                    {/* <button className={`text-sm font-bold text-indigo-600 ${isDarkMode ? "hover:text-indigo-400" : "hover:text-indigo-800"}`}>
-                      Full Report
-                    </button> */}
                   </div>
                   <div className="space-y-3 md:space-y-4">
                     {stats.topLinks.slice(0, 3).map((link, idx) => (
@@ -1411,8 +1411,7 @@ function AnalyticsContent() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <div
-              className={`p-5 md:p-6 rounded-3xl border ${cardClass} ${isDarkMode ? "" : ""
-                }`}
+              className={`p-5 md:p-6 rounded-3xl border ${cardClass}`}
             >
               <div className="flex items-center justify-between mb-2">
                 <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider text-slate-400" : "text-xs font-bold uppercase tracking-wider text-slate-500"}>
@@ -1426,8 +1425,7 @@ function AnalyticsContent() {
               </div>
             </div>
             <div
-              className={`p-5 md:p-6 rounded-3xl border ${cardClass} ${isDarkMode ? "" : ""
-                }`}
+              className={`p-5 md:p-6 rounded-3xl border ${cardClass}`}
             >
               <div className="flex items-center justify-between mb-2">
                 <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider text-slate-400" : "text-xs font-bold uppercase tracking-wider text-slate-500"}>
@@ -1441,8 +1439,7 @@ function AnalyticsContent() {
               </div>
             </div>
             <div
-              className={`p-5 md:p-6 rounded-3xl border ${cardClass} ${isDarkMode ? "" : ""
-                }`}
+              className={`p-5 md:p-6 rounded-3xl border ${cardClass}`}
             >
               <div className="flex items-center justify-between mb-2">
                 <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider text-slate-400" : "text-xs font-bold uppercase tracking-wider text-slate-500"}>
@@ -1456,8 +1453,7 @@ function AnalyticsContent() {
               </div>
             </div>
             <div
-              className={`p-5 md:p-6 rounded-3xl border ${cardClass} ${isDarkMode ? "" : ""
-                }`}
+              className={`p-5 md:p-6 rounded-3xl border ${cardClass}`}
             >
               <div className="flex items-center justify-between mb-2">
                 <p className={isDarkMode ? "text-xs font-bold uppercase tracking-wider text-slate-400" : "text-xs font-bold uppercase tracking-wider text-slate-500"}>
@@ -1472,8 +1468,7 @@ function AnalyticsContent() {
 
           {totalShortLinks === 0 ? (
             <div
-              className={`p-8 md:p-10 rounded-3xl border text-center ${cardClass} ${isDarkMode ? "" : ""
-                }`}
+              className={`p-8 md:p-10 rounded-3xl border text-center ${cardClass}`}
             >
               <h3 className="text-xl font-bold mb-2">No short links yet</h3>
               <p className={isDarkMode ? "text-slate-500 text-sm mb-6" : "text-slate-500 text-sm mb-6"}>
@@ -1490,8 +1485,7 @@ function AnalyticsContent() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div
-                className={`p-6 md:p-8 rounded-3xl border ${cardClass} ${isDarkMode ? "" : ""
-                  }`}
+                className={`p-6 md:p-8 rounded-3xl border ${cardClass}`}
               >
                 <h3 className="font-bold mb-6">Top Short Links</h3>
                 <div className="space-y-3">
@@ -1502,10 +1496,10 @@ function AnalyticsContent() {
                         }`}
                     >
                       <div className="min-w-0">
-                        <p className="font-semibold text-sm truncate max-w-[220px]">
+                        <p className="font-semibold text-sm truncate max-w-55">
                           {link.title || link.shortCode}
                         </p>
-                        <p className={isDarkMode ? "text-slate-500 text-xs truncate max-w-[220px]" : "text-slate-500 text-xs truncate max-w-[220px]"}>
+                        <p className={isDarkMode ? "text-slate-500 text-xs truncate max-w-55" : "text-slate-500 text-xs truncate max-w-55"}>
                           /{link.shortCode}
                         </p>
                       </div>
@@ -1518,8 +1512,7 @@ function AnalyticsContent() {
               </div>
 
               <div
-                className={`p-6 md:p-8 rounded-3xl border ${cardClass} ${isDarkMode ? "" : ""
-                  }`}
+                className={`p-6 md:p-8 rounded-3xl border ${cardClass}`}
               >
                 <h3 className="font-bold mb-6">Click Distribution</h3>
                 <div className="space-y-4">
@@ -1530,7 +1523,7 @@ function AnalyticsContent() {
                     return (
                       <div key={link._id} className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium truncate max-w-[220px]">
+                          <span className="font-medium truncate max-w-55">
                             {link.title || link.shortCode}
                           </span>
                           <span className="text-xs font-bold text-indigo-500">{link.clicks}</span>

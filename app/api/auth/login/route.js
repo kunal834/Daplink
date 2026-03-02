@@ -32,7 +32,7 @@ export async function POST(req) {
         if (!user.password) {
     return NextResponse.json(
         { message: "This account uses Google Login. Please sign in with Google." },
-        { status: 403 } // Forbidden: right user, wrong method
+        { status: 403 }
     );
 }
 

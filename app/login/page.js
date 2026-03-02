@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Link as LinkIcon, Eye, EyeOff, Loader2 } from "lucide-react";
-import { useTheme } from '@/context/ThemeContext'; // Ensure this path matches your project
+import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from "@/context/Authenticate";
 import axios from "axios";
 import Navbar from "@/Components/Navbar";

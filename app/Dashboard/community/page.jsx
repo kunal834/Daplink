@@ -30,7 +30,7 @@ export default function CommunityTab({ isDarkMode }) {
       </div>
 
       {/* Hero Card */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-500/20">
+      <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-4xl p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-500/20">
         <div className="relative z-10 max-w-md">
           <h3 className="text-2xl font-bold mb-2">
             Join the Creator Circle
@@ -46,7 +46,7 @@ export default function CommunityTab({ isDarkMode }) {
           </Link>
         </div>
 
-        <div className="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-20">
+        <div className="absolute -right-5 top-1/2 -translate-y-1/2 opacity-20">
           <Users className="w-64 h-64" />
         </div>
       </div>
