@@ -29,7 +29,7 @@ const Sidebar = ({ isDarkMode }) => {
       ],
     },
     { href: '/Dashboard/features', icon: Layout, label: 'features' },
-    { href: '/Dashboard/bioPage', icon: User, label: 'Bio Page' },
+    { href: '/Dashboard/editProfile', icon: User, label: 'Edit Profile' },
     { href: '/Dashboard/community', icon: Users, label: 'Community', badge: '1,204' },
     { href: '/Dashboard/messages', icon: MessagesSquare, label: 'messages' },
     { href: '/Dashboard/mindset', icon: Brain, label: 'Dappost' },
