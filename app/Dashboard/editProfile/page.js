@@ -182,6 +182,7 @@ function PhonePreview({ profile, links, preset, vibe }) {
           <img
             src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
             alt="avatar"
+            className="h-full w-full object-cover"
           />
         </div>
         <h2 className="mb-1 text-xl font-black" style={{ color: textColor }}>
@@ -457,12 +458,13 @@ export default function EditProfilePage() {
         {tab === "profile" && (
           <div className={`rounded-3xl border p-5 ${ui.panel}`}>
             <div className="mb-6 flex items-center gap-5">
-              <div className={`group relative h-24 w-24 overflow-hidden rounded-[2rem] border ${ui.border}`}>
+              <div className={`group relative h-24 w-24 overflow-hidden rounded-full ${ui.border}`}>
                 <img
                   src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
                   alt="avatar"
+                  className="h-full w-full object-cover"
                 />
-                <label className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100">
+                <label className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100  ">
                   <Plus size={18} className="text-white" />
                   <input type="file" accept="image/*" className="hidden" onChange={onAvatarUpload} />
                 </label>
