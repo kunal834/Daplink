@@ -8,8 +8,10 @@ export async function PUT(req) {
     const body = await req.json();
     await connectDB();
 
-    const userIdFromToken = getDataFromToken(req);
-    if (!userIdFromToken) {
+    let userIdFromToken;
+    try {
+      userIdFromToken = getDataFromToken(req);
+    } catch (error) {
       return NextResponse.json(
         {
           success: false,

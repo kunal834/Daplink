@@ -279,7 +279,7 @@ export default function EditProfilePage() {
   const mutation = useMutation({
     mutationFn: async (payload) => axios.put("/api/Updatedetails", payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["daplink", user?.daplinkID] });
+      queryClient.invalidateQueries({ queryKey: ["daplink", user?.daplinkID?._id || user?._id] });
       setMessage("Changes published");
       setTimeout(() => setMessage(""), 2200);
     },
