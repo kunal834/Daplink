@@ -340,6 +340,9 @@ export default function DaplinkCommunityFeed() {
   const [mediaFile, setMediaFile] = useState(null);
   const [mediaPreview, setMediaPreview] = useState(null);
   
+  // NEW: State for Tabs
+  const [activeTab, setActiveTab] = useState('feed'); 
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -380,18 +383,18 @@ export default function DaplinkCommunityFeed() {
     enabled: !!extractedId && safeId !== '[object Object]' && safeId !== 'undefined',
   });
 
+//Fetch posts based on activeTab
+
   const { data: postsData, isLoading: isPostsLoading } = useQuery({
-    queryKey: ['posts'],
-    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, { withCredentials: true })).data.posts,
+    queryKey: ['posts', activeTab],
+    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts?type=${activeTab}`, { withCredentials: true })).data.posts,
   });
 
-  // Fetch Trending Topics
   const { data: trendingTopics, isLoading: isTrendingLoading } = useQuery({
     queryKey: ['trending'],
     queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/trending`, { withCredentials: true })).data.trending,
   });
 
-  // Fetch Search Results
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: ['search', debouncedQuery],
     queryFn: async () => {
@@ -418,7 +421,13 @@ export default function DaplinkCommunityFeed() {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
     },
-    onSuccess: () => { setContent(''); removeMedia(); queryClient.invalidateQueries({ queryKey: ['posts'] }); queryClient.invalidateQueries({ queryKey: ['trending'] }); }
+    onSuccess: () => { 
+      setContent(''); 
+      removeMedia(); 
+      queryClient.invalidateQueries({ queryKey: ['posts'] }); 
+      queryClient.invalidateQueries({ queryKey: ['trending'] }); 
+      setActiveTab('myposts'); 
+    }
   });
 
   const handleMediaSelect = (e) => {
@@ -432,14 +441,91 @@ export default function DaplinkCommunityFeed() {
   const textPrimary = isDarkMode ? 'text-[#e7e9ea]' : 'text-[#0f1419]';
   const textSecondary = isDarkMode ? 'text-[#71767b]' : 'text-[#536471]';
   const border = isDarkMode ? 'border-[#2f3336]' : 'border-[#eff3f4]';
+  const hoverBg = isDarkMode ? 'hover:bg-white/[0.03]' : 'hover:bg-black/[0.03]';
 
   return (
-    <div className={`min-h-screen ${bgMain} ${textPrimary} font-sans flex justify-center lg:justify-start xl:justify-center gap-8 px-4 sm:px-8`}>
-      
+    <div className={`min-h-screen ${bgMain} ${textPrimary} font-sans flex justify-center max-w-325 mx-auto xl:justify-between gap-4 lg:gap-8 px-4 sm:px-8`}>
+      <div className="hidden md:flex flex-col w-72 pt-2 sticky top-0 h-screen overflow-y-auto pb-20 pr-4 z-40">
+        
+        {/* Search Bar */}
+        <div ref={searchRef} className="relative w-full">
+          <div className={`flex items-center px-4 py-2.5 rounded-full border transition-colors ${isSearchFocused ? 'border-[#1d9bf0] bg-transparent' : isDarkMode ? 'border-transparent bg-[#202327]' : 'border-transparent bg-[#eff3f4]'}`}>
+            <Search className={`w-4 h-4 mr-3 ${isSearchFocused ? 'text-[#1d9bf0]' : textSecondary}`} />
+            <input 
+              type="text" 
+              placeholder="Search DapLink" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              className={`bg-transparent outline-none w-full text-[15px] placeholder:${textSecondary}`} 
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className={`w-5 h-5 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-[#1d9bf0] text-black' : 'bg-[#1d9bf0] text-white'}`}>
+                <X size={12} strokeWidth={3} />
+              </button>
+            )}
+          </div>
+
+          {/* Search Dropdown */}
+          {isSearchFocused && searchQuery.trim() !== '' && (
+            <div className={`absolute top-13 left-0 w-full rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.2)] overflow-hidden border ${isDarkMode ? 'bg-black border-[#2f3336]' : 'bg-white border-[#eff3f4]'}`}>
+              {isSearching ? (
+                <div className="p-4 text-center text-[15px] text-[#1d9bf0] flex justify-center"><Loader2 className="w-5 h-5 animate-spin" /></div>
+              ) : searchResults ? (
+                <div>
+                  {searchResults.users?.length > 0 && (
+                    <div>
+                      <div className={`px-4 py-2 text-[15px] font-bold border-b ${border}`}>People</div>
+                      {searchResults.users.map(u => (
+                        <Link key={u._id} href={`/u/${u.handle.replace('@','')}`} className={`flex items-center gap-3 px-4 py-3 transition-colors ${hoverBg}`}>
+                          <img src={u.avatar} className="w-10 h-10 rounded-full object-cover" alt={u.name} />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-[15px] truncate">{u.name}</p>
+                            <p className={`text-[15px] ${textSecondary} truncate`}>@{u.handle}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                  {searchResults.users?.length === 0 && searchResults.posts?.length === 0 && (
+                    <div className={`p-4 text-center text-[15px] ${textSecondary}`}>No results for "{searchQuery}"</div>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="mt-6 space-y-2">
+           <button 
+             onClick={() => setActiveTab('feed')} 
+             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'feed' ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
+           >
+             Feed
+           </button>
+           <button 
+             onClick={() => setActiveTab('myposts')} 
+             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'myposts' ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
+           >
+             My Posts
+           </button>
+        </div>
+      </div>
+
+      {/*MIDDLE COLUMN*/}
       <div className={`w-full max-w-150 border-x ${border} min-h-screen relative`}>
         <div className={`sticky top-0 z-20 backdrop-blur-md bg-opacity-80 border-b ${border} ${isDarkMode ? 'bg-black/80' : 'bg-white/80'}`}>
           <div className="flex items-center justify-between px-4 h-13.25">
-            <h1 className="font-bold text-[20px] tracking-tight cursor-pointer">DapPost</h1>
+            <h1 className="font-bold text-[20px] tracking-tight cursor-pointer">
+              {activeTab === 'feed' ? 'DapPost Feed' : 'My Posts'}
+            </h1>
+            <div className="md:hidden flex gap-2">
+               <button onClick={() => setActiveTab('feed')} className={`text-[14px] font-bold ${activeTab === 'feed' ? 'text-[#1d9bf0]' : textSecondary}`}>Feed</button>
+               <span className={textSecondary}>|</span>
+               <button onClick={() => setActiveTab('myposts')} className={`text-[14px] font-bold ${activeTab === 'myposts' ? 'text-[#1d9bf0]' : textSecondary}`}>My Posts</button>
+            </div>
+
             <button onClick={toggleTheme} className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}>
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
@@ -492,82 +578,20 @@ export default function DaplinkCommunityFeed() {
         <div className="pb-20">
           {isPostsLoading ? (
             <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
-          ) : (
-            postsData?.map((post) => (
+          ) : postsData?.length > 0 ? (
+            postsData.map((post) => (
               <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} />
             ))
+          ) : (
+            <div className={`text-center py-10 text-[15px] ${textSecondary}`}>
+               {activeTab === 'feed' ? "No posts yet. Be the first to post!" : "You haven't posted anything yet."}
+            </div>
           )}
         </div>
       </div>
 
-      <div className="hidden lg:block w-87.5 pt-1 pb-20 space-y-4">
-        
-        {/* Search Bar with Dropdown */}
-        <div ref={searchRef} className={`sticky top-0 z-50 pt-1 pb-2 ${bgMain}`}>
-          <div className={`flex items-center px-4 py-2.5 rounded-full border transition-colors ${isSearchFocused ? 'border-[#1d9bf0] bg-transparent' : isDarkMode ? 'border-transparent bg-[#202327]' : 'border-transparent bg-[#eff3f4]'}`}>
-            <Search className={`w-4 h-4 mr-3 ${isSearchFocused ? 'text-[#1d9bf0]' : textSecondary}`} />
-            <input 
-              type="text" 
-              placeholder="Search DapLink" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              className={`bg-transparent outline-none w-full text-[15px] placeholder:${textSecondary}`} 
-            />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className={`w-5 h-5 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-[#1d9bf0] text-black' : 'bg-[#1d9bf0] text-white'}`}>
-                <X size={12} strokeWidth={3} />
-              </button>
-            )}
-          </div>
-
-          {/* Search Dropdown */}
-          {isSearchFocused && searchQuery.trim() !== '' && (
-            <div className={`absolute top-13 left-0 w-full rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.2)] overflow-hidden border ${isDarkMode ? 'bg-black border-[#2f3336]' : 'bg-white border-[#eff3f4]'}`}>
-              {isSearching ? (
-                <div className="p-4 text-center text-[15px] text-[#1d9bf0] flex justify-center"><Loader2 className="w-5 h-5 animate-spin" /></div>
-              ) : searchResults ? (
-                <div>
-                  {searchResults.users?.length > 0 && (
-                    <div>
-                      <div className={`px-4 py-2 text-[15px] font-bold border-b ${border}`}>People</div>
-                      {searchResults.users.map(u => (
-                        <Link key={u._id} href={`/u/${u.handle.replace('@','')}`} className={`flex items-center gap-3 px-4 py-3 transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-black/5'}`}>
-                          <img src={u.avatar} className="w-10 h-10 rounded-full object-cover" alt={u.name} />
-                          <div className="flex-1 min-w-0">
-                            <p className="font-bold text-[15px] truncate">{u.name}</p>
-                            <p className={`text-[15px] ${textSecondary} truncate`}>@{u.handle}</p>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-
-                  {searchResults.posts?.length > 0 && (
-                    <div>
-                      <div className={`px-4 py-2 text-[15px] font-bold border-b border-t ${border}`}>Recent Posts</div>
-                      {searchResults.posts.slice(0, 3).map(p => (
-                        <div key={p.id} className={`px-4 py-3 transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-black/5'}`}>
-                          <div className="flex items-center gap-2 mb-1">
-                            <img src={p.avatar} className="w-5 h-5 rounded-full object-cover" />
-                            <span className="font-bold text-[14px] truncate">{p.name}</span>
-                            <span className={`text-[14px] ${textSecondary} truncate`}>{p.handle}</span>
-                          </div>
-                          <p className="text-[14px] line-clamp-2">{p.content}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {searchResults.users?.length === 0 && searchResults.posts?.length === 0 && (
-                    <div className={`p-4 text-center text-[15px] ${textSecondary}`}>No results for "{searchQuery}"</div>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          )}
-        </div>
-        
+      {/*RIGHT COLUMN*/}
+      <div className="hidden lg:block w-87.5 pt-2 pb-20 space-y-4 sticky top-0 h-screen overflow-y-auto pl-4">
         <div className={`rounded-2xl border flex flex-col ${isDarkMode ? 'bg-[#16181c] border-transparent' : 'bg-[#f7f9f9] border-[#eff3f4]'}`}>
           <h2 className="font-extrabold text-[20px] px-4 py-3">What's happening</h2>
           
@@ -575,7 +599,7 @@ export default function DaplinkCommunityFeed() {
             <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#1d9bf0]" /></div>
           ) : trendingTopics && trendingTopics.length > 0 ? (
             trendingTopics.map((trend, index) => (
-              <div key={index} className={`px-4 py-3 cursor-pointer transition-colors ${isDarkMode ? 'hover:bg-white/3' : 'hover:bg-black/3'}`}>
+              <div key={index} className={`px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}>
                 <div className="flex justify-between">
                   <span className={`text-[13px] ${textSecondary}`}>Trending topic</span>
                   <MoreHorizontal size={16} className={textSecondary} />
@@ -592,7 +616,7 @@ export default function DaplinkCommunityFeed() {
             </div>
           )}
 
-          <div className={`px-4 py-3 cursor-pointer rounded-b-2xl transition-colors text-[#1d9bf0] text-[15px] ${isDarkMode ? 'hover:bg-white/3' : 'hover:bg-black/3'}`}>
+          <div className={`px-4 py-3 cursor-pointer rounded-b-2xl transition-colors text-[#1d9bf0] text-[15px] ${hoverBg}`}>
             Show more
           </div>
         </div>
