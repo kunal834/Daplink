@@ -49,7 +49,7 @@ const FeatureBlock = ({ title, icon: Icon, badge, description, features, imageSr
               <li key={index} className={`flex items-center font-medium transition-colors duration-300 ${
                 isDarkMode ? 'text-gray-300' : 'text-gray-700'
               }`}>
-                <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mr-3 transition-colors duration-300 ${
+                <div className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center mr-3 transition-colors duration-300 ${
                     isDarkMode ? 'bg-green-900/30' : 'bg-green-100'
                 }`}>
                     <FiCheckCircle className={`w-4 h-4 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
@@ -72,8 +72,8 @@ const FeatureBlock = ({ title, icon: Icon, badge, description, features, imageSr
           {/* Decorative Glow - Adjusted for Dark Mode */}
           <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-3xl rounded-full -z-10 transition-colors duration-300 ${
              isDarkMode 
-             ? 'bg-gradient-to-tr from-blue-900/20 to-purple-900/20' 
-             : 'bg-gradient-to-tr from-blue-200/40 to-purple-200/40'
+             ? 'bg-linear-to-tr from-blue-900/20 to-purple-900/20' 
+             : 'bg-linear-to-tr from-blue-200/40 to-purple-200/40'
           }`} />
           
           <div className={`relative rounded-2xl overflow-hidden shadow-2xl border transform transition duration-500 hover:scale-[1.01] ${
@@ -111,7 +111,7 @@ const FeaturePage = () => {
         
         {/* Modern Tech Background (Dot Grid) - Dynamic Color */}
         <div 
-          className="absolute inset-0 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none transition-colors duration-300" 
+          className="absolute inset-0 mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none transition-colors duration-300" 
           style={{
             backgroundImage: `radial-gradient(${isDarkMode ? '#374151' : '#e5e7eb'} 1px, transparent 1px)`,
             backgroundSize: '16px 16px'
@@ -128,7 +128,7 @@ const FeaturePage = () => {
             <h1 className={`text-4xl md:text-6xl font-extrabold tracking-tight mb-6 transition-colors duration-300 ${
               isDarkMode ? 'text-white' : 'text-gray-900'
             }`}>
-              One Platform <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-fuchsia-500">{`Endless Possibilities.`}</span>
+              One Platform <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-fuchsia-500">{`Endless Possibilities.`}</span>
             </h1>
             <p className={`text-xl max-w-3xl mx-auto leading-relaxed transition-colors duration-300 ${
               isDarkMode ? 'text-gray-400' : 'text-gray-500'
