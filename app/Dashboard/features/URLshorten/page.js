@@ -19,21 +19,26 @@ const Page = () => {
 
     async function loadData() {
       try {
-        const [meResponse, linksResponse] = await Promise.all([
+        const [meResult, linksResult] = await Promise.allSettled([
           axios.get('/api/auth/me'),
           axios.get('/api/getLinks'),
         ]);
 
         if (!isMounted) return;
 
-        const id = meResponse?.data?.user?._id || '';
-        const fetchedLinks = Array.isArray(linksResponse?.data) ? linksResponse.data : [];
+        if (meResult.status === 'fulfilled') {
+          const id = meResult?.value?.data?.user?._id || '';
+          setUserID(id);
+        } else {
+          toast.error('Unable to load your account details.');
+        }
 
-        setUserID(id);
-        setLinks(fetchedLinks);
-      } catch (error) {
-        if (!isMounted) return;
-        toast.error('Unable to load URL shortener data.');
+        if (linksResult.status === 'fulfilled') {
+          const fetchedLinks = Array.isArray(linksResult?.value?.data) ? linksResult.value.data : [];
+          setLinks(fetchedLinks);
+        } else {
+          toast.error('Unable to load your links right now.');
+        }
       } finally {
         if (isMounted) setIsLoading(false);
       }

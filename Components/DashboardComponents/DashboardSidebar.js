@@ -14,9 +14,20 @@ const Sidebar = ({ isDarkMode }) => {
   const searchParams = useSearchParams();
   const analyticsSection = (searchParams.get('section') || 'profile').toLowerCase();
   const isAnalyticsRoute = pathname.startsWith('/Dashboard/analytics');
-  const isFeaturesChildRoute = pathname.startsWith('/URLshorten') || pathname.startsWith('/Qrcode');
+  const isFeaturesChildRoute =
+    pathname.startsWith('/Dashboard/features/URLshorten') ||
+    pathname.startsWith('/Dashboard/features/Qrcode');
   const [isAnalyticsOpen, setIsAnalyticsOpen] = React.useState(isAnalyticsRoute);
   const [isFeaturesOpen, setIsFeaturesOpen] = React.useState(isFeaturesChildRoute);
+
+  React.useEffect(() => {
+    if (isAnalyticsRoute) {
+      setIsAnalyticsOpen(true);
+    }
+    if (isFeaturesChildRoute) {
+      setIsFeaturesOpen(true);
+    }
+  }, [isAnalyticsRoute, isFeaturesChildRoute]);
 
   const navigationSections = [
     {

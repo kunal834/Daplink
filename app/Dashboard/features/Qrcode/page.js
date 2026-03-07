@@ -9,11 +9,10 @@ const Page = () => {
   const isDarkMode = theme === 'dark';
 
   return (
-    <section className="mx-auto w-full max-w-7xl h-[calc(100vh-8rem)] overflow-hidden scrollbar-hidden">
+    <section className="mx-auto w-full max-w-7xl min-h-[calc(100vh-8rem)] lg:h-[calc(100vh-8rem)] overflow-y-auto lg:overflow-hidden scrollbar-hidden">
       <div
-        className={`h-full overflow-hidden rounded-3xl border p-2 md:p-4 transition-colors ${
-          isDarkMode ? 'border-zinc-800 bg-zinc-950/40' : 'border-zinc-200 bg-white'
-        }`}
+        className={`lg:h-full rounded-3xl border p-2 md:p-4 transition-colors ${isDarkMode ? 'border-zinc-800 bg-zinc-950/40' : 'border-zinc-200 bg-white'
+          }`}
       >
         <QRGenerator isDarkMode={isDarkMode} />
       </div>

@@ -28,13 +28,13 @@ export async function POST(req) {
                 { status: 401 }
             );
         }
-        
+
         if (!user.password) {
-    return NextResponse.json(
-        { message: "This account uses Google Login. Please sign in with Google." },
-        { status: 403 }
-    );
-}
+            return NextResponse.json(
+                { message: "This account uses Google Login. Please sign in with Google." },
+                { status: 403 }
+            );
+        }
 
         // Checking if password matches
         const isMatch = await bcrypt.compare(password, user.password);
@@ -70,8 +70,8 @@ export async function POST(req) {
         // Storing token in Cookies
         response.cookies.set("authtoken", token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             path: "/",
             maxAge: 60 * 60, // 60 minutes
         });
