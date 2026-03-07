@@ -70,8 +70,8 @@ export async function POST(req) {
         // Storing token in Cookies
         response.cookies.set("authtoken", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: true,
+            sameSite: "none",
             path: "/",
             maxAge: 60 * 60, // 60 minutes
         });

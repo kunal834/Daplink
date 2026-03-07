@@ -217,3 +217,34 @@ body {
   animation: shimmer 3s infinite;
 }
 
+/* Scrollbar utilities */
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scrollbar-qr {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.55) transparent;
+}
+
+.scrollbar-qr::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-qr::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-qr::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.75), rgba(99, 102, 241, 0.7));
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
