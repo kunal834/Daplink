@@ -127,7 +127,7 @@ const UrlShortenerTab = ({ isDarkMode, userID, links, setLinks }) => {
           <div className="flex justify-between items-start mb-8">
             <div>
               <h3 className={`text-xl font-bold flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
-                <Sparkles className="w-5 h-5 text-amber-400" />
+                {/* <Sparkles className="w-5 h-5 text-amber-400" /> */}
                 New Short Link
               </h3>
               <p className={`text-sm mt-1 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Paste your long URL below to create a trackable short link.</p>

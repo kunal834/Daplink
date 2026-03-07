@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCodeStyling from 'qr-code-styling'; 
 import { 
-  Download, Upload, RefreshCcw, Settings, Link as LinkIcon, 
-  Layers, Square, Circle, Palette, Sparkles, Wand2 
+  Upload, RefreshCcw, Link as LinkIcon,
+  Layers, Square, Circle, Sparkles, Wand2
 } from 'lucide-react';
 
 export default function AdvancedQRGenerator({ isDarkMode = false }) {
@@ -77,19 +77,20 @@ export default function AdvancedQRGenerator({ isDarkMode = false }) {
   // Advanced UI Classes
   const cardClass = isDarkMode ? "bg-zinc-900/50 border-zinc-800 backdrop-blur-md" : "bg-white/70 border-gray-200 backdrop-blur-md";
   const textMain = isDarkMode ? "text-white" : "text-zinc-900";
-  const panelBg = isDarkMode ? "bg-black" : "bg-slate-50";
-
   return (
-    <div className={`flex flex-col md:flex-row gap-8 p-4 md:p-8 max-w-7xl mx-auto min-h-screen transition-all duration-500 ${panelBg}`}>
+    <div className="h-full flex flex-col lg:flex-row gap-6 p-2 md:p-4 transition-all duration-500 overflow-hidden">
       
       {/* --- LEFT PANEL: Glassmorphic Controls --- */}
-      <div className={`w-full md:w-5/12 space-y-8 p-8 rounded-[32px] border shadow-2xl ${cardClass} 
-        overflow-y-auto max-h-[90vh] scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}>
+      <div className={`w-full lg:w-5/12 h-full space-y-8 p-6 md:p-8 rounded-[32px] border shadow-2xl overflow-y-auto scrollbar-qr ${cardClass}`}>
         
         <header className="flex items-center justify-between">
           <div>
-            <h2 className={`text-3xl font-black tracking-tight ${textMain}`}>DapLink <span className="text-blue-600">Pro</span></h2>
-            <p className="text-zinc-500 text-sm font-medium">Design your unique identity.</p>
+            <h2 className={`text-3xl font-black tracking-tight ${textMain}`}>
+              QR Code <span className="text-blue-600">Generator</span>
+            </h2>
+            <p className="text-zinc-500 text-sm font-medium">
+              Create beautiful, branded QR codes in seconds for every campaign.
+            </p>
           </div>
           <div className="p-3 bg-blue-600/10 rounded-2xl text-blue-600">
             <Wand2 size={24} />
@@ -105,17 +106,25 @@ export default function AdvancedQRGenerator({ isDarkMode = false }) {
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className={`w-full p-4 border rounded-2xl bg-zinc-100/50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all ${isDarkMode ? 'border-zinc-700 text-white' : 'border-zinc-200'}`}
+            className={`w-full p-4 border rounded-2xl focus:ring-4 focus:ring-blue-500/20 outline-none transition-all ${
+              isDarkMode
+                ? 'bg-zinc-900 border-zinc-700 text-white'
+                : 'bg-zinc-100/70 border-zinc-200 text-zinc-900'
+            }`}
           />
         </section>
 
         {/* 2. Shape Selector (Segmented UI) */}
         <section className="space-y-3">
           <label className="text-xs uppercase tracking-widest font-bold text-zinc-400">Frame Shape</label>
-          <div className="flex p-1 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-2xl">
+          <div className={`flex p-1 rounded-2xl ${isDarkMode ? 'bg-zinc-800/70' : 'bg-zinc-200/60'}`}>
             {['square', 'circle'].map((s) => (
               <button key={s} onClick={() => setQrShape(s)}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-bold text-sm ${qrShape === s ? "bg-white dark:bg-zinc-700 shadow-lg text-blue-600" : "text-zinc-500"}`}>
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-bold text-sm ${
+                  qrShape === s
+                    ? (isDarkMode ? 'bg-zinc-700 shadow-lg text-blue-400' : 'bg-white shadow-lg text-blue-600')
+                    : 'text-zinc-500'
+                }`}>
                 {s === 'circle' ? <Circle size={16} /> : <Square size={16} />} {s.toUpperCase()}
               </button>
             ))}
@@ -131,12 +140,12 @@ export default function AdvancedQRGenerator({ isDarkMode = false }) {
             </button>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl bg-zinc-100/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700">
+            <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-800/50 border-zinc-700' : 'bg-zinc-100/50 border-zinc-200'}`}>
               <input type="color" value={dotColor} onChange={(e) => setDotColor(e.target.value)} className="w-full h-8 cursor-pointer rounded-lg bg-transparent" />
               <p className="text-center text-[10px] mt-2 font-mono opacity-50">{dotColor}</p>
             </div>
             {dotGradient && (
-              <div className="p-4 rounded-2xl bg-zinc-100/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700">
+              <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-800/50 border-zinc-700' : 'bg-zinc-100/50 border-zinc-200'}`}>
                 <input type="color" value={dotColor2} onChange={(e) => setDotColor2(e.target.value)} className="w-full h-8 cursor-pointer rounded-lg bg-transparent" />
                 <p className="text-center text-[10px] mt-2 font-mono opacity-50">{dotColor2}</p>
               </div>
@@ -152,7 +161,11 @@ export default function AdvancedQRGenerator({ isDarkMode = false }) {
           <div className="grid grid-cols-3 gap-3">
             {['square', 'dots', 'rounded', 'extra-rounded', 'classy', 'classy-rounded'].map((type) => (
               <button key={type} onClick={() => setDotType(type)}
-                className={`p-3 text-[10px] border rounded-xl font-bold uppercase transition-all ${dotType === type ? "bg-blue-600 text-white border-blue-600 scale-95" : "border-zinc-200 dark:border-zinc-800 hover:border-blue-400"}`}>
+                className={`p-3 text-[10px] border rounded-xl font-bold uppercase transition-all ${
+                  dotType === type
+                    ? 'bg-blue-600 text-white border-blue-600 scale-95'
+                    : (isDarkMode ? 'border-zinc-700 hover:border-blue-400 text-zinc-300' : 'border-zinc-200 hover:border-blue-400 text-zinc-700')
+                }`}>
                 {type.replace('-', ' ')}
               </button>
             ))}
@@ -180,21 +193,29 @@ export default function AdvancedQRGenerator({ isDarkMode = false }) {
       </div>
 
       {/* --- RIGHT PANEL: High-End Preview --- */}
-      <div className={`w-full md:w-7/12 flex flex-col items-center justify-center p-8 rounded-[40px] border relative overflow-hidden ${cardClass}`}>
+      <div className={`w-full lg:w-7/12 h-full flex flex-col items-center justify-center p-6 md:p-8 rounded-[40px] border relative overflow-hidden ${cardClass}`}>
         
         {/* Background Decor */}
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
 
-        <div className="relative z-10 p-10 rounded-[48px] bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-500 hover:rotate-2">
+        <div className={`relative z-10 p-8 md:p-10 rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-500 ${
+          isDarkMode ? 'bg-zinc-100' : 'bg-white'
+        }`}>
              <div ref={ref} className="transition-all" />
         </div>
 
-        <div className="mt-12 flex gap-4 w-full max-w-sm relative z-10">
-          <button onClick={() => onDownloadClick('png')} className="flex-1 bg-zinc-900 dark:bg-white text-white dark:text-black py-5 rounded-[24px] font-black text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl">
+        <div className="mt-10 flex gap-4 w-full max-w-sm relative z-10">
+          <button onClick={() => onDownloadClick('png')} className={`flex-1 py-5 rounded-[24px] font-black text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl ${
+            isDarkMode ? 'bg-white text-black' : 'bg-zinc-900 text-white'
+          }`}>
             EXPORT PNG
           </button>
-          <button onClick={() => onDownloadClick('svg')} className="flex-1 border-2 border-zinc-200 dark:border-zinc-800 py-5 rounded-[24px] font-black text-xs tracking-widest hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
+          <button onClick={() => onDownloadClick('svg')} className={`flex-1 border-2 py-5 rounded-[24px] font-black text-xs tracking-widest transition-all ${
+            isDarkMode
+              ? 'border-zinc-700 text-zinc-100 hover:bg-zinc-800'
+              : 'border-zinc-200 text-zinc-900 hover:bg-zinc-100'
+          }`}>
             SVG
           </button>
         </div>
