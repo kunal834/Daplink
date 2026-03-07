@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import { io } from "socket.io-client";
+import { buildBackendConfig, buildSocketOptions } from '@/lib/backendAuth';
 import {
   Send, User, Briefcase, Search, Loader2, X, Minimize2, CheckCircle2, Maximize2, Bell
 } from 'lucide-react';
@@ -81,7 +82,7 @@ const ChatWidget = ({
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/${recipient._id}?t=${Date.now()}`,
-          { withCredentials: true }
+          buildBackendConfig()
         );
 
         const messagesData = Array.isArray(res.data) ? res.data : (res.data?.messages || []);
@@ -260,7 +261,7 @@ const UserProfile = ({ params }) => {
         setMyself(res.data.user);
         const unreadRes = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/unread/counts`,
-          { withCredentials: true }
+          buildBackendConfig()
         );
         setUnreadCounts(unreadRes.data || {});
 
@@ -279,9 +280,7 @@ const UserProfile = ({ params }) => {
   useEffect(() => {
     if (!myself) return;
 
-    const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
-      withCredentials: true,
-    });
+    const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, buildSocketOptions());
     setGlobalSocket(newSocket);
 
     newSocket.on("receive_message", (data) => {

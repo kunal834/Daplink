@@ -69,6 +69,13 @@ response.cookies.set("authtoken", token, {
     path: "/",
     maxAge: 60 * 60, // 1 hour
   });
+response.cookies.set("authToken", token, {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
+    maxAge: 60 * 60, // 1 hour
+  });
 
  return response;
 

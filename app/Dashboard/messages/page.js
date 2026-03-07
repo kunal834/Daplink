@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { io } from "socket.io-client";
+import { buildBackendConfig, buildSocketOptions } from '@/lib/backendAuth';
 import {
     Send, Search, MoreVertical, Check, CheckCheck, MessageSquare, Loader2
 } from 'lucide-react';
@@ -42,13 +43,13 @@ export default function MessagePage() {
 
                 const convRes = await axios.get(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/sidebar/conversations?t=${Date.now()}`,
-                    { withCredentials: true }
+                    buildBackendConfig()
                 );
 
                 console.log("Loaded Conversations from DB:", convRes.data);
                 setConversations(convRes.data || []);
 
-                const unreadRes = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/unread/counts`, { withCredentials: true });
+                const unreadRes = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/unread/counts`, buildBackendConfig());
                 setUnreadCounts(unreadRes.data || {});
 
                 setLoadingChats(false);
@@ -62,7 +63,7 @@ export default function MessagePage() {
 
     useEffect(() => {
         if (!myself) return;
-        const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, { withCredentials: true });
+        const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, buildSocketOptions());
         setSocket(newSocket);
 
         newSocket.on("receive_message", (data) => {
@@ -80,7 +81,7 @@ export default function MessagePage() {
                     author: senderId,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }]);
-                axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/mark-read/${senderId}`, {}, { withCredentials: true });
+                axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/mark-read/${senderId}`, {}, buildBackendConfig());
             }
 
             setConversations(prev => {
@@ -92,7 +93,7 @@ export default function MessagePage() {
                     movedChat.lastMessageTime = new Date();
                     updatedConv.unshift(movedChat);
                 } else {
-                    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/sidebar/conversations?t=${Date.now()}`, { withCredentials: true })
+                    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/sidebar/conversations?t=${Date.now()}`, buildBackendConfig())
                         .then(res => setConversations(res.data));
                 }
                 return updatedConv;
@@ -112,7 +113,7 @@ export default function MessagePage() {
         setUnreadCounts(prev => ({ ...prev, [String(conv.user._id)]: 0 }));
 
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/${conv.user._id}?t=${Date.now()}`, { withCredentials: true });
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/${conv.user._id}?t=${Date.now()}`, buildBackendConfig());
             const formatted = res.data.map(msg => ({
                 _id: msg._id,
                 message: msg.text,
