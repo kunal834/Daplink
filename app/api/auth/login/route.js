@@ -75,7 +75,6 @@ export async function POST(req) {
             path: "/",
             maxAge: 60 * 60, // 60 minutes
         });
-
         return response;
     } catch (error) {
         console.error(error);

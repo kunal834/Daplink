@@ -69,7 +69,6 @@ response.cookies.set("authtoken", token, {
     path: "/",
     maxAge: 60 * 60, // 1 hour
   });
-
  return response;
 
 

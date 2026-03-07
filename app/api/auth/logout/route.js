@@ -11,6 +11,7 @@ export async function GET(req) {
         response.cookies.set("authtoken", "", {
             httpOnly: true,
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: process.env.NODE_ENV === "production",
             path: "/",
             expires: new Date(0), 
         });

@@ -80,8 +80,7 @@ const ChatWidget = ({
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/${recipient._id}?t=${Date.now()}`,
-          { withCredentials: true }
+          `/api/backend/messages/${recipient._id}?t=${Date.now()}`
         );
 
         const messagesData = Array.isArray(res.data) ? res.data : (res.data?.messages || []);
@@ -259,8 +258,7 @@ const UserProfile = ({ params }) => {
         const res = await axios.get('/api/auth/me');
         setMyself(res.data.user);
         const unreadRes = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/unread/counts`,
-          { withCredentials: true }
+          `/api/backend/messages/unread/counts`
         );
         setUnreadCounts(unreadRes.data || {});
 
@@ -278,34 +276,51 @@ const UserProfile = ({ params }) => {
 
   useEffect(() => {
     if (!myself) return;
+    let newSocket = null;
+    const setupSocket = async () => {
+      try {
+        const tokenRes = await axios.get('/api/auth/socket-token');
+        const token = tokenRes?.data?.token;
+        if (!token) return;
 
-    const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
-      withCredentials: true,
-    });
-    setGlobalSocket(newSocket);
+        newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
+          withCredentials: true,
+          auth: {
+            token,
+            authorization: `Bearer ${token}`,
+          },
+        });
+        setGlobalSocket(newSocket);
 
-    newSocket.on("receive_message", (data) => {
-      const senderId = String(data.senderId);
-      const currentActiveChat = activeChatRef.current;
-      
-      setUnreadCounts((prev) => {
-        const currentActiveChatId = currentActiveChat?._id ? String(currentActiveChat._id) : null;
-        if (currentActiveChatId === senderId) return prev;
+        newSocket.on("receive_message", (data) => {
+          const senderId = String(data.senderId);
+          const currentActiveChat = activeChatRef.current;
+          
+          setUnreadCounts((prev) => {
+            const currentActiveChatId = currentActiveChat?._id ? String(currentActiveChat._id) : null;
+            if (currentActiveChatId === senderId) return prev;
 
-        const newCount = (prev[senderId] || 0) + 1;
+            const newCount = (prev[senderId] || 0) + 1;
 
-        if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
-           new Notification("New Message", {
-             body: data.text,
-             icon: '/favicon.ico' 
-           });
-        }
+            if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
+               new Notification("New Message", {
+                 body: data.text,
+                 icon: '/favicon.ico' 
+               });
+            }
 
-        return { ...prev, [senderId]: newCount };
-      });
-    });
+            return { ...prev, [senderId]: newCount };
+          });
+        });
+      } catch (error) {
+        console.error("Socket auth failed:", error);
+      }
+    };
 
-    return () => newSocket.disconnect();
+    setupSocket();
+    return () => {
+      if (newSocket) newSocket.disconnect();
+    };
   }, [myself]); 
 
   const handleFetchAll = async () => {
