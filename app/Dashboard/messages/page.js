@@ -121,7 +121,9 @@ export default function MessagePage() {
                                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                             }];
                         });
-                        axios.put(`/api/backend/messages/mark-read/${senderId}`, {});
+                        if (isIncomingForActiveChat) {
+                            void axios.put(`/api/backend/messages/mark-read/${senderId}`, {});
+                        }
                     }
 
                     setConversations(prev => {
@@ -258,7 +260,7 @@ export default function MessagePage() {
                         const unread = unreadCounts[String(userId)] || 0;
                         const isSelected = activeChat?.user?._id === userId;
                         const handle = conv.user?.daplinkID?.handle || conv.user?.handle || "Incognito";
-                        const profilePic = conv.user?.daplinkID?.profile || conv.user?.profile; 
+                        const profilePic = conv.user?.daplinkID?.profile || conv.user?.profile;
 
                         if (!userId) return null;
 

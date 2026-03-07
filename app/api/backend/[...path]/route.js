@@ -18,14 +18,23 @@ async function forward(request, context) {
     const token = (await cookies()).get("authtoken")?.value;
     const resolvedParams = await context.params;
     const targetUrl = buildTargetUrl(resolvedParams?.path || [], request.nextUrl.searchParams);
+    const method = request.method.toUpperCase();
+    const isMutation = !["GET", "HEAD", "OPTIONS"].includes(method);
+    const origin = request.headers.get("origin");
+
+    if (isMutation && origin && origin !== request.nextUrl.origin) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden" },
+        { status: 403 }
+      );
+    }
 
     const headers = new Headers();
     const contentType = request.headers.get("content-type");
     if (contentType) headers.set("content-type", contentType);
     if (token) headers.set("authorization", `Bearer ${token}`);
 
-    const method = request.method;
-    const hasBody = !["GET", "HEAD"].includes(method.toUpperCase());
+    const hasBody = !["GET", "HEAD"].includes(method);
     const body = hasBody ? request.body : undefined;
 
     const upstream = await fetch(targetUrl, {
