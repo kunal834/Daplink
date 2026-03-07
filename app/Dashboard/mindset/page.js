@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/Authenticate';
-import { buildBackendConfig } from '@/lib/backendAuth';
 
 // Helper for image loaders if needed
 const shimmer = (w, h) => `
@@ -113,7 +112,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
   }, []);
 
   const toggleLikeMutation = useMutation({
-    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/like`, {}, buildBackendConfig()),
+    mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/like`, {}),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['posts'] });
       const previousPosts = queryClient.getQueryData(['posts']);
@@ -125,31 +124,31 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
   });
 
   const repostMutation = useMutation({
-    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/repost`, {}, buildBackendConfig()),
+    mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/repost`, {}),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
     onError: () => toast.error("Failed to repost")
   });
 
   const deletePostMutation = useMutation({
-    mutationFn: async () => axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}`, buildBackendConfig()),
+    mutationFn: async () => axios.delete(`/api/backend/posts/${post.id}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
     onError: () => toast.error("Failed to delete post")
   });
 
   const editPostMutation = useMutation({
-    mutationFn: async () => axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}`, { content: editContent }, buildBackendConfig()),
+    mutationFn: async () => axios.put(`/api/backend/posts/${post.id}`, { content: editContent }),
     onSuccess: () => { setIsEditing(false); queryClient.invalidateQueries({ queryKey: ['posts'] }); },
     onError: () => toast.error("Failed to edit post")
   });
 
   const { data: comments, isLoading: loadingComments } = useQuery({
     queryKey: ['comments', post.id],
-    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/comments`, buildBackendConfig())).data.comments,
+    queryFn: async () => (await axios.get(`/api/backend/posts/${post.id}/comments`)).data.comments,
     enabled: showComments,
   });
 
   const postCommentMutation = useMutation({
-    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/comments`, { content: commentText, authorId: uId }, buildBackendConfig()),
+    mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/comments`, { content: commentText, authorId: uId }),
     onSuccess: () => { setCommentText(""); queryClient.invalidateQueries({ queryKey: ['comments', post.id] }); queryClient.invalidateQueries({ queryKey: ['posts'] }); }
   });
 
@@ -437,19 +436,19 @@ export default function DaplinkCommunityFeed() {
 
   const { data: postsData, isLoading: isPostsLoading } = useQuery({
     queryKey: ['posts', activeTab],
-    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts?type=${activeTab}`, buildBackendConfig())).data.posts,
+    queryFn: async () => (await axios.get(`/api/backend/posts?type=${activeTab}`)).data.posts,
   });
 
   const { data: trendingTopics, isLoading: isTrendingLoading } = useQuery({
     queryKey: ['trending'],
-    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/trending`, buildBackendConfig())).data.trending,
+    queryFn: async () => (await axios.get(`/api/backend/posts/trending`)).data.trending,
   });
 
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: ['search', debouncedQuery],
     queryFn: async () => {
       if (!debouncedQuery.trim()) return null;
-      return (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/search?q=${debouncedQuery}`, buildBackendConfig())).data;
+      return (await axios.get(`/api/backend/posts/search?q=${debouncedQuery}`)).data;
     },
     enabled: !!debouncedQuery.trim()
   });
@@ -466,13 +465,9 @@ export default function DaplinkCommunityFeed() {
       if (userId) formData.append('authorId', userId);
       if (mediaFile) formData.append('media', mediaFile);
 
-      return axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`,
-        formData,
-        buildBackendConfig({
-          headers: { 'Content-Type': 'multipart/form-data' },
-        })
-      );
+      return axios.post(`/api/backend/posts`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
     },
     onSuccess: () => { 
       setContent(''); 

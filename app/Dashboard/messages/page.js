@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { io } from "socket.io-client";
-import { buildBackendConfig, buildSocketOptions } from '@/lib/backendAuth';
 import {
     Send, Search, MoreVertical, Check, CheckCheck, MessageSquare, Loader2
 } from 'lucide-react';
@@ -42,14 +41,13 @@ export default function MessagePage() {
                 setMyself(meRes.data.user);
 
                 const convRes = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/sidebar/conversations?t=${Date.now()}`,
-                    buildBackendConfig()
+                    `/api/backend/messages/sidebar/conversations?t=${Date.now()}`
                 );
 
                 console.log("Loaded Conversations from DB:", convRes.data);
                 setConversations(convRes.data || []);
 
-                const unreadRes = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/unread/counts`, buildBackendConfig());
+                const unreadRes = await axios.get(`/api/backend/messages/unread/counts`);
                 setUnreadCounts(unreadRes.data || {});
 
                 setLoadingChats(false);
@@ -63,44 +61,93 @@ export default function MessagePage() {
 
     useEffect(() => {
         if (!myself) return;
-        const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, buildSocketOptions());
-        setSocket(newSocket);
+        let newSocket = null;
+        const setupSocket = async () => {
+            try {
+                const tokenRes = await axios.get('/api/auth/socket-token');
+                const token = tokenRes?.data?.token;
+                if (!token) return;
 
-        newSocket.on("receive_message", (data) => {
-            const senderId = String(data.senderId);
+                newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
+                    withCredentials: true,
+                    auth: {
+                        token,
+                        authorization: `Bearer ${token}`,
+                    },
+                });
 
-            setUnreadCounts(prev => {
-                if (activeChat?.user?._id && String(activeChat.user._id) === senderId) return prev;
-                return { ...prev, [senderId]: (prev[senderId] || 0) + 1 };
-            });
+                setSocket(newSocket);
 
-            if (activeChat?.user?._id && String(activeChat.user._id) === senderId) {
-                setMessages(prev => [...prev, {
-                    _id: data._id,
-                    message: data.text,
-                    author: senderId,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }]);
-                axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/mark-read/${senderId}`, {}, buildBackendConfig());
+                newSocket.on("receive_message", (data) => {
+                    const senderId = String(data.senderId);
+                    const receiverId = String(data.receiverId || "");
+                    const meId = String(myself?._id || "");
+                    const activeChatId = String(activeChat?.user?._id || "");
+                    const isIncomingForActiveChat = Boolean(activeChatId && senderId === activeChatId);
+                    const isOutgoingEchoForActiveChat = Boolean(activeChatId && senderId === meId && receiverId === activeChatId);
+
+                    setUnreadCounts(prev => {
+                        if (senderId === meId) return prev;
+                        if (activeChatId && activeChatId === senderId) return prev;
+                        return { ...prev, [senderId]: (prev[senderId] || 0) + 1 };
+                    });
+
+                    if (isIncomingForActiveChat || isOutgoingEchoForActiveChat) {
+                        setMessages(prev => {
+                            if (isOutgoingEchoForActiveChat) {
+                                const tempIndex = prev.findIndex(
+                                    (m) => String(m._id).startsWith("temp-") && m.message === data.text
+                                );
+                                if (tempIndex !== -1) {
+                                    const updated = [...prev];
+                                    updated[tempIndex] = {
+                                        ...updated[tempIndex],
+                                        _id: data._id || updated[tempIndex]._id,
+                                        status: data.status || "sent",
+                                    };
+                                    return updated;
+                                }
+                            }
+
+                            if (data._id && prev.some((m) => String(m._id) === String(data._id))) {
+                                return prev;
+                            }
+
+                            return [...prev, {
+                                _id: data._id || `msg-${Date.now()}`,
+                                message: data.text,
+                                author: senderId === meId ? "Me" : senderId,
+                                status: data.status || (senderId === meId ? "sent" : undefined),
+                                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                            }];
+                        });
+                        axios.put(`/api/backend/messages/mark-read/${senderId}`, {});
+                    }
+
+                    setConversations(prev => {
+                        const existingIdx = prev.findIndex(c => String(c.user?._id) === senderId);
+                        const updatedConv = [...prev];
+                        if (existingIdx > -1) {
+                            const [movedChat] = updatedConv.splice(existingIdx, 1);
+                            movedChat.lastMessage = { text: data.text };
+                            movedChat.lastMessageTime = new Date();
+                            updatedConv.unshift(movedChat);
+                        } else {
+                            axios.get(`/api/backend/messages/sidebar/conversations?t=${Date.now()}`)
+                                .then(res => setConversations(res.data));
+                        }
+                        return updatedConv;
+                    });
+                });
+            } catch (error) {
+                console.error("Socket auth failed:", error);
             }
+        };
 
-            setConversations(prev => {
-                const existingIdx = prev.findIndex(c => String(c.user?._id) === senderId);
-                const updatedConv = [...prev];
-                if (existingIdx > -1) {
-                    const [movedChat] = updatedConv.splice(existingIdx, 1);
-                    movedChat.lastMessage = { text: data.text };
-                    movedChat.lastMessageTime = new Date();
-                    updatedConv.unshift(movedChat);
-                } else {
-                    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/sidebar/conversations?t=${Date.now()}`, buildBackendConfig())
-                        .then(res => setConversations(res.data));
-                }
-                return updatedConv;
-            });
-        });
-
-        return () => newSocket.disconnect();
+        setupSocket();
+        return () => {
+            if (newSocket) newSocket.disconnect();
+        };
     }, [myself, activeChat]);
 
     useEffect(() => {
@@ -113,7 +160,7 @@ export default function MessagePage() {
         setUnreadCounts(prev => ({ ...prev, [String(conv.user._id)]: 0 }));
 
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/${conv.user._id}?t=${Date.now()}`, buildBackendConfig());
+            const res = await axios.get(`/api/backend/messages/${conv.user._id}?t=${Date.now()}`);
             const formatted = res.data.map(msg => ({
                 _id: msg._id,
                 message: msg.text,
@@ -144,6 +191,13 @@ export default function MessagePage() {
             receiverId: activeChat.user._id,
             text: newMessage.trim(),
         });
+        setTimeout(() => {
+            setMessages(prev => prev.map((msg) => (
+                msg._id === tempMsg._id && msg.status === "sending"
+                    ? { ...msg, status: "sent" }
+                    : msg
+            )));
+        }, 1500);
 
         setConversations(prev => {
             const existingIdx = prev.findIndex(c => String(c.user?._id) === String(activeChat.user._id));
