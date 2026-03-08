@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  Link as LinkIcon, Search as SearchIcon, Sun, Moon,
-  Bell, Share2, LogOut, BarChart3, RefreshCw, Zap
+  Search as SearchIcon, Sun, Moon,
+  Bell, Share2, LogOut, BarChart3, RefreshCw, Zap, X, CheckCircle2
 } from 'lucide-react';
 
 import Link from 'next/link';
@@ -21,6 +21,10 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const searchRef = useRef(null);
 
   const notifications = [
     { id: 1, title: "100 Views Milestone", time: "2m ago", icon: <BarChart3 className="w-4 h-4 text-emerald-500" /> },
@@ -46,6 +50,89 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     }
   }, [user, daplink, loading, router]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const { data: searchResults, isLoading: isSearching } = useQuery({
+    queryKey: ['dashboard-topbar-search', debouncedQuery],
+    queryFn: async () => {
+      if (!debouncedQuery) return null;
+      const response = await axios.get(`/api/backend/posts/search?q=${encodeURIComponent(debouncedQuery)}`);
+      return response.data;
+    },
+    enabled: Boolean(debouncedQuery),
+    staleTime: 30 * 1000,
+  });
+
+  const currentHandle = String(user?.handle || daplink?.handle || '').replace(/^@/, '').toLowerCase();
+  const peopleResults = (searchResults?.users || [])
+    .filter((person) => {
+      const handle = String(person?.handle || person?.daplinkID?.handle || '').replace(/^@/, '').toLowerCase();
+      return handle && handle !== currentHandle;
+    })
+    .slice(0, 20);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [debouncedQuery, isSearchFocused]);
+
+  const openProfile = (person) => {
+    const handle = String(person?.handle || '').replace(/^@/, '');
+    if (!handle) return;
+    router.push(`/u/${handle}`);
+    setIsSearchFocused(false);
+  };
+
+  const handleSearchSubmit = (event) => {
+    if (!searchQuery.trim()) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (peopleResults.length > 0) {
+        setActiveIndex((prev) => (prev + 1) % peopleResults.length);
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (peopleResults.length > 0) {
+        setActiveIndex((prev) => (prev - 1 + peopleResults.length) % peopleResults.length);
+      }
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      setIsSearchFocused(false);
+      return;
+    }
+
+    if (event.key !== 'Enter') return;
+
+    const selectedUser = peopleResults[activeIndex] || peopleResults[0];
+    if (selectedUser?.handle) {
+      event.preventDefault();
+      openProfile(selectedUser);
+      return;
+    }
+
+    router.push(`/Dashboard/mindset`);
+    setIsSearchFocused(false);
+  };
+
   if (!user || loading) {
     return (
       <header className="h-16 flex items-center px-6 border-b">
@@ -67,18 +154,91 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
       </div>
 
       {/* Search Bar */}
-      <div className="hidden md:flex flex-1 max-w-md mx-8 relative">
+      <div ref={searchRef} className="hidden md:flex flex-1 max-w-md mx-8 relative">
         <SearchIcon className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`} />
         <input
           type="text"
-          placeholder="Search people, skills, or communities..."
+          placeholder="Search people"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className={`w-full pl-10 pr-4 py-2 rounded-xl text-sm font-medium outline-none border transition-all ${isDarkMode
+          onFocus={() => setIsSearchFocused(true)}
+          onKeyDown={handleSearchSubmit}
+          className={`w-full pl-10 pr-10 py-2 rounded-xl text-sm font-medium outline-none border transition-all ${isDarkMode
             ? 'bg-zinc-800 border-zinc-700 text-white focus:border-indigo-500 focus:bg-zinc-800'
             : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-black focus:bg-white'
             }`}
         />
+
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            className={`absolute right-3 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-zinc-400 hover:text-white' : 'text-zinc-500 hover:text-zinc-900'}`}
+            aria-label="Clear search"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+
+        {isSearchFocused && searchQuery.trim() !== '' && (
+          <div className={`absolute top-12 left-0 w-full rounded-xl shadow-2xl border overflow-hidden z-50 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-[#f3f4f6] border-zinc-200'}`}>
+            {isSearching ? (
+              <div className={`px-4 py-3 text-sm ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Searching...</div>
+            ) : peopleResults.length > 0 ? (
+              <div>
+                <div className="max-h-64 overflow-y-auto">
+                {peopleResults.map((person, index) => {
+                  const handle = String(person.handle || '').replace(/^@/, '');
+                  const displayName = person.name || handle || 'Unknown User';
+                  const avatar = person.avatar || person.profile || person.daplinkID?.profile || '';
+                  const initials = String(displayName).slice(0, 2).toUpperCase();
+                  const isActive = index === activeIndex;
+
+                  return (
+                    <button
+                      key={person._id || handle || index}
+                      type="button"
+                      onMouseEnter={() => setActiveIndex(index)}
+                      onClick={() => openProfile(person)}
+                      className={`w-full text-left px-3 py-2.5 flex items-center gap-2.5 transition-colors ${isActive
+                        ? (isDarkMode ? 'bg-zinc-800/80' : 'bg-zinc-200/70')
+                        : (isDarkMode ? 'hover:bg-zinc-800/60' : 'hover:bg-zinc-200/50')
+                        }`}
+                    >
+                      <div className={`w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-xs font-bold ${isDarkMode ? 'bg-zinc-700 text-zinc-200' : 'bg-zinc-300 text-zinc-700'}`}>
+                        {avatar ? (
+                          <img src={avatar} alt={displayName} className="w-full h-full object-cover" />
+                        ) : (
+                          initials
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className={`text-base leading-tight font-semibold truncate flex items-center gap-1 ${isDarkMode ? 'text-zinc-100' : 'text-slate-800'}`}>
+                          <span className="truncate">{displayName}</span>
+                          {person.verified && <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />}
+                        </div>
+                        <div className={`text-xs leading-tight mt-0.5 ${isDarkMode ? 'text-zinc-400' : 'text-slate-600'}`}>
+                          @{handle}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+                </div>
+
+                <div className={`px-4 py-2.5 border-t flex items-center justify-between text-[11px] font-semibold tracking-widest uppercase ${isDarkMode ? 'border-zinc-800 text-zinc-400' : 'border-zinc-200 text-slate-500'}`}>
+                  <span>{peopleResults.length} results found</span>
+                  <span>↑↓ Navigate   ↵ Select</span>
+                </div>
+              </div>
+            ) : (
+              <div className={`px-4 py-3 text-sm ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                No people found for "{searchQuery.trim()}"
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-4">

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import { io } from "socket.io-client";
@@ -223,6 +223,9 @@ const ChatWidget = ({
 
 // --- MAIN USER PROFILE COMPONENT ---
 const UserProfile = ({ params }) => {
+  const INITIAL_VISIBLE = 6;
+  const LOAD_MORE_STEP = 6;
+
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(false);
   const [myself, setMyself] = useState(null);
@@ -230,14 +233,37 @@ const UserProfile = ({ params }) => {
   
   const [globalSocket, setGlobalSocket] = useState(null);
   const [unreadCounts, setUnreadCounts] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [remoteMatches, setRemoteMatches] = useState([]);
+  const [isSearchingRemote, setIsSearchingRemote] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
   
   const activeChatRef = useRef(null);
+  const searchBoxRef = useRef(null);
 
   const { theme } = useTheme();
 
   useEffect(() => {
       activeChatRef.current = activeChat;
   }, [activeChat]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
+        setIsSearchFocused(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
 
   const colors = {
     bg: theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fafafa]',
@@ -328,12 +354,17 @@ const UserProfile = ({ params }) => {
       setLoading(true);
       const response = await axios.get('/api/Peoples');
       setPeople(response.data.users || response.data.result || []);
+      setVisibleCount(INITIAL_VISIBLE);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching people:", error);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    handleFetchAll();
+  }, []);
 
   const handleOpenChat = (user) => {
     setUnreadCounts((prev) => ({ ...prev, [String(user._id)]: 0 }));
@@ -348,6 +379,83 @@ const UserProfile = ({ params }) => {
   const getInitials = (name) => name ? name.substring(0, 2).toUpperCase() : "??";
 
   const myHandle = myself?.daplinkID?.handle || myself?.handle;
+  const normalizedMyHandle = (myHandle || "").toLowerCase();
+
+  const normalizeUser = (user) => {
+    const rawHandle = user?.handle || user?.daplinkID?.handle || "";
+    const cleanHandle = String(rawHandle).replace(/^@/, "");
+
+    return {
+      _id: user?._id || user?.id || cleanHandle,
+      handle: cleanHandle,
+      name: user?.name || user?.daplinkID?.name || cleanHandle || "Incognito",
+      avatar: user?.avatar || user?.profile || user?.daplinkID?.profile || "",
+      profession: user?.profession || user?.daplinkID?.profession || "Creator",
+      bio: user?.bio || user?.daplinkID?.bio || "",
+    };
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchRemoteMatches = async () => {
+      if (!debouncedQuery || debouncedQuery.length < 2) {
+        setRemoteMatches([]);
+        setIsSearchingRemote(false);
+        return;
+      }
+
+      try {
+        setIsSearchingRemote(true);
+        const res = await axios.get(`/api/backend/posts/search?q=${encodeURIComponent(debouncedQuery)}`);
+        const users = Array.isArray(res?.data?.users) ? res.data.users : [];
+        const normalized = users
+          .map(normalizeUser)
+          .filter((u) => u.handle && u.handle.toLowerCase() !== normalizedMyHandle);
+
+        if (!cancelled) setRemoteMatches(normalized);
+      } catch (error) {
+        if (!cancelled) setRemoteMatches([]);
+      } finally {
+        if (!cancelled) setIsSearchingRemote(false);
+      }
+    };
+
+    fetchRemoteMatches();
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedQuery, normalizedMyHandle]);
+
+  const filteredPeople = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    const remoteHandleSet = new Set(remoteMatches.map((u) => u.handle.toLowerCase()));
+
+    return people.filter((user) => {
+      const handle = user?.daplinkID?.handle || user?.handle || "";
+      const name = user?.daplinkID?.name || user?.name || "";
+      const profession = user?.daplinkID?.profession || user?.profession || "";
+      const bio = user?.daplinkID?.bio || user?.bio || "";
+
+      if (handle.toLowerCase() === normalizedMyHandle) return false;
+      if (!query) return true;
+      if (remoteHandleSet.size > 0) return remoteHandleSet.has(handle.toLowerCase());
+
+      return (
+        handle.toLowerCase().includes(query) ||
+        name.toLowerCase().includes(query) ||
+        profession.toLowerCase().includes(query) ||
+        bio.toLowerCase().includes(query)
+      );
+    });
+  }, [people, searchQuery, normalizedMyHandle, remoteMatches]);
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE);
+  }, [searchQuery]);
+
+  const visiblePeople = filteredPeople.slice(0, visibleCount);
+  const hasMorePeople = filteredPeople.length > visibleCount;
 
   return (
     <div className={`flex flex-col min-h-screen transition-colors duration-300 ${colors.bg}`}>
@@ -366,16 +474,80 @@ const UserProfile = ({ params }) => {
             <div className="pt-4">
               <button onClick={handleFetchAll} disabled={loading} className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all ${colors.btnPrimary} ${loading ? "opacity-70 cursor-wait" : ""}`}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                {loading ? "Discovering..." : "Explore Directory"}
+                {loading ? "Discovering..." : "Refresh Directory"}
               </button>
             </div>
           </div>
 
+          <div className="max-w-xl mx-auto w-full">
+            <div ref={searchBoxRef} className="relative">
+              <div className={`relative rounded-xl border transition-colors ${theme === 'dark' ? 'bg-[#141414] border-zinc-800 focus-within:border-zinc-600' : 'bg-white border-zinc-200 focus-within:border-zinc-400'}`}>
+                <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 ${colors.subtext}`} />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  placeholder="Search by handle, name, profession, or bio"
+                  className={`w-full h-11 pl-10 pr-10 rounded-xl bg-transparent outline-none text-sm ${colors.text} ${theme === 'dark' ? 'placeholder:text-zinc-500' : 'placeholder:text-zinc-400'}`}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setRemoteMatches([]);
+                    }}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors ${theme === 'dark' ? 'hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200' : 'hover:bg-zinc-100 text-zinc-500 hover:text-zinc-800'}`}
+                    aria-label="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              {isSearchFocused && searchQuery.trim() !== "" && (
+                <div className={`absolute mt-2 w-full rounded-xl border shadow-xl overflow-hidden z-20 ${theme === 'dark' ? 'bg-[#141414] border-zinc-800' : 'bg-white border-zinc-200'}`}>
+                  {isSearchingRemote ? (
+                    <div className={`px-4 py-3 text-sm flex items-center gap-2 ${colors.subtext}`}>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Searching...
+                    </div>
+                  ) : remoteMatches.length > 0 ? (
+                    remoteMatches.slice(0, 6).map((user) => (
+                      <Link
+                        key={user._id}
+                        href={`/u/${user.handle}`}
+                        onClick={() => setIsSearchFocused(false)}
+                        className={`flex items-center gap-3 px-4 py-3 transition-colors ${theme === 'dark' ? 'hover:bg-zinc-800/70' : 'hover:bg-zinc-50'}`}
+                      >
+                        <div className={`w-9 h-9 rounded-full overflow-hidden shrink-0 ${theme === 'dark' ? 'bg-zinc-800' : 'bg-zinc-100'}`}>
+                          {user.avatar ? (
+                            <img src={user.avatar} alt={`${user.handle} avatar`} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className={`w-full h-full flex items-center justify-center text-xs font-bold ${theme === 'dark' ? 'text-zinc-300' : 'text-zinc-600'}`}>
+                              {getInitials(user.handle)}
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className={`text-sm font-semibold truncate ${colors.text}`}>{user.name}</p>
+                          <p className={`text-xs truncate ${colors.subtext}`}>@{user.handle} - {user.profession}</p>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className={`px-4 py-3 text-sm ${colors.subtext}`}>
+                      No users found
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {people.filter(user => {
-              const uHandle = user?.daplinkID?.handle || user?.handle;
-              return uHandle !== myHandle;
-            }).map((user, index) => {
+            {visiblePeople.map((user, index) => {
               const unread = unreadCounts[String(user._id)] || 0;
               
               // All profile data for the grid cards
@@ -436,6 +608,18 @@ const UserProfile = ({ params }) => {
               );
             })}
           </div>
+
+          {!loading && hasMorePeople && (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_STEP)}
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border transition-colors ${colors.btnSecondary}`}
+              >
+                Load more
+              </button>
+            </div>
+          )}
           
           {people.length === 0 && !loading && (
             <div className={`text-center py-24 rounded-2xl border border-dashed ${colors.emptyState}`}>
@@ -445,6 +629,18 @@ const UserProfile = ({ params }) => {
               <h3 className={`text-base font-semibold ${colors.text}`}>No creators found yet</h3>
               <p className={`mt-2 text-sm ${colors.subtext}`}>
                 Click the Explore Directory button above to fetch users.
+              </p>
+            </div>
+          )}
+
+          {people.length > 0 && filteredPeople.length === 0 && !loading && (
+            <div className={`text-center py-24 rounded-2xl border border-dashed ${colors.emptyState}`}>
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 ${theme === 'dark' ? 'bg-zinc-800 text-zinc-400' : 'bg-zinc-100 text-zinc-400'}`}>
+                <Search className="w-6 h-6" />
+              </div>
+              <h3 className={`text-base font-semibold ${colors.text}`}>No matching creators</h3>
+              <p className={`mt-2 text-sm ${colors.subtext}`}>
+                Try a different keyword.
               </p>
             </div>
           )}
