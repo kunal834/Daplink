@@ -61,7 +61,7 @@ const Sidebar = ({ isDarkMode }) => {
           ],
         },
         
-        { href: '/Dashboard/community', icon: Users, label: 'Community', badge: '1.2k' },
+        { href: '/Dashboard/community', icon: Users, label: 'Community', badge: 'join' },
         { href: '/Dashboard/messages', icon: MessagesSquare, label: 'Messages' },
         { href: '/Dashboard/mindset', icon: Brain, label: 'DapPost' },
         { href: '/Dashboard/settings', icon: Settings, label: 'Settings' },
