@@ -3,7 +3,6 @@ import User from "@/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
-import Link from "@/models/Link";
 
 export async function POST(req) {
     try {
@@ -32,7 +31,7 @@ export async function POST(req) {
         if (!user.password) {
     return NextResponse.json(
         { message: "This account uses Google Login. Please sign in with Google." },
-        { status: 403 }
+        { status: 403 } // Forbidden: right user, wrong method
     );
 }
 
