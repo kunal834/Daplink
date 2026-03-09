@@ -10,7 +10,8 @@ export async function GET(req) {
         // Delete the token cookie
         response.cookies.set("authtoken", "", {
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: process.env.NODE_ENV === "production",
             path: "/",
             expires: new Date(0), 
         });

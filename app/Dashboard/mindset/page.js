@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Heart, MessageSquare, Repeat2, Share,
   Code2, MoreHorizontal, CheckCircle2,
@@ -13,6 +14,26 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/Authenticate';
+
+// Helper for image loaders if needed
+const shimmer = (w, h) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#333" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#333" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#333" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`;
+
+const toBase64 = (str) =>
+  typeof window === 'undefined'
+    ? Buffer.from(str).toString('base64')
+    : window.btoa(str);
 
 const timeAgo = (date) => {
   const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -116,7 +137,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
   }, []);
 
   const toggleLikeMutation = useMutation({
-    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/like`, {}, { withCredentials: true }),
+    mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/like`, {}),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['posts'] });
       const previousPosts = queryClient.getQueryData(['posts']);
@@ -128,7 +149,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
   });
 
   const repostMutation = useMutation({
-    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/repost`, {}, { withCredentials: true }),
+    mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/repost`, {}),
     onSuccess: () => {
         toast.success("Reposted!");
         queryClient.invalidateQueries({ queryKey: ['posts'] });
@@ -137,25 +158,25 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
   });
 
   const deletePostMutation = useMutation({
-    mutationFn: async () => axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}`, { withCredentials: true }),
+    mutationFn: async () => axios.delete(`/api/backend/posts/${post.id}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
     onError: () => toast.error("Failed to delete post")
   });
 
   const editPostMutation = useMutation({
-    mutationFn: async () => axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}`, { content: editContent }, { withCredentials: true }),
+    mutationFn: async () => axios.put(`/api/backend/posts/${post.id}`, { content: editContent }),
     onSuccess: () => { setIsEditing(false); queryClient.invalidateQueries({ queryKey: ['posts'] }); },
     onError: () => toast.error("Failed to edit post")
   });
 
   const { data: comments, isLoading: loadingComments } = useQuery({
     queryKey: ['comments', post.id],
-    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/comments`, { withCredentials: true })).data.comments,
+    queryFn: async () => (await axios.get(`/api/backend/posts/${post.id}/comments`)).data.comments,
     enabled: showComments,
   });
 
   const postCommentMutation = useMutation({
-    mutationFn: async () => axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/${post.id}/comments`, { content: commentText, authorId: uId }, { withCredentials: true }),
+    mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/comments`, { content: commentText, authorId: uId }),
     onSuccess: () => { setCommentText(""); queryClient.invalidateQueries({ queryKey: ['comments', post.id] }); queryClient.invalidateQueries({ queryKey: ['posts'] }); }
   });
 
@@ -173,7 +194,16 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
       <div className="flex gap-3 relative">
         <div className="flex flex-col items-center shrink-0">
           <Link href={`/u/${displayHandle.replace('@', '')}`}>
-            <img src={displayAvatar} className="w-10 h-10 rounded-full object-cover z-10 hover:opacity-80 transition-opacity" alt={displayName} />
+             <div className="relative w-10 h-10 rounded-full overflow-hidden hover:opacity-80 transition-opacity">
+                <Image 
+                  src={displayAvatar} 
+                  alt={displayName} 
+                  fill 
+                  className="object-cover"
+                  placeholder="blur"
+                  blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(40, 40))}`}
+                />
+             </div>
           </Link>
           {showComments && <div className={`w-0.5 h-full mt-2 rounded-full ${isDarkMode ? 'bg-[#333639]' : 'bg-[#cfd9de]'}`}></div>}
         </div>
@@ -229,7 +259,15 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
               {isVideo(post.mediaUrl) ? (
                 <video src={post.mediaUrl} controls className="w-full max-h-125 object-cover bg-black" onClick={(e) => e.stopPropagation()} />
               ) : (
-                <img src={post.mediaUrl} alt="Post content" className="w-full h-auto max-h-125 object-cover" />
+                <div className="relative w-full h-auto min-h-[300px]">
+                   <Image 
+                    src={post.mediaUrl} 
+                    alt="Post content" 
+                    width={800} 
+                    height={600} 
+                    className="w-full h-auto max-h-125 object-cover" 
+                  />
+                </div>
               )}
             </div>
           )}
@@ -287,7 +325,14 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
       {showComments && (
         <div className="pl-13 pr-2 pt-2 mt-1 relative z-10" onClick={(e) => e.stopPropagation()}>
           <div className="flex gap-3 items-center mb-4">
-            <img src={daplinkUser?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} className="w-8 h-8 rounded-full object-cover shrink-0" alt="Me" />
+            <div className="relative w-8 h-8 rounded-full overflow-hidden">
+               <Image 
+                src={daplinkUser?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} 
+                alt="Me" 
+                fill 
+                className="object-cover" 
+              />
+            </div>
             <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Post your reply" className={`flex-1 bg-transparent text-[15px] outline-none ${textPrimary} placeholder:${textSecondary}`} onKeyDown={(e) => { if (e.key === 'Enter' && commentText.trim()) postCommentMutation.mutate(); }} />
             <button onClick={() => postCommentMutation.mutate()} disabled={!commentText.trim() || postCommentMutation.isPending} className="bg-[#1d9bf0] text-white font-bold px-4 py-1.5 rounded-full text-[14px] hover:bg-[#1a8cd8] disabled:opacity-50 disabled:bg-[#1d9bf0]/50 transition-colors">Reply</button>
           </div>
@@ -297,7 +342,14 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
             <div className="space-y-0">
               {comments?.map((comment) => (
                 <div key={comment._id} className="flex gap-3 py-2">
-                  <img src={comment.author?.avatar || comment.author?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.handle || 'unknown'}`} className="w-8 h-8 rounded-full object-cover shrink-0 mt-1" alt={comment.author?.handle} />
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden mt-1 shrink-0">
+                     <Image 
+                      src={comment.author?.avatar || comment.author?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.handle || 'unknown'}`} 
+                      alt={comment.author?.handle || 'Avatar'} 
+                      fill 
+                      className="object-cover" 
+                    />
+                  </div>
                   <div className="flex-1">
                     <div className="flex items-baseline gap-1.5">
                       <span className={`font-bold text-[15px] ${textPrimary}`}>{comment.author?.handle || 'Unknown'}</span>
@@ -314,17 +366,17 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
 
       {/* Analytics Modal... */}
       {showAnalytics && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={(e) => { e.stopPropagation(); setShowAnalytics(false); }}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={(e) => { e.stopPropagation(); setShowAnalytics(false); }}>
           <div className={`w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden ${isDarkMode ? 'bg-black border border-[#2f3336] text-white' : 'bg-white border border-[#eff3f4] text-black'}`} onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center px-4 py-3 border-b border-inherit">
-               <button onClick={() => setShowAnalytics(false)} className={`p-2 rounded-full transition-colors -ml-2 mr-4 ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}><X size={20} /></button>
-               <h2 className="text-xl font-bold">Post Analytics</h2>
+                <button onClick={() => setShowAnalytics(false)} className={`p-2 rounded-full transition-colors -ml-2 mr-4 ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}><X size={20} /></button>
+                <h2 className="text-xl font-bold">Post Analytics</h2>
             </div>
             <div className="p-4 md:p-6">
-               <div className={`p-4 rounded-xl border border-inherit mb-6 flex gap-3 ${isDarkMode ? 'bg-[#16181c]' : 'bg-[#f7f9f9]'}`}>
+                <div className={`p-4 rounded-xl border border-inherit mb-6 flex gap-3 ${isDarkMode ? 'bg-[#16181c]' : 'bg-[#f7f9f9]'}`}>
                   {post.mediaUrl && (
-                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-black">
-                       {isVideo(post.mediaUrl) ? <video src={post.mediaUrl} className="w-full h-full object-cover" /> : <img src={post.mediaUrl} className="w-full h-full object-cover" />}
+                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-black relative">
+                       {isVideo(post.mediaUrl) ? <video src={post.mediaUrl} className="w-full h-full object-cover" /> : <Image src={post.mediaUrl} alt="Preview" fill className="object-cover" />}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
@@ -336,18 +388,18 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
                      </div>
                      <p className={`text-[14px] line-clamp-3 ${textSecondary}`}>{post.content}</p>
                   </div>
-               </div>
-               <div className="grid grid-cols-3 gap-4 pb-6 border-b border-inherit mb-6 text-center">
+                </div>
+                <div className="grid grid-cols-3 gap-4 pb-6 border-b border-inherit mb-6 text-center">
                   <div><Heart size={20} className={`mx-auto mb-2 ${textSecondary}`} /><p className="text-xl font-bold">{baseLikes}</p></div>
                   <div><Repeat2 size={20} className={`mx-auto mb-2 ${textSecondary}`} /><p className="text-xl font-bold">{baseShares}</p></div>
                   <div><MessageSquare size={20} className={`mx-auto mb-2 ${textSecondary}`} /><p className="text-xl font-bold">{baseComments}</p></div>
-               </div>
-               <div className="grid grid-cols-2 gap-y-6">
+                </div>
+                <div className="grid grid-cols-2 gap-y-6">
                   <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Impressions <Info size={14} /></div><p className="text-2xl font-bold">{impressions.toLocaleString()}</p></div>
                   <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Engagements <Info size={14} /></div><p className="text-2xl font-bold">{engagements.toLocaleString()}</p></div>
                   <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Detail expands <Info size={14} /></div><p className="text-2xl font-bold">{detailExpands.toLocaleString()}</p></div>
                   <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Profile visits <Info size={14} /></div><p className="text-2xl font-bold">{profileVisits.toLocaleString()}</p></div>
-               </div>
+                </div>
             </div>
           </div>
         </div>
@@ -428,22 +480,22 @@ export default function DaplinkCommunityFeed() {
   const { data: postsData, isLoading: isPostsLoading } = useQuery({
     queryKey: ['posts', activeTab, currentTagFilter],
     queryFn: async () => {
-      let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts?type=${activeTab}`;
+      let url = `/api/backend/posts?type=${activeTab}`;
       if (currentTagFilter) url += `&tag=${currentTagFilter}`;
-      return (await axios.get(url, { withCredentials: true })).data.posts;
+      return (await axios.get(url)).data.posts;
     },
   });
 
   const { data: trendingTopics, isLoading: isTrendingLoading } = useQuery({
     queryKey: ['trending'],
-    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/trending`, { withCredentials: true })).data.trending,
+    queryFn: async () => (await axios.get(`/api/backend/posts/trending`)).data.trending,
   });
 
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: ['search', debouncedQuery],
     queryFn: async () => {
       if (!debouncedQuery.trim()) return null;
-      return (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/search?q=${debouncedQuery}`, { withCredentials: true })).data;
+      return (await axios.get(`/api/backend/posts/search?q=${debouncedQuery}`)).data;
     },
     enabled: !!debouncedQuery.trim()
   });
@@ -491,8 +543,7 @@ export default function DaplinkCommunityFeed() {
       if (userId) formData.append('authorId', userId);
       if (mediaFile) formData.append('media', mediaFile);
 
-      return axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts`, formData, {
-        withCredentials: true,
+      return axios.post(`/api/backend/posts`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
     },
@@ -595,7 +646,9 @@ export default function DaplinkCommunityFeed() {
                       <div className={`px-4 py-2 text-[15px] font-bold border-b ${border}`}>People</div>
                       {searchResults.users.map(u => (
                         <Link key={u._id} href={`/u/${u.handle.replace('@','')}`} className={`flex items-center gap-3 px-4 py-3 transition-colors ${hoverBg}`}>
-                          <img src={u.avatar} className="w-10 h-10 rounded-full object-cover" alt={u.name} />
+                          <div className="relative w-10 h-10 rounded-full overflow-hidden">
+                             <Image src={u.avatar} alt={u.name} fill className="object-cover" />
+                          </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-[15px] truncate">{u.name}</p>
                             <p className={`text-[15px] ${textSecondary} truncate`}>@{u.handle}</p>
@@ -605,7 +658,7 @@ export default function DaplinkCommunityFeed() {
                     </div>
                   )}
                   {searchResults.users?.length === 0 && searchResults.posts?.length === 0 && (
-                    <div className={`p-4 text-center text-[15px] ${textSecondary}`}>No results for "{searchQuery}"</div>
+                    <div className={`p-4 text-center text-[15px] ${textSecondary}`}>No results for &quot;{searchQuery}&quot;</div>
                   )}
                 </div>
               ) : null}
@@ -643,7 +696,7 @@ export default function DaplinkCommunityFeed() {
       {/*MIDDLE COLUMN*/}
       <div className={`w-full max-w-150 border-x ${border} min-h-screen relative`}>
         <div className={`sticky top-0 z-20 backdrop-blur-md bg-opacity-80 border-b ${border} ${isDarkMode ? 'bg-black/80' : 'bg-white/80'}`}>
-          <div className="flex items-center justify-between px-4 h-13.25">
+          <div className="flex items-center justify-between px-4 h-[53px]">
             <h1 className="font-bold text-[20px] tracking-tight cursor-pointer">
               {activeTab === 'feed' ? 'DapPost Feed' : activeTab === 'myposts' ? 'My Posts' : 'Notifications'}
             </h1>
@@ -676,7 +729,9 @@ export default function DaplinkCommunityFeed() {
         {activeTab !== 'notifications' && (
           <div className={`px-4 pt-4 pb-2 border-b ${border} flex gap-3`}>
             <div className="shrink-0 pt-1">
-              <img src={daplink?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
+              <div className="relative w-10 h-10 rounded-full overflow-hidden">
+                 <Image src={daplink?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} alt="Avatar" fill className="object-cover" />
+              </div>
             </div>
 
             <div className="flex-1 min-w-0 relative">
@@ -701,7 +756,9 @@ export default function DaplinkCommunityFeed() {
                         onClick={() => handleMentionSelect(mu)}
                         className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}
                       >
-                        <img src={mu.avatar} alt={mu.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
+                          <Image src={mu.avatar} alt={mu.name} fill className="object-cover" />
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1">
                             <p className={`font-bold text-[15px] truncate ${textPrimary}`}>{mu.name}</p>
@@ -720,7 +777,7 @@ export default function DaplinkCommunityFeed() {
               {mediaPreview && (
                 <div className="relative mt-2 mb-3 rounded-2xl overflow-hidden border border-[#2f3336]">
                   <button onClick={removeMedia} className="absolute top-2 right-2 z-10 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-full backdrop-blur-sm transition-colors"><X size={18} /></button>
-                  {mediaFile?.type.startsWith('video/') ? <video src={mediaPreview} controls className="w-full max-h-125 object-cover" /> : <img src={mediaPreview} alt="Upload preview" className="w-full h-auto max-h-125 object-cover" />}
+                  {mediaFile?.type.startsWith('video/') ? <video src={mediaPreview} controls className="w-full max-h-125 object-cover" /> : <Image src={mediaPreview} alt="Upload preview" width={800} height={600} className="w-full h-auto max-h-125 object-cover" />}
                 </div>
               )}
 
@@ -804,7 +861,7 @@ export default function DaplinkCommunityFeed() {
                           <p className={`text-[15px] ${textPrimary}`}>
                             <span className="font-bold">{notif.senderId?.handle}</span> {actionText}.
                           </p>
-                          {notif.postId && <p className={`text-[15px] mt-1 line-clamp-2 ${textSecondary}`}>"{notif.postId.content}"</p>}
+                          {notif.postId && <p className={`text-[15px] mt-1 line-clamp-2 ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
                         </div>
                      </div>
                    );
@@ -831,9 +888,9 @@ export default function DaplinkCommunityFeed() {
       </div>
 
       {/*RIGHT COLUMN*/}
-      <div className="hidden lg:block w-87.5 pt-2 pb-20 space-y-4 sticky top-0 h-screen overflow-y-auto pl-4">
+      <div className="hidden lg:block w-[350px] pt-2 pb-20 space-y-4 sticky top-0 h-screen overflow-y-auto pl-4">
         <div className={`rounded-2xl border flex flex-col ${isDarkMode ? 'bg-[#16181c] border-transparent' : 'bg-[#f7f9f9] border-[#eff3f4]'}`}>
-          <h2 className="font-extrabold text-[20px] px-4 py-3">What's happening</h2>
+          <h2 className="font-extrabold text-[20px] px-4 py-3">What&apos;s happening</h2>
           
           {isTrendingLoading ? (
             <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#1d9bf0]" /></div>

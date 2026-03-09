@@ -82,7 +82,7 @@ export default function   Navbar() {
     ],
     integrations: [
       { name: "Daplink Analyter", icon: Zap },
-      { name: "Daplink + Canva", icon: Zap },
+
     ],
     discover: [
       { name: "API & Documentation", href: "Trust" },
