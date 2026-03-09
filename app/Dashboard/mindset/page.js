@@ -5,12 +5,12 @@ import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import Image from 'next/image'; // Added for optimization
+import Image from 'next/image';
 import {
   Heart, MessageSquare, Repeat2, Share,
   Code2, MoreHorizontal, CheckCircle2,
   Sun, Moon, Loader2, Check, BarChart2,
-  Image as ImageIcon, X, Info, Search
+  Image as ImageIcon, X, Info, Search, Bell
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/Authenticate';
@@ -57,9 +57,34 @@ const formatNumber = (num) => {
 };
 
 // ==========================================
+// HELPER: FORMAT CONTENT WITH MENTIONS/TAGS
+// ==========================================
+const formatPostContent = (text, handleTagClick) => {
+  if (!text) return null;
+  const parts = text.split(/(\s+)/); 
+  
+  return parts.map((part, index) => {
+    if (part.match(/^@[\w\d_.]+$/)) {
+      return (
+        <Link key={index} href={`/u/${part.slice(1)}`} className="text-[#1d9bf0] hover:underline" onClick={(e) => e.stopPropagation()}>
+          {part}
+        </Link>
+      );
+    } else if (part.match(/^#[\w\d_]+$/)) {
+      return (
+        <span key={index} className="text-[#1d9bf0] hover:underline cursor-pointer" onClick={(e) => { e.stopPropagation(); if(handleTagClick) handleTagClick(part.slice(1)); }}>
+          {part}
+        </span>
+      );
+    }
+    return part;
+  });
+};
+
+// ==========================================
 // INDIVIDUAL POST COMPONENT
 // ==========================================
-const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
+const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) => {
   const queryClient = useQueryClient();
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -125,7 +150,10 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
 
   const repostMutation = useMutation({
     mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/repost`, {}),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
+    onSuccess: () => {
+        toast.success("Reposted!");
+        queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
     onError: () => toast.error("Failed to repost")
   });
 
@@ -222,7 +250,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
             </div>
           ) : (
             <p className={`mt-0.5 text-[15px] leading-5 whitespace-pre-wrap wrap-break-word ${textPrimary}`}>
-              {post.content}
+              {formatPostContent(post.content, onTagClick)}
             </p>
           )}
 
@@ -247,7 +275,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
           {post.tags?.length > 0 && (
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               {post.tags.map(tag => (
-                <span key={tag} className="text-[14px] text-[#1d9bf0] hover:underline cursor-pointer">#{tag}</span>
+                <span key={tag} onClick={(e) => { e.stopPropagation(); if(onTagClick) onTagClick(tag); }} className="text-[14px] text-[#1d9bf0] hover:underline cursor-pointer">#{tag}</span>
               ))}
             </div>
           )}
@@ -336,6 +364,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser }) => {
         </div>
       )}
 
+      {/* Analytics Modal... */}
       {showAnalytics && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={(e) => { e.stopPropagation(); setShowAnalytics(false); }}>
           <div className={`w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden ${isDarkMode ? 'bg-black border border-[#2f3336] text-white' : 'bg-white border border-[#eff3f4] text-black'}`} onClick={(e) => e.stopPropagation()}>
@@ -392,11 +421,19 @@ export default function DaplinkCommunityFeed() {
   const [mediaFile, setMediaFile] = useState(null);
   const [mediaPreview, setMediaPreview] = useState(null);
   
+  // Tag filter state & Navigation Tabs
   const [activeTab, setActiveTab] = useState('feed'); 
+  const [currentTagFilter, setCurrentTagFilter] = useState(''); 
   
+  // Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  // MENTIONS State
+  const [showMentionDropdown, setShowMentionDropdown] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState('');
+  const [debouncedMentionQuery, setDebouncedMentionQuery] = useState(''); // NEW DEBOUNCE STATE
 
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -406,6 +443,12 @@ export default function DaplinkCommunityFeed() {
     const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  // FIX: Debounce for Mention Searching to drastically speed up typing!
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedMentionQuery(mentionQuery), 200);
+    return () => clearTimeout(timer);
+  }, [mentionQuery]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -435,8 +478,12 @@ export default function DaplinkCommunityFeed() {
   });
 
   const { data: postsData, isLoading: isPostsLoading } = useQuery({
-    queryKey: ['posts', activeTab],
-    queryFn: async () => (await axios.get(`/api/backend/posts?type=${activeTab}`)).data.posts,
+    queryKey: ['posts', activeTab, currentTagFilter],
+    queryFn: async () => {
+      let url = `/api/backend/posts?type=${activeTab}`;
+      if (currentTagFilter) url += `&tag=${currentTagFilter}`;
+      return (await axios.get(url)).data.posts;
+    },
   });
 
   const { data: trendingTopics, isLoading: isTrendingLoading } = useQuery({
@@ -453,6 +500,37 @@ export default function DaplinkCommunityFeed() {
     enabled: !!debouncedQuery.trim()
   });
 
+  const { data: notificationsData, isLoading: isNotificationsLoading } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/notifications`, { withCredentials: true })).data.notifications,
+    refetchInterval: 30000 
+  });
+
+  // Fetch mention suggestions using the DEBOUNCED query 
+  const { data: mentionSuggestions, isLoading: isFetchingMentions } = useQuery({
+    queryKey: ['mentionSuggestions', debouncedMentionQuery],
+    queryFn: async () => {
+      if (!debouncedMentionQuery.trim()) return [];
+      return (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/search?q=${debouncedMentionQuery}`, { withCredentials: true })).data.users;
+    },
+    enabled: showMentionDropdown && debouncedMentionQuery.trim().length > 0,
+  });
+
+  const markAsReadMutation = useMutation({
+    mutationFn: async (notifId) => axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/notifications/${notifId}/read`, {}, { withCredentials: true }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    }
+  });
+
+  const markAllAsReadMutation = useMutation({
+    mutationFn: async () => axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/notifications/read-all`, {}, { withCredentials: true }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      toast.success("All caught up!");
+    }
+  });
+
   const createPostMutation = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
@@ -460,7 +538,7 @@ export default function DaplinkCommunityFeed() {
       
       const extractedTags = content.match(/#[a-z0-9_]+/gi) || [];
       const cleanTags = extractedTags.map(t => t.replace('#', ''));
-      formData.append('tags', JSON.stringify(cleanTags.length > 0 ? cleanTags : ["Update"]));
+      formData.append('tags', JSON.stringify(cleanTags));
       
       if (userId) formData.append('authorId', userId);
       if (mediaFile) formData.append('media', mediaFile);
@@ -475,6 +553,7 @@ export default function DaplinkCommunityFeed() {
       queryClient.invalidateQueries({ queryKey: ['posts'] }); 
       queryClient.invalidateQueries({ queryKey: ['trending'] }); 
       setActiveTab('myposts'); 
+      setCurrentTagFilter('');
     }
   });
 
@@ -484,6 +563,47 @@ export default function DaplinkCommunityFeed() {
   };
 
   const removeMedia = () => { setMediaFile(null); setMediaPreview(null); if (fileInputRef.current) fileInputRef.current.value = ""; };
+
+  const handleTagClick = (tag) => {
+    setCurrentTagFilter(tag.replace('#', ''));
+    setActiveTab('feed');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleTextChange = (e) => {
+    const val = e.target.value;
+    setContent(val);
+
+    const cursorPos = e.target.selectionStart;
+    const textBeforeCursor = val.slice(0, cursorPos);
+    
+    const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
+
+    if (match) {
+      setMentionQuery(match[1]);
+      setShowMentionDropdown(true);
+    } else {
+      setShowMentionDropdown(false);
+    }
+  };
+
+  const handleMentionSelect = (userToMention) => {
+    const cursorPos = textareaRef.current.selectionStart;
+    const textBeforeCursor = content.slice(0, cursorPos);
+    const textAfterCursor = content.slice(cursorPos);
+    
+    const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
+    if (match) {
+      const newTextBefore = textBeforeCursor.slice(0, match.index) + `@${userToMention.handle} `;
+      setContent(newTextBefore + textAfterCursor);
+      setShowMentionDropdown(false);
+      setMentionQuery('');
+      setDebouncedMentionQuery(''); // Clear the debounce too
+      textareaRef.current.focus();
+    }
+  };
+
+  const unreadCount = notificationsData?.filter(n => n.status === 'unread').length || 0;
 
   const bgMain = isDarkMode ? 'bg-black' : 'bg-white';
   const textPrimary = isDarkMode ? 'text-[#e7e9ea]' : 'text-[#0f1419]';
@@ -549,16 +669,26 @@ export default function DaplinkCommunityFeed() {
         {/* Navigation Tabs */}
         <div className="mt-6 space-y-2">
            <button 
-             onClick={() => setActiveTab('feed')} 
-             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'feed' ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
+             onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} 
+             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'feed' && !currentTagFilter ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
            >
              Feed
            </button>
            <button 
-             onClick={() => setActiveTab('myposts')} 
+             onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} 
              className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'myposts' ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
            >
              My Posts
+           </button>
+           <button 
+             onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} 
+             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'notifications' ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
+           >
+             <div className="relative">
+                <Bell size={24} />
+                {unreadCount > 0 && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#1d9bf0] rounded-full border-2 border-white dark:border-black"></span>}
+             </div>
+             Notifications
            </button>
         </div>
       </div>
@@ -568,12 +698,17 @@ export default function DaplinkCommunityFeed() {
         <div className={`sticky top-0 z-20 backdrop-blur-md bg-opacity-80 border-b ${border} ${isDarkMode ? 'bg-black/80' : 'bg-white/80'}`}>
           <div className="flex items-center justify-between px-4 h-[53px]">
             <h1 className="font-bold text-[20px] tracking-tight cursor-pointer">
-              {activeTab === 'feed' ? 'DapPost Feed' : 'My Posts'}
+              {activeTab === 'feed' ? 'DapPost Feed' : activeTab === 'myposts' ? 'My Posts' : 'Notifications'}
             </h1>
-            <div className="md:hidden flex gap-2">
-               <button onClick={() => setActiveTab('feed')} className={`text-[14px] font-bold ${activeTab === 'feed' ? 'text-[#1d9bf0]' : textSecondary}`}>Feed</button>
+            <div className="md:hidden flex gap-2 items-center">
+               <button onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} className={`text-[14px] font-bold ${activeTab === 'feed' ? 'text-[#1d9bf0]' : textSecondary}`}>Feed</button>
                <span className={textSecondary}>|</span>
-               <button onClick={() => setActiveTab('myposts')} className={`text-[14px] font-bold ${activeTab === 'myposts' ? 'text-[#1d9bf0]' : textSecondary}`}>My Posts</button>
+               <button onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} className={`text-[14px] font-bold ${activeTab === 'myposts' ? 'text-[#1d9bf0]' : textSecondary}`}>Me</button>
+               <span className={textSecondary}>|</span>
+               <button onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} className={`text-[14px] font-bold relative ${activeTab === 'notifications' ? 'text-[#1d9bf0]' : textSecondary}`}>
+                 Notifs
+                 {unreadCount > 0 && <span className="absolute -top-1 -right-2 w-2 h-2 bg-[#1d9bf0] rounded-full"></span>}
+               </button>
             </div>
 
             <button onClick={toggleTheme} className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}>
@@ -582,62 +717,172 @@ export default function DaplinkCommunityFeed() {
           </div>
         </div>
 
-        <div className={`px-4 pt-4 pb-2 border-b ${border} flex gap-3`}>
-          <div className="shrink-0 pt-1">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden">
-               <Image src={daplink?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} alt="Avatar" fill className="object-cover" />
+        {/* Tag Filter Indicator */}
+        {currentTagFilter && activeTab !== 'notifications' && (
+          <div className={`px-4 py-2 border-b flex justify-between items-center ${border} bg-[#1d9bf0]/10 text-[#1d9bf0]`}>
+            <span className="font-bold text-[15px]">Showing results for #{currentTagFilter}</span>
+            <button onClick={() => setCurrentTagFilter('')} className="p-1 hover:bg-[#1d9bf0]/20 rounded-full"><X size={16} /></button>
+          </div>
+        )}
+
+        {/* Post Creation Area (Hide on notifications tab) */}
+        {activeTab !== 'notifications' && (
+          <div className={`px-4 pt-4 pb-2 border-b ${border} flex gap-3`}>
+            <div className="shrink-0 pt-1">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden">
+                 <Image src={daplink?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} alt="Avatar" fill className="object-cover" />
+              </div>
+            </div>
+
+            <div className="flex-1 min-w-0 relative">
+              <textarea
+                ref={textareaRef}
+                value={content}
+                onChange={handleTextChange} 
+                placeholder="What is happening?!"
+                className={`w-full bg-transparent outline-none text-[20px] resize-none placeholder:${textSecondary} pt-2 pb-2 overflow-hidden`}
+                rows={1}
+              />
+
+              {/* MENTION DROPDOWN MENU */}
+              {showMentionDropdown && mentionQuery.length > 0 && (
+                <div className={`absolute z-50 left-0 mt-1 w-72 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden border ${isDarkMode ? 'bg-black border-[#2f3336]' : 'bg-white border-[#eff3f4]'}`}>
+                  {isFetchingMentions ? (
+                    <div className="p-4 flex justify-center"><Loader2 size={16} className="animate-spin text-[#1d9bf0]" /></div>
+                  ) : mentionSuggestions?.length > 0 ? (
+                    mentionSuggestions.map((mu) => (
+                      <div 
+                        key={mu._id} 
+                        onClick={() => handleMentionSelect(mu)}
+                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}
+                      >
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
+                          <Image src={mu.avatar} alt={mu.name} fill className="object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1">
+                            <p className={`font-bold text-[15px] truncate ${textPrimary}`}>{mu.name}</p>
+                            <CheckCircle2 size={14} className="text-[#1d9bf0] fill-white dark:fill-black shrink-0" />
+                          </div>
+                          <p className={`text-[15px] truncate ${textSecondary}`}>@{mu.handle}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className={`p-4 text-[14px] text-center ${textSecondary}`}>No matching users found</div>
+                  )}
+                </div>
+              )}
+
+              {mediaPreview && (
+                <div className="relative mt-2 mb-3 rounded-2xl overflow-hidden border border-[#2f3336]">
+                  <button onClick={removeMedia} className="absolute top-2 right-2 z-10 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-full backdrop-blur-sm transition-colors"><X size={18} /></button>
+                  {mediaFile?.type.startsWith('video/') ? <video src={mediaPreview} controls className="w-full max-h-125 object-cover" /> : <Image src={mediaPreview} alt="Upload preview" width={800} height={600} className="w-full h-auto max-h-125 object-cover" />}
+                </div>
+              )}
+
+              {content.length > 0 && !mediaPreview && (
+                <div className={`border-b ${border} mb-2 w-[90%] mx-auto opacity-50`}></div>
+              )}
+
+              <div className="flex items-center justify-between mt-2 pt-1 border-t border-transparent">
+                <div className="flex gap-1 text-[#1d9bf0] -ml-2">
+                  <input type="file" ref={fileInputRef} onChange={handleMediaSelect} accept="image/*,video/*" className="hidden" />
+                  <button onClick={() => fileInputRef.current?.click()} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#1d9bf0]/10 transition-colors" title="Media"><ImageIcon size={20} /></button>
+                  <button className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#1d9bf0]/10 transition-colors"><Code2 size={20} /></button>
+                </div>
+                <button
+                  onClick={() => createPostMutation.mutate()}
+                  disabled={(!content.trim() && !mediaFile) || createPostMutation.isPending}
+                  className="bg-[#1d9bf0] text-white font-bold px-5 py-1.5 rounded-full text-[15px] hover:bg-[#1a8cd8] disabled:opacity-50 disabled:bg-[#1d9bf0]/50 transition-colors flex items-center gap-2"
+                >
+                  {createPostMutation.isPending && <Loader2 size={16} className="animate-spin" />} Post
+                </button>
+              </div>
             </div>
           </div>
-
-          <div className="flex-1 min-w-0">
-            <textarea
-              ref={textareaRef}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="What is happening?!"
-              className={`w-full bg-transparent outline-none text-[20px] resize-none placeholder:${textSecondary} pt-2 pb-2 overflow-hidden`}
-              rows={1}
-            />
-
-            {mediaPreview && (
-              <div className="relative mt-2 mb-3 rounded-2xl overflow-hidden border border-[#2f3336]">
-                <button onClick={removeMedia} className="absolute top-2 right-2 z-10 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-full backdrop-blur-sm transition-colors"><X size={18} /></button>
-                {mediaFile?.type.startsWith('video/') ? <video src={mediaPreview} controls className="w-full max-h-125 object-cover" /> : <Image src={mediaPreview} alt="Upload preview" width={800} height={600} className="w-full h-auto max-h-125 object-cover" />}
-              </div>
-            )}
-
-            {content.length > 0 && !mediaPreview && (
-              <div className={`border-b ${border} mb-2 w-[90%] mx-auto opacity-50`}></div>
-            )}
-
-            <div className="flex items-center justify-between mt-2 pt-1 border-t border-transparent">
-              <div className="flex gap-1 text-[#1d9bf0] -ml-2">
-                <input type="file" ref={fileInputRef} onChange={handleMediaSelect} accept="image/*,video/*" className="hidden" />
-                <button onClick={() => fileInputRef.current?.click()} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#1d9bf0]/10 transition-colors" title="Media"><ImageIcon size={20} /></button>
-                <button className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#1d9bf0]/10 transition-colors"><Code2 size={20} /></button>
-              </div>
-              <button
-                onClick={() => createPostMutation.mutate()}
-                disabled={(!content.trim() && !mediaFile) || createPostMutation.isPending}
-                className="bg-[#1d9bf0] text-white font-bold px-5 py-1.5 rounded-full text-[15px] hover:bg-[#1a8cd8] disabled:opacity-50 disabled:bg-[#1d9bf0]/50 transition-colors flex items-center gap-2"
-              >
-                {createPostMutation.isPending && <Loader2 size={16} className="animate-spin" />} Post
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
 
         <div className="pb-20">
-          {isPostsLoading ? (
-            <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
-          ) : postsData?.length > 0 ? (
-            postsData.map((post) => (
-              <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} />
-            ))
-          ) : (
-            <div className={`text-center py-10 text-[15px] ${textSecondary}`}>
-               {activeTab === 'feed' ? "No posts yet. Be the first to post!" : "You haven&apos;t posted anything yet."}
+          {activeTab === 'notifications' ? (
+            // NOTIFICATIONS VIEW 
+            <div>
+              {unreadCount > 0 && (
+                <div className={`px-4 py-3 flex justify-end border-b ${border}`}>
+                  <button 
+                    onClick={() => markAllAsReadMutation.mutate()}
+                    disabled={markAllAsReadMutation.isPending}
+                    className="text-[14px] text-[#1d9bf0] hover:underline font-bold transition-colors disabled:opacity-50"
+                  >
+                    Mark all as read
+                  </button>
+                </div>
+              )}
+              {isNotificationsLoading ? (
+                 <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
+              ) : notificationsData?.length > 0 ? (
+                 notificationsData.map((notif) => {
+                   const isUnread = notif.status === 'unread';
+                   
+                   let actionText = "interacted with your post";
+                   let Icon = Bell;
+                   let iconColor = "text-[#1d9bf0]";
+                   
+                   if (notif.notificationType === 'mention') {
+                       actionText = "mentioned you in a post";
+                   } else if (notif.notificationType === 'like') {
+                       actionText = "liked your post";
+                       Icon = Heart;
+                       iconColor = "text-[#f91880]";
+                   } else if (notif.notificationType === 'comment') {
+                       actionText = "commented on your post";
+                       Icon = MessageSquare;
+                   } else if (notif.notificationType === 'repost') {
+                       actionText = "reposted your post";
+                       Icon = Repeat2;
+                       iconColor = "text-[#00ba7c]";
+                   }
+                   
+                   return (
+                     <div 
+                       key={notif._id} 
+                       onClick={() => {
+                         if (isUnread) markAsReadMutation.mutate(notif._id);
+                       }}
+                       className={`px-4 py-4 border-b cursor-pointer transition-colors flex gap-4 ${border} ${isUnread ? (isDarkMode ? 'bg-[#1d9bf0]/10' : 'bg-[#1d9bf0]/5') : hoverBg}`}
+                     >
+                        <div className="relative shrink-0 mt-1">
+                          <Icon className={isUnread ? iconColor : textSecondary} size={24} />
+                          {isUnread && <span className={`absolute top-0 right-0 w-2.5 h-2.5 bg-[#1d9bf0] rounded-full border-2 border-white dark:border-black`}></span>}
+                        </div>
+                        
+                        <div className="flex-1">
+                          <img src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-full mb-2 object-cover" alt={notif.senderId?.handle} />
+                          <p className={`text-[15px] ${textPrimary}`}>
+                            <span className="font-bold">{notif.senderId?.handle}</span> {actionText}.
+                          </p>
+                          {notif.postId && <p className={`text-[15px] mt-1 line-clamp-2 ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
+                        </div>
+                     </div>
+                   );
+                 })
+              ) : (
+                 <div className={`text-center py-10 text-[15px] ${textSecondary}`}>No notifications yet.</div>
+              )}
             </div>
+          ) : (
+            // POSTS VIEW
+            isPostsLoading ? (
+              <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
+            ) : postsData?.length > 0 ? (
+              postsData.map((post) => (
+                <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
+              ))
+            ) : (
+              <div className={`text-center py-10 text-[15px] ${textSecondary}`}>
+                 {currentTagFilter ? `No posts found for #${currentTagFilter}.` : activeTab === 'feed' ? "No posts yet. Be the first to post!" : "You haven't posted anything yet."}
+              </div>
+            )
           )}
         </div>
       </div>
@@ -651,12 +896,12 @@ export default function DaplinkCommunityFeed() {
             <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#1d9bf0]" /></div>
           ) : trendingTopics && trendingTopics.length > 0 ? (
             trendingTopics.map((trend, index) => (
-              <div key={index} className={`px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}>
+              <div key={index} onClick={() => handleTagClick(trend.tag)} className={`px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}>
                 <div className="flex justify-between">
                   <span className={`text-[13px] ${textSecondary}`}>Trending topic</span>
                   <MoreHorizontal size={16} className={textSecondary} />
                 </div>
-                <p className="font-bold text-[15px] mt-0.5">
+                <p className="font-bold text-[15px] mt-0.5 hover:underline">
                   {trend.tag.startsWith('#') ? trend.tag : `#${trend.tag}`}
                 </p>
                 <p className={`text-[13px] mt-1 ${textSecondary}`}>{formatNumber(trend.posts * 14)} posts</p>

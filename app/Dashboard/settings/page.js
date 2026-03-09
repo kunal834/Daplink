@@ -147,7 +147,7 @@ export default function SettingsTab({ isDarkMode }) {
           
           <div className="p-8 flex flex-col md:flex-row gap-8 items-start">
             {/* Avatar Upload */}
-            <div className="flex-shrink-0 group relative">
+            <div className="shrink-0 group relative">
               <div className={`w-32 h-32 rounded-2xl flex items-center justify-center overflow-hidden border-2 ${isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-white shadow-lg'}`}>
                 <img 
                   src={formData.profile || 'https://via.placeholder.com/150'} 
