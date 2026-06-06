@@ -10,6 +10,7 @@ import {
 import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 import { useTheme } from '@/context/ThemeContext';
+import Image from 'next/image';
 
 // --- CHAT WIDGET COMPONENT ---
 const ChatWidget = ({
@@ -73,7 +74,7 @@ const ChatWidget = ({
 
     socket.on("receive_message", handleReceiveMessage);
     return () => socket.off("receive_message", handleReceiveMessage);
-  }, [socket, currentUserId, recipient?._id, currentUserHandle]);
+  }, [socket, currentUserId, recipient?._id, recipient?.handle, currentUserHandle]);
 
   useEffect(() => {
     if (!recipient?._id || !currentUserId) return;
@@ -107,7 +108,7 @@ const ChatWidget = ({
       }
     };
     fetchMessages();
-  }, [recipient?._id, currentUserId, currentUserHandle]);
+  },[recipient?._id, recipient?.handle, currentUserId, currentUserHandle]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -164,7 +165,7 @@ const ChatWidget = ({
           <div className="relative">
              <div className="w-9 h-9 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-sm overflow-hidden">
                 {recipient.avatar ? (
-                  <img src={recipient.avatar} alt={`${recipient.handle}'s Profile`} className="w-full h-full object-cover" />
+                  <Image src={recipient.avatar} alt={`${recipient.handle}'s Profile`} className="w-full h-full object-cover" />
                 ) : getInitials(recipient.handle)}
              </div>
              <div className={`absolute bottom-0 right-0 w-2.5 h-2.5 border-2 ${theme === 'dark' ? 'border-[#09090b]' : 'border-white'} bg-emerald-500 rounded-full`}></div>
@@ -705,7 +706,7 @@ const UserProfile = ({ params }) => {
                       >
                         <div className={`w-9 h-9 rounded-full overflow-hidden shrink-0 ${theme === 'dark' ? 'bg-zinc-800' : 'bg-zinc-100'}`}>
                           {user.avatar ? (
-                            <img src={user.avatar} alt={`${user.handle} avatar`} className="w-full h-full object-cover" />
+                            <Image src={user.avatar} alt={`${user.handle} avatar`} className="w-full h-full object-cover" />
                           ) : (
                             <div className={`w-full h-full flex items-center justify-center text-xs font-bold ${theme === 'dark' ? 'text-zinc-300' : 'text-zinc-600'}`}>
                               {getInitials(user.handle)}
@@ -749,6 +750,11 @@ const UserProfile = ({ params }) => {
                         </div>
                       )}
 
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
+                      {avatar ? (
+                        <Image src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
+                      ) : getInitials(handle)}
                       <div className="flex items-start justify-between mb-4">
                         <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
                           {avatar ? (

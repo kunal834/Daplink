@@ -7,6 +7,7 @@ import {
   Globe, BarChart3, QrCode, Sparkles,
   ArrowUpRight, Zap
 } from 'lucide-react';
+import Image from 'next/image';
 
 const UrlShortenerTab = ({ isDarkMode, userID, links, setLinks }) => {
   const [isAdding, setIsAdding] = useState(false);
@@ -252,7 +253,7 @@ const UrlShortenerTab = ({ isDarkMode, userID, links, setLinks }) => {
                 ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-zinc-100'}
               `}>
                 {getFavicon(link.originalUrl) ? (
-                  <img src={getFavicon(link.originalUrl)} alt="icon" className="w-8 h-8 object-contain" />
+                  <Image src={getFavicon(link.originalUrl)} alt="icon" className="w-8 h-8 object-contain" />
                 ) : (
                   <Globe className="w-6 h-6 opacity-30" />
                 )}

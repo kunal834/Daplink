@@ -1,9 +1,9 @@
-import mongoose, { } from "mongoose";
+// models/user.js
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
         default: ""
     },
     email: {
@@ -12,13 +12,11 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     password: { 
-    type: String, 
-    required: function() {
-      // Only require password if there is no googleId (or similar flag)
-      // For now, just making it optional is easiest
-      return false; 
-    }
-  },
+        type: String, 
+        required: function() {
+            return !this.isGoogleuser; 
+        }
+    },
     theme:{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: "Theme",
@@ -41,14 +39,16 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"  // ref here is important for populate function it will save bandwidth also if we just need name and avatar of followers  
     }],
-    isGoogleuser : { type: Boolean , default: false},
+    isGoogleuser : { type: Boolean, default: false },
     onboarding: {
-    completed: { type: Boolean, default: false },
-    currentStep: { type: Number, default: 0 }
-  },
+        completed: { type: Boolean, default: false },
+        currentStep: { type: Number, default: 0 }
+    },
+    // --- Security fields for password reset ---
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
 
-}, { timestamps: true }
-);
+}, { timestamps: true });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 

@@ -7,6 +7,7 @@ import {
     Send, Search, MoreVertical, Check, CheckCheck, MessageSquare, Loader2,
     Smile, Paperclip, Phone, Video as VideoIcon, User, Sparkles
 } from 'lucide-react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MessagePage() {
@@ -266,6 +267,32 @@ export default function MessagePage() {
                     </div>
                 </div>
 
+                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                    {loadingChats ? (
+                        <div className="flex justify-center items-center h-32">
+                            <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
+                        </div>
+                    ) : filteredConversations.map((conv) => {
+                        const userId = conv.user?._id;
+                        const unread = unreadCounts[String(userId)] || 0;
+                        const isSelected = activeChat?.user?._id === userId;
+                        const handle = conv.user?.daplinkID?.handle || conv.user?.handle || "Incognito";
+                        const profilePic = conv.user?.daplinkID?.profile || conv.user?.profile;
+
+                        if (!userId) return null;
+
+                        return (
+                            <div
+                                key={userId}
+                                onClick={() => handleSelectChat(conv)}
+                                className={`flex items-center gap-4 px-6 py-4 cursor-pointer transition-colors border-b border-zinc-100 dark:border-zinc-800/30
+                  ${isSelected ? ui.activeChat : ui.hoverChat}`}
+                            >
+                                <div className="relative shrink-0">
+                                    <div className="w-12 h-12 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden shadow-sm">
+                                        {profilePic ? (
+                                            <Image src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                                        ) : getInitials(handle)}
                 {/* Conversation List */}
                 <div className="flex-1 overflow-y-auto scrollbar-thin divide-y dark:divide-zinc-800/30 divide-zinc-200/40">
                     <AnimatePresence>
@@ -357,7 +384,7 @@ export default function MessagePage() {
                                 <div className="relative">
                                     <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center font-bold overflow-hidden shadow-xs">
                                         {activeChat.user?.daplinkID?.profile || activeChat.user?.profile ? (
-                                            <img src={activeChat.user?.daplinkID?.profile || activeChat.user?.profile} className="w-full h-full object-cover" />
+                                            <Image src={activeChat.user?.daplinkID?.profile || activeChat.user?.profile} className="w-full h-full object-cover" alt='profile'/>
                                         ) : getInitials(activeChat.user?.daplinkID?.handle || activeChat.user?.handle || "In")}
                                     </div>
                                     <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0f0f11] flex items-center justify-center">

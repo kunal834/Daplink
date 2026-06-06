@@ -481,6 +481,7 @@ export default function DaplinkCommunityFeed() {
   // MENTIONS State
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
+  const [debouncedMentionQuery, setDebouncedMentionQuery] = useState('');
   const [debouncedMentionQuery, setDebouncedMentionQuery] = useState(''); 
 
   const textareaRef = useRef(null);
@@ -554,7 +555,6 @@ export default function DaplinkCommunityFeed() {
     refetchInterval: 30000 
   });
 
-  // Fetch mention suggestions using the DEBOUNCED query 
   const { data: mentionSuggestions, isLoading: isFetchingMentions } = useQuery({
     queryKey: ['mentionSuggestions', debouncedMentionQuery],
     queryFn: async () => {
@@ -876,6 +876,80 @@ export default function DaplinkCommunityFeed() {
 
         {/* Dynamic transition wrap for Post list feed / Notifications list */}
         <div className="pb-20">
+          {activeTab === 'notifications' ? (
+            // NOTIFICATIONS VIEW 
+            <div>
+              {unreadCount > 0 && (
+                <div className={`px-4 py-3 flex justify-end border-b ${border}`}>
+                  <button 
+                    onClick={() => markAllAsReadMutation.mutate()}
+                    disabled={markAllAsReadMutation.isPending}
+                    className="text-[14px] text-[#1d9bf0] hover:underline font-bold transition-colors disabled:opacity-50"
+                  >
+                    Mark all as read
+                  </button>
+                </div>
+              )}
+              {isNotificationsLoading ? (
+                 <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
+              ) : notificationsData?.length > 0 ? (
+                 notificationsData.map((notif) => {
+                   const isUnread = notif.status === 'unread';
+                   
+                   let actionText = "interacted with your post";
+                   let Icon = Bell;
+                   let iconColor = "text-[#1d9bf0]";
+                   
+                   if (notif.notificationType === 'mention') {
+                       actionText = "mentioned you in a post";
+                   } else if (notif.notificationType === 'like') {
+                       actionText = "liked your post";
+                       Icon = Heart;
+                       iconColor = "text-[#f91880]";
+                   } else if (notif.notificationType === 'comment') {
+                       actionText = "commented on your post";
+                       Icon = MessageSquare;
+                   } else if (notif.notificationType === 'repost') {
+                       actionText = "reposted your post";
+                       Icon = Repeat2;
+                       iconColor = "text-[#00ba7c]";
+                   }
+                   
+                   return (
+                     <div 
+                       key={notif._id} 
+                       onClick={() => {
+                         if (isUnread) markAsReadMutation.mutate(notif._id);
+                       }}
+                       className={`px-4 py-4 border-b cursor-pointer transition-colors flex gap-4 ${border} ${isUnread ? (isDarkMode ? 'bg-[#1d9bf0]/10' : 'bg-[#1d9bf0]/5') : hoverBg}`}
+                     >
+                        <div className="relative shrink-0 mt-1">
+                          <Icon className={isUnread ? iconColor : textSecondary} size={24} />
+                          {isUnread && <span className={`absolute top-0 right-0 w-2.5 h-2.5 bg-[#1d9bf0] rounded-full border-2 border-white dark:border-black`}></span>}
+                        </div>
+                        
+                        <div className="flex-1">
+                          <Image src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-full mb-2 object-cover" alt={notif.senderId?.handle} />
+                          <p className={`text-[15px] ${textPrimary}`}>
+                            <span className="font-bold">{notif.senderId?.handle}</span> {actionText}.
+                          </p>
+                          {notif.postId && <p className={`text-[15px] mt-1 line-clamp-2 ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
+                        </div>
+                     </div>
+                   );
+                 })
+              ) : (
+                 <div className={`text-center py-10 text-[15px] ${textSecondary}`}>No notifications yet.</div>
+              )}
+            </div>
+          ) : (
+            // POSTS VIEW
+            isPostsLoading ? (
+              <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
+            ) : postsData?.length > 0 ? (
+              postsData.map((post) => (
+                <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
+              ))
           <AnimatePresence mode="wait">
             {activeTab === 'notifications' ? (
               // NOTIFICATIONS VIEW 

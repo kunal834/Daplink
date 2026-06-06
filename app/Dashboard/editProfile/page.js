@@ -4,6 +4,22 @@ import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+  Check,
+  Globe,
+  GripVertical,
+  Layout,
+  Palette,
+  Plus,
+  Save,
+  SlidersHorizontal,
+  Sparkles,
+  Trash2,
+  Upload,
+  UserCircle,
+} from "lucide-react";
+import { useAuth } from "@/context/Authenticate";
+import { useTheme } from "@/context/ThemeContext";
+import Image from "next/image";
   Check, Globe, GripVertical, Layout, Palette,
   Plus, Save, SlidersHorizontal, Sparkles, Trash2,
   Upload, UserCircle, MapPin, Sparkle, Camera,
@@ -200,6 +216,31 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
           }}
         />
       )}
+      <div className={`absolute inset-0 ${overlayClass}`} />
+
+      <div className="relative z-10 flex h-full flex-col items-center overflow-y-auto p-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ fontFamily: vibe.font }}>
+        <div className="mt-8 mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-white/15 bg-zinc-700">
+          <Image
+            src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
+            alt="avatar"
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <h2 className="mb-1 text-xl font-black" style={{ color: textColor }}>
+          {profile.name || "Your Name"}
+        </h2>
+        <p className={`mb-6 px-4 text-center text-xs ${vibe.softText ? "opacity-75" : "opacity-95"}`} style={{ color: textColor }}>
+          {profile.bio || "Write something about yourself..."}
+        </p>
+
+        <div className="w-full space-y-3">
+          {active.map((link) => (
+            <div
+              key={link.id}
+              className="w-full cursor-pointer px-4 py-3.5 text-center text-sm font-semibold transition-transform active:scale-95"
+              style={{ ...buttonStyle, borderRadius: `${vibe.radius}px` }}
+            >
+              {link.title}
       <div className={`absolute inset-0 ${overlayClass} z-0`} />
       
       <div className="absolute inset-0 z-20 pointer-events-none bg-linear-to-tr from-transparent via-white/[0.05] to-white/[0.12] mix-blend-overlay" />
@@ -802,6 +843,48 @@ export default function EditProfilePage() {
                   </div>
                 </div>
 
+        {tab === "profile" && (
+          <div className={`rounded-3xl border p-5 ${ui.panel}`}>
+            <div className="mb-6 flex items-center gap-5">
+              <div className={`group relative h-24 w-24 overflow-hidden rounded-full ${ui.border}`}>
+                <Image
+                  src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
+                  alt="avatar"
+                  className="h-full w-full object-cover"
+                />
+                <label className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100  ">
+                  <Plus size={18} className="text-white" />
+                  <input type="file" accept="image/*" className="hidden" onChange={onAvatarUpload} />
+                </label>
+              </div>
+              <p className={`text-sm ${ui.muted}`}>Upload avatar, edit location and bio.</p>
+            </div>
+            <div className="space-y-3">
+            <label className={`text-md font-semibold mx-2 ${ui.muted}`}>Display Handle</label>
+              <input
+                value={profile?.name}
+                // onChange={(e) => setProfile((p) => ({ ...p, handle: e.target.value }))}
+                disabled={true}
+                className={`w-full rounded-2xl border px-4 py-3 mb-4 cursor-not-allowed ${ui.input}`}
+                placeholder="Display Handle"
+              />
+              {/* <label className={`text-xs font-semibold ${ui.muted}`}>Note: Display Handle cannot be changed due to technical limitations. Please contact support if you want to change it.</label> */}
+
+              <label className={`text-md font-semibold m-2 ${ui.muted}`}>Location</label>
+              <input
+                value={profile.location}
+                onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
+                className={`w-full rounded-2xl border px-4 py-3 ${ui.input}`}
+                placeholder="Location"
+              />
+              <label className={`text-md font-semibold m-2 ${ui.muted}`}>Bio</label>
+              <textarea
+                rows={3}
+                value={profile.bio}
+                onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
+                className={`w-full resize-none rounded-2xl border px-4 py-3 ${ui.input}`}
+                placeholder="Bio"
+              />
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">

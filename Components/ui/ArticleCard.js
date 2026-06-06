@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { ArrowUpRight, Calendar, Clock } from 'lucide-react';
+import Image from 'next/image';
 
 const categoryColors = {
   "Guides": "bg-indigo-500",
@@ -12,12 +13,12 @@ const categoryColors = {
 
 export default function ArticleCard({ article, theme }) {
   return (
-    <div className={`group relative flex flex-col h-full rounded-[2rem] overflow-hidden border transition-all duration-300 hover:-translate-y-2 ${theme === 'dark' ? 'bg-[#0A0A0A] border-white/5 hover:border-teal-500/30' : 'bg-white border-gray-200 hover:border-teal-500/30 hover:shadow-xl'}`}>
+    <div className={`group relative flex flex-col h-full rounded-4xl overflow-hidden border transition-all duration-300 hover:-translate-y-2 ${theme === 'dark' ? 'bg-[#0A0A0A] border-white/5 hover:border-teal-500/30' : 'bg-white border-gray-200 hover:border-teal-500/30 hover:shadow-xl'}`}>
       
       {/* Image Area */}
       <div className="relative h-56 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity" />
-        <img 
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity" />
+        <Image 
           src={article.imageUrl} 
           alt={article.title} 
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"

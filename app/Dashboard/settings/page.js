@@ -8,6 +8,7 @@ import {
   Upload, X, Plus, Trash2, Link as LinkIcon, 
   MapPin, Briefcase, User, Layout, Save, Loader2 
 } from 'lucide-react';
+import Image from "next/image";
 
 export default function SettingsTab({ isDarkMode }) {
   const { user, loading: authLoading } = useAuth();
@@ -149,7 +150,7 @@ export default function SettingsTab({ isDarkMode }) {
             {/* Avatar Upload */}
             <div className="shrink-0 group relative">
               <div className={`w-32 h-32 rounded-2xl flex items-center justify-center overflow-hidden border-2 ${isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-white shadow-lg'}`}>
-                <img 
+                <Image
                   src={formData.profile || 'https://via.placeholder.com/150'} 
                   alt="Profile" 
                   className="w-full h-full object-cover"
