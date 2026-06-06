@@ -39,8 +39,8 @@ export const metadata = {
     canonical: '/',
   },
   icons: {
-    icon: "./innovate.png",
-    apple: "./innovate.png", // Good to add for iPhones
+    icon: "/innovate.png",
+    apple: "/innovate.png", // Good to add for iPhones
   },
 
   // OPEN GRAPH: This controls how your link looks on WhatsApp, LinkedIn, Twitter/X
@@ -51,7 +51,7 @@ export const metadata = {
     siteName: 'DapLink',
     images: [
       {
-        url: './innovate.png', // Or a larger banner image (1200x630px is best)
+        url: '/innovate.png', // Or a larger banner image (1200x630px is best)
         width: 1200,
         height: 630,
       },

@@ -18,7 +18,24 @@ const ThemeConfigSchema = new mongoose.Schema(
     blur: { type: Number, default: 10 },
     softText: { type: Boolean, default: true },
     font: { type: String, default: "Inter, system-ui, sans-serif" },
-    customBackground: { type: String, default: "" }
+    customBackground: { type: String, default: "" },
+    layoutStyle: { type: String, default: "bento" },
+    cardStyle: { type: String, default: "glass" }
+  },
+  { _id: false }
+);
+
+const AiConfigSchema = new mongoose.Schema(
+  {
+    aiEnabled: { type: Boolean, default: false },
+    aiPrompt: { type: String, default: "Hi there! I'm an AI assistant. How can I help you today?" },
+    aiContext: { type: String, default: "" },
+    aiFaqs: [
+      {
+        question: { type: String, required: true },
+        answer: { type: String, required: true }
+      }
+    ]
   },
   { _id: false }
 );
@@ -73,6 +90,23 @@ const LinkSchema = new mongoose.Schema(
       default: () => ({})
     },
 
+    // AI Twin Settings
+    aiConfig: {
+      type: AiConfigSchema,
+      default: () => ({})
+    },
+
+    // Dynamic Avatar Styling
+    statusGlow: {
+      type: String,
+      enum: ["online", "busy", "away", "offline"],
+      default: "online"
+    },
+    avatarBorder: {
+      type: String,
+      default: "classic"
+    },
+
     // Public links
     links: [LinkItemSchema]
   },
@@ -80,3 +114,4 @@ const LinkSchema = new mongoose.Schema(
 );
 
 export default mongoose.models.Link || mongoose.model("Link", LinkSchema);
+

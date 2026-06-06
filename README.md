@@ -1,39 +1,70 @@
 # 🌐 DapLink
 
 <p align="center">
-  <strong>The Ultimate All-in-One Digital Identity Hub</strong><br />
-  🔗 Link Shortener • 🎨 QR Code Generator • 💬 Real-Time Chat • 🗂️ Link-in-Bio Builder • 📊 Rich Analytics • 👥 Community Connections
+  <strong>The AI-Powered Interactive Identity & Smart Routing Hub</strong><br />
+  🤖 AI Digital Twin • 🔀 Smart Link Router • 🎨 Context-Aware QR Engine • 💬 Direct Chat • 🗂️ Interactive Landing Pages • 📊 Geo Analytics
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-15.5.7-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Gemini_API-2.5_Flash-blue?style=for-the-badge&logo=google-gemini" alt="Gemini API" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-v4.0-38bdf8?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/MongoDB-6.18.0-47a248?style=for-the-badge&logo=mongodb" alt="MongoDB" />
   <img src="https://img.shields.io/badge/Socket.io-4.8.1-010101?style=for-the-badge&logo=socket.dot-io" alt="Socket.io" />
-  <img src="https://img.shields.io/badge/Framer_Motion-12.26-ff007f?style=for-the-badge&logo=framer" alt="Framer Motion" />
 </p>
 
 ---
 
 ## 📝 Overview
 
-**DapLink** is a state-of-the-art, high-profile platform designed for digital creators, professionals, and teams to streamline their online presence. It goes far beyond standard link shortening. DapLink combines highly customizable **Link-in-Bio profile landing pages**, dynamic **QR Code generation**, direct **real-time chat messaging**, professional **audience analytics**, and a robust **creator networking community** under one beautifully optimized web experience.
+**DapLink** is an AI-powered, context-responsive digital identity hub and smart routing platform designed for digital creators, professionals, and local businesses. 
 
-Built with Next.js 15 (App Router), Tailwind CSS v4, Framer Motion, MongoDB/Mongoose, and Socket.io, DapLink provides a seamless, immersive, and premium UI with smooth micro-animations, glassmorphism designs, and a modern responsive structure.
+Unlike standard static link directories (e.g. Linktree), DapLink transforms creator bios into active conversational portals using custom-trained **AI Digital Twins**. It also features a **Context-Aware Smart Redirect Router** that turns simple links and QR codes into responsive action triggers—redirecting scanners based on device type, time of day, or location.
+
+Built with Next.js 15 (App Router), Tailwind CSS v4, Google Gemini API, MongoDB/Mongoose, and Socket.io, DapLink provides a premium user interface optimized for customer conversion and creator monetization.
+
+---
+
+## 🔄 Recent Updates & Bug Fixes (Post-Handover)
+
+Below is a detailed log of the structural enhancements, feature additions, and bug fixes implemented since taking over the project repository:
+
+### 1. 🎨 Layout Template Studio & Card Customization (New Feature)
+We built a robust, custom layout engine allowing creators to construct unique interactive designs for their link-in-bio:
+* **Four Unique Layout Templates**:
+  * `classic` (Standard List): Centralized, elegant vertical flow of profile info, socials, and tab sections.
+  * `bento` (Bento Grid): Modern dashboard grid deck containing user stats, bio, location, links, and updates.
+  * `split` (Split Screen): Desktop-optimized split-view with a sticky left profile card and scrollable links/feed on the right.
+  * `minimal` (Minimalist Card): Ultra-clean floating glassmorphic container set against dynamic backdrop glows.
+* **Card Border & Panel Customization**: Added visual style presets for profile panels, cards, and links:
+  * `glass` (Glassmorphic): Frosted blur effects with subtle borders and micro-shadows.
+  * `flat` (Flat Solid): Clean, high-contrast flat backgrounds.
+  * `glow` (Neon Border): Vibrant, glowing borders and ambient shadow accents colored by the creator's theme.
+* **Real-time Studio Workspace**: Integrated Layout template selection and Card Border styles inside the **Appearance** tab in the dashboard editor ([app/Dashboard/editProfile/page.js](file:///e:/Kunal/codingplay/Projects/PROJECT-7(DapLink)/daplink/app/Dashboard/editProfile/page.js)) with instant real-time synchronization in the mockup phone preview.
+* **Dynamic Server/Client Public Profile Renderer**: Optimized [app/u/[handle]/page.js](file:///e:/Kunal/codingplay/Projects/PROJECT-7(DapLink)/daplink/app/u/[handle]/page.js) to dynamically resolve user layout preferences, applying accent colors, font styling, and card borders with full SEO support.
+
+### 2. 🐛 Key Bug Fixes & Code Optimizations
+We identified and resolved critical errors in the original project files:
+* **Dashboard JSX Mismatches**: Fixed a missing closing tag block inside the profile canvas editor component in [page.js](file:///e:/Kunal/codingplay/Projects/PROJECT-7(DapLink)/daplink/app/Dashboard/editProfile/page.js) that caused layout page rendering to break.
+* **Temporal Dead Zone Hoisting Error**: Resolved a `ReferenceError: Cannot access 'routeHandle' before initialization` in the dynamic profile page [page.js](file:///e:/Kunal/codingplay/Projects/PROJECT-7(DapLink)/daplink/app/u/[handle]/page.js) by hoisting route parameter initialization higher in the scope.
+* **Next.js HMR Webpack Cache Corruption**: Solved a Webpack cache corruption issue on Windows (`Cannot find module './5873.js'` / `Unexpected end of JSON input`) by migrating `favicon.ico` from dynamic routing (`app/`) to static serving (`public/`) and updating all layout/metadata icon paths to absolute roots.
+* **Public Page Syntax Fixes**: Fixed double-parenthesis/semicolon syntax termination (`););`) inside the return layout of [page.js](file:///e:/Kunal/codingplay/Projects/PROJECT-7(DapLink)/daplink/app/u/[handle]/page.js).
 
 ---
 
 ## ✨ Key Features
 
-### 1. 🔗 Advanced Link Shortener (`/app/[code]`)
-* **High-Speed Redirection:** Instantly maps short codes to target URLs.
-* **Link Management:** Edit, deactivate, delete, and monitor links.
-* **Analytic Tracking:** Captures clicks, device types, operating systems, browsers, and geographic locations automatically.
+### 1. 🤖 Interactive AI Digital Twin (Conversational Agent)
+* **Real-Time Assistant Chat:** Public profile pages `/u/[handle]` embed an AI conversational agent representing the profile owner.
+* **Knowledge Customization:** Train the AI on specific biographies, custom brand context, services, working hours, and targeted Q&A FAQs.
+* **Interactive Resource Finder:** The AI searches the owner's active links and offers clickable resource cards directly inside the conversation thread.
+* **Dashboard Simulator:** A floating preview mockup inside the creator's Dashboard lets owners test and interact with their twin in real-time.
 
-### 2. 🎨 Premium QR Code Engine (`/app/api/qrcode`)
-* **Highly Customizable Stylers:** Custom control over primary/secondary foreground dot colors, gradients, and custom background colors.
-* **Structural Designs:** Configure unique dot patterns, corner/eye styles, and frame shapes.
-* **Logo Embedding:** Supports uploading and embedding custom branding logos (Base64/URL formats) in the center of the QR code.
+### 2. 🔀 Context-Aware Smart Redirect Router
+* **Device-Responsive Routing:** Automatically detects user devices (iOS vs Android vs Desktop) and routes links to different destination URLs (e.g., routing to the App Store or Google Play Store).
+* **Scheduled Time Ranges:** Dynamically shifts link targets based on the time of the scan (e.g., directing tables in a cafe to a breakfast menu in the morning and a dinner menu in the evening).
+* **Geographical Location Routing:** Inspects incoming country headers (`x-vercel-ip-country`) to direct visitors to region-specific URLs or local landing pages.
+* **Dynamic QR Codes:** A single generated QR code can change behaviors on the fly based on these configured rules without requiring physical reprinting.
 
 ### 3. 📱 Dynamic Link-in-Bio Landing Page Builder (`/app/Generate`)
 * **Multi-Step Onboarding Funnel:** Choose handles, select themes, assign custom background patterns, and add digital links step-by-step.

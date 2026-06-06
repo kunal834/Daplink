@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAuth } from '@/context/Authenticate';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const router = useRouter();
@@ -25,11 +26,12 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const searchRef = useRef(null);
+  const notifRef = useRef(null);
 
   const notifications = [
-    { id: 1, title: "100 Views Milestone", time: "2m ago", icon: <BarChart3 className="w-4 h-4 text-emerald-500" /> },
-    { id: 2, title: "New Feature: Skill Swap", time: "1h ago", icon: <RefreshCw className="w-4 h-4 text-indigo-500" /> },
-    { id: 3, title: "Weekly Report Ready", time: "1d ago", icon: <Zap className="w-4 h-4 text-amber-500" /> },
+    { id: 1, title: "100 Views Milestone", time: "2m ago", icon: <BarChart3 className="w-4 h-4 text-emerald-400 animate-pulse" /> },
+    { id: 2, title: "New Feature: Skill Swap", time: "1h ago", icon: <RefreshCw className="w-4 h-4 text-indigo-400 rotate-12" /> },
+    { id: 3, title: "Weekly Report Ready", time: "1d ago", icon: <Zap className="w-4 h-4 text-amber-400" /> },
   ];
 
   const username = daplink?.handle || 'user';
@@ -59,6 +61,9 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
     const handleOutsideClick = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setIsSearchFocused(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setNotificationsOpen(false);
       }
     };
 
@@ -142,156 +147,238 @@ const TopBar = ({ isDarkMode, setIsDarkMode }) => {
   }
 
   return (
-    <header className={`w-full h-16 border-b flex items-center justify-between px-6 shrink-0 z-30 sticky top-0 backdrop-blur-xl ${isDarkMode ? 'bg-zinc-900/80 border-zinc-800' : 'bg-white/80 border-zinc-200/60'}`}>
+    <header className={`w-full h-16 border-b flex items-center justify-between px-6 shrink-0 z-30 sticky top-0 backdrop-blur-xl ${isDarkMode ? 'bg-zinc-950/70 border-zinc-800/60 shadow-md' : 'bg-white/70 border-zinc-200/60'}`}>
       <div className="flex items-center gap-3">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-lg hover:rotate-3 transition-transform cursor-pointer ${isDarkMode ? 'bg-white shadow-indigo-900/20' : 'bg-white shadow-zinc-900/10'}`}>
-          <Link href="/"> <Image src="/innovate.png" alt="Logo" width={48} height={48} /> </Link>
+        <div className={`w-9.5 h-9.5 rounded-2xl flex items-center justify-center shadow-md hover:rotate-6 transition-all duration-300 ${isDarkMode ? 'bg-zinc-900 border border-zinc-800' : 'bg-white border border-zinc-200'}`}>
+          <Link href="/"> 
+            <Image src="/innovate.png" alt="Logo" width={24} height={24} className="hover:scale-110 transition-transform" /> 
+          </Link>
         </div>
-        <div>
-          <Link href="/" className="font-bold text-lg hidden sm:block tracking-tight leading-none">DapLink</Link>
-          <span className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Creator OS</span>
+        <div className="leading-none">
+          <Link href="/" className={`font-black text-[15px] hidden sm:block tracking-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>DapLink</Link>
+          <span className={`text-[9px] font-extrabold uppercase tracking-widest block mt-0.5 ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Creator OS</span>
         </div>
       </div>
 
       {/* Search Bar */}
       <div ref={searchRef} className="hidden md:flex flex-1 max-w-md mx-8 relative">
-        <SearchIcon className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`} />
+        <SearchIcon className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isSearchFocused ? 'text-indigo-500' : isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`} />
         <input
           type="text"
-          placeholder="Search people"
+          placeholder="Search creators..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setIsSearchFocused(true)}
           onKeyDown={handleSearchSubmit}
-          className={`w-full pl-10 pr-10 py-2 rounded-xl text-sm font-medium outline-none border transition-all ${isDarkMode
-            ? 'bg-zinc-800 border-zinc-700 text-white focus:border-indigo-500 focus:bg-zinc-800'
-            : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-black focus:bg-white'
-            }`}
+          className={`w-full pl-10 pr-10 py-2 rounded-2xl text-xs font-semibold outline-none border transition-all duration-300 ${
+            isSearchFocused
+              ? (isDarkMode 
+                  ? 'bg-zinc-900 border-indigo-500/80 text-white shadow-[0_0_15px_rgba(99,102,241,0.2)]' 
+                  : 'bg-white border-zinc-900 text-zinc-900 shadow-md')
+              : (isDarkMode 
+                  ? 'bg-zinc-900/50 border-zinc-800 text-zinc-300 focus:bg-zinc-900' 
+                  : 'bg-zinc-50 border-zinc-200/80 text-zinc-800 focus:bg-white')
+          }`}
         />
 
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => setSearchQuery('')}
-            className={`absolute right-3 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-zinc-400 hover:text-white' : 'text-zinc-500 hover:text-zinc-900'}`}
-            aria-label="Clear search"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
+        <AnimatePresence>
+          {searchQuery && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className={`absolute right-3.5 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-zinc-400 hover:text-white' : 'text-zinc-500 hover:text-zinc-900'}`}
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" />
+            </motion.button>
+          )}
+        </AnimatePresence>
 
-        {isSearchFocused && searchQuery.trim() !== '' && (
-          <div className={`absolute top-12 left-0 w-full rounded-xl shadow-2xl border overflow-hidden z-50 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-[#f3f4f6] border-zinc-200'}`}>
-            {isSearching ? (
-              <div className={`px-4 py-3 text-sm ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Searching...</div>
-            ) : peopleResults.length > 0 ? (
-              <div>
-                <div className="max-h-64 overflow-y-auto">
-                {peopleResults.map((person, index) => {
-                  const handle = String(person.handle || '').replace(/^@/, '');
-                  const displayName = person.name || handle || 'Unknown User';
-                  const avatar = person.avatar || person.profile || person.daplinkID?.profile || '';
-                  const initials = String(displayName).slice(0, 2).toUpperCase();
-                  const isActive = index === activeIndex;
+        <AnimatePresence>
+          {isSearchFocused && searchQuery.trim() !== '' && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className={`absolute top-12 left-0 w-full rounded-2xl shadow-2xl border overflow-hidden z-50 backdrop-blur-xl ${
+                isDarkMode ? 'bg-zinc-950/95 border-zinc-800' : 'bg-white/95 border-zinc-200'
+              }`}
+            >
+              {isSearching ? (
+                <div className={`px-4 py-4 text-xs font-bold text-center ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Searching...</div>
+              ) : peopleResults.length > 0 ? (
+                <div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {peopleResults.map((person, index) => {
+                      const handle = String(person.handle || '').replace(/^@/, '');
+                      const displayName = person.name || handle || 'Unknown User';
+                      const avatar = person.avatar || person.profile || person.daplinkID?.profile || '';
+                      const initials = String(displayName).slice(0, 2).toUpperCase();
+                      const isHighlighted = index === activeIndex;
 
-                  return (
-                    <button
-                      key={person._id || handle || index}
-                      type="button"
-                      onMouseEnter={() => setActiveIndex(index)}
-                      onClick={() => openProfile(person)}
-                      className={`w-full text-left px-3 py-2.5 flex items-center gap-2.5 transition-colors ${isActive
-                        ? (isDarkMode ? 'bg-zinc-800/80' : 'bg-zinc-200/70')
-                        : (isDarkMode ? 'hover:bg-zinc-800/60' : 'hover:bg-zinc-200/50')
-                        }`}
-                    >
-                      <div className={`w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-xs font-bold ${isDarkMode ? 'bg-zinc-700 text-zinc-200' : 'bg-zinc-300 text-zinc-700'}`}>
-                        {avatar ? (
-                          <img src={avatar} alt={displayName} className="w-full h-full object-cover" />
-                        ) : (
-                          initials
-                        )}
-                      </div>
+                      return (
+                        <button
+                          key={person._id || handle || index}
+                          type="button"
+                          onMouseEnter={() => setActiveIndex(index)}
+                          onClick={() => openProfile(person)}
+                          className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${
+                            isHighlighted
+                              ? (isDarkMode ? 'bg-zinc-900/80 text-white border-l-3 border-indigo-500 pl-3.25' : 'bg-zinc-100 text-zinc-900 border-l-3 border-zinc-900 pl-3.25')
+                              : (isDarkMode ? 'hover:bg-zinc-900/40 text-zinc-300' : 'hover:bg-zinc-50 text-zinc-700')
+                          }`}
+                        >
+                          <div className={`w-8.5 h-8.5 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-xs font-bold ${
+                            isDarkMode ? 'bg-zinc-800 text-zinc-200 border border-zinc-700' : 'bg-zinc-200 text-zinc-700 border border-zinc-300/50'
+                          }`}>
+                            {avatar ? (
+                              <img src={avatar} alt={displayName} className="w-full h-full object-cover" />
+                            ) : (
+                              initials
+                            )}
+                          </div>
 
-                      <div className="min-w-0 flex-1">
-                        <div className={`text-base leading-tight font-semibold truncate flex items-center gap-1 ${isDarkMode ? 'text-zinc-100' : 'text-slate-800'}`}>
-                          <span className="truncate">{displayName}</span>
-                          {person.verified && <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />}
-                        </div>
-                        <div className={`text-xs leading-tight mt-0.5 ${isDarkMode ? 'text-zinc-400' : 'text-slate-600'}`}>
-                          @{handle}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-                </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs leading-tight font-bold truncate flex items-center gap-1">
+                              <span className="truncate">{displayName}</span>
+                              {person.verified && <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />}
+                            </div>
+                            <div className={`text-[10px] font-semibold mt-0.5 leading-tight ${isDarkMode ? 'text-zinc-500' : 'text-slate-500'}`}>
+                              @{handle}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                <div className={`px-4 py-2.5 border-t flex items-center justify-between text-[11px] font-semibold tracking-widest uppercase ${isDarkMode ? 'border-zinc-800 text-zinc-400' : 'border-zinc-200 text-slate-500'}`}>
-                  <span>{peopleResults.length} results found</span>
-                  <span>↑↓ Navigate   ↵ Select</span>
-                </div>
-              </div>
-            ) : (
-              <div className={`px-4 py-3 text-sm ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
-                No people found for "{searchQuery.trim()}"
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="flex items-center gap-4">
-        <button onClick={() => setIsDarkMode(!isDarkMode)} className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors ${isDarkMode ? 'hover:bg-zinc-800 text-zinc-400' : 'hover:bg-zinc-100 text-zinc-500'}`}>
-          {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
-
-        <div className="relative">
-          <button onClick={() => setNotificationsOpen(!notificationsOpen)} className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors relative ${isDarkMode ? 'hover:bg-zinc-800 text-zinc-400' : 'hover:bg-zinc-100 text-zinc-500'}`}>
-            <Bell className="w-5 h-5" />
-          </button>
-
-          {notificationsOpen && (
-            <div className={`absolute top-12 right-0 w-80 rounded-2xl shadow-2xl border p-2 z-50 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-100'}`}>
-              {notifications.map(n => (
-                <div key={n.id} className="flex items-start gap-3 p-3 rounded-xl">
-                  {n.icon}
-                  <div>
-                    <p className="text-sm font-semibold">{n.title}</p>
-                    <p className="text-xs text-zinc-400">{n.time}</p>
+                  <div className={`px-4 py-2.5 border-t flex items-center justify-between text-[9px] font-extrabold tracking-widest uppercase ${
+                    isDarkMode ? 'border-zinc-900 text-zinc-500' : 'border-zinc-100 text-slate-400'
+                  }`}>
+                    <span>{peopleResults.length} results</span>
+                    <span>↑↓ Navigate   ↵ Select</span>
                   </div>
                 </div>
-              ))}
-            </div>
+              ) : (
+                <div className={`px-4 py-4 text-xs font-bold text-center ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                  No people found for "{searchQuery.trim()}"
+                </div>
+              )}
+            </motion.div>
           )}
+        </AnimatePresence>
+      </div>
+
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Theme Toggle */}
+        <button 
+          onClick={() => setIsDarkMode(!isDarkMode)} 
+          className={`w-9.5 h-9.5 flex items-center justify-center rounded-2xl transition-all duration-300 cursor-pointer ${
+            isDarkMode 
+              ? 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800' 
+              : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 border border-zinc-200/50'
+          }`}
+        >
+          {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
+
+        {/* Notifications */}
+        <div className="relative" ref={notifRef}>
+          <button 
+            onClick={() => setNotificationsOpen(!notificationsOpen)} 
+            className={`w-9.5 h-9.5 flex items-center justify-center rounded-2xl transition-all duration-300 relative cursor-pointer ${
+              isDarkMode 
+                ? 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-800' 
+                : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 border border-zinc-200/50'
+            }`}
+          >
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-2 right-2 w-2 h-2 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)] animate-pulse"></span>
+          </button>
+
+          <AnimatePresence>
+            {notificationsOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className={`absolute top-12 right-0 w-80 rounded-2xl shadow-2xl border p-2 z-50 backdrop-blur-xl ${
+                  isDarkMode ? 'bg-zinc-950/95 border-zinc-850' : 'bg-white/95 border-zinc-100'
+                }`}
+              >
+                <div className={`px-3 py-2 border-b flex justify-between items-center mb-1 ${isDarkMode ? 'border-zinc-900' : 'border-zinc-100'}`}>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest opacity-60">Notifications</span>
+                  <span className="text-[9px] font-extrabold text-indigo-500 uppercase cursor-pointer hover:underline">Clear all</span>
+                </div>
+                {notifications.map(n => (
+                  <div key={n.id} className={`flex items-start gap-3 p-3 rounded-xl transition-colors cursor-pointer ${isDarkMode ? 'hover:bg-zinc-900/50' : 'hover:bg-zinc-50'}`}>
+                    <div className={`p-2 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800/80' : 'bg-zinc-100 border-zinc-200/50'}`}>
+                      {n.icon}
+                    </div>
+                    <div>
+                      <p className={`text-xs font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{n.title}</p>
+                      <p className="text-[10px] font-semibold text-zinc-500 mt-0.5">{n.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className={`hidden md:flex items-center rounded-full pl-4 pr-1 py-1 text-sm border shadow-sm hover:shadow transition-all group ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200/60 text-zinc-600'}`}>
-          <span className={`truncate max-w-37.5 font-medium transition-colors ${isDarkMode ? 'group-hover:text-white' : 'group-hover:text-black'}`}>
-            {`daplink.app/u/${username}`}
+        {/* Copy Share Link */}
+        <div className={`hidden lg:flex items-center rounded-2xl pl-4 pr-1 py-1 text-xs border shadow-xs hover:shadow transition-all duration-300 group ${
+          isDarkMode 
+            ? 'bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:border-zinc-700' 
+            : 'bg-zinc-50 border-zinc-200/60 text-zinc-600 hover:border-zinc-300'
+        }`}>
+          <span className={`truncate max-w-37.5 font-bold transition-colors ${isDarkMode ? 'group-hover:text-white' : 'group-hover:text-black'}`}>
+            {`daplink.online/u/${username}`}
           </span>
-          <button onClick={copyLink} className={`ml-2 w-7 h-7 flex items-center justify-center rounded-full border shadow-sm hover:scale-105 active:scale-95 transition-all ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-indigo-400' : 'bg-white border-zinc-200 text-zinc-500 hover:text-indigo-600'}`}>
+          <button 
+            onClick={copyLink} 
+            className={`ml-2 w-7.5 h-7.5 flex items-center justify-center rounded-xl border shadow-xs hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer ${
+              isDarkMode 
+                ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-indigo-400' 
+                : 'bg-white border-zinc-200 text-zinc-500 hover:text-indigo-600'
+            }`}
+            title="Copy digital bio link"
+          >
             <Share2 className="w-3.5 h-3.5" />
           </button>
         </div>
         
         <div className={`h-6 w-px mx-1 hidden sm:block ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
         
-        <button onClick={handleLogout} className={`transition-colors ${isDarkMode ? 'text-zinc-500 hover:text-white' : 'text-zinc-500 hover:text-black'}`}>
-          <LogOut className="w-5 h-5" />
+        {/* Logout */}
+        <button 
+          onClick={handleLogout} 
+          className={`w-9.5 h-9.5 flex items-center justify-center rounded-2xl transition-all duration-300 cursor-pointer ${
+            isDarkMode 
+              ? 'text-zinc-500 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800' 
+              : 'text-zinc-500 hover:text-black hover:bg-zinc-50 border border-transparent'
+          }`}
+          title="Sign out of Creator OS"
+        >
+          <LogOut className="w-4.5 h-4.5" />
         </button>
+
+        {/* Profile Avatar */}
         {daplink?.profile ? (
-          <div className="relative w-9 h-9 rounded-full overflow-hidden shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
+          <div className="relative w-9.5 h-9.5 rounded-2xl overflow-hidden shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all duration-300">
             <Image
               src={daplink?.profile}
               alt="User avatar"
               fill
-              sizes="36px"
+              sizes="38px"
               className="object-cover"
             />
           </div>
         ) : (
-          <div className="w-9 h-9 rounded-full bg-linear-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all">
+          <div className="w-9.5 h-9.5 rounded-2xl bg-linear-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xs font-black shadow-md ring-2 ring-white/10 cursor-pointer hover:ring-indigo-500/50 transition-all duration-300">
             {initial}
           </div>
         )}

@@ -6,7 +6,7 @@ import { generateShortCode } from "@/utils/GenerateShortCode";
 export async function POST(request) {
     try {
         await connectDB();
-        const { url, customCode, userId,title } = await request.json();
+        const { url, customCode, userId, title, rules = [] } = await request.json();
 
         if (!url) {
             return new Response(JSON.stringify({ error: "URL is required" }), { status: 400 });
@@ -34,6 +34,13 @@ export async function POST(request) {
             title: title || 'Untitled',
             shortCode,
             createdBy: userId,
+            rules: Array.isArray(rules) 
+              ? rules.map(r => ({
+                  type: r.type,
+                  condition: r.condition,
+                  targetUrl: r.targetUrl
+                }))
+              : []
         });
         return new Response(JSON.stringify({ message: "ShortUrl created successfully", code: shortCode }), { status: 201 });
 
