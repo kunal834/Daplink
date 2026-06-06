@@ -33,11 +33,11 @@ const userSchema = new mongoose.Schema({
     },
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User"  // ref here is important for populate function it will save bandwidth also if we just need name and avatar of followers    
     }],
     following: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User"  // ref here is important for populate function it will save bandwidth also if we just need name and avatar of followers  
     }],
     isGoogleuser : { type: Boolean, default: false },
     onboarding: {

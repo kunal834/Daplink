@@ -67,6 +67,8 @@ export async function PUT(req) {
         softText: Boolean(cfg.softText),
         font: String(cfg.font ?? "Inter, system-ui, sans-serif").trim() || "Inter, system-ui, sans-serif",
         customBackground: String(cfg.customBackground ?? "").trim(),
+        layoutStyle: String(cfg.layoutStyle ?? "bento").trim() || "bento",
+        cardStyle: String(cfg.cardStyle ?? "glass").trim() || "glass",
       };
     }
     if (has("script") || has("bio")) {
@@ -79,6 +81,28 @@ export async function PUT(req) {
           linktext: String(item?.linktext ?? item?.title ?? "").trim(),
         }))
         .filter((item) => item.link && item.linktext);
+    }
+    if (has("aiConfig") && body.aiConfig && typeof body.aiConfig === "object") {
+      const ai = body.aiConfig;
+      updatedData.aiConfig = {
+        aiEnabled: Boolean(ai.aiEnabled),
+        aiPrompt: String(ai.aiPrompt ?? "Hi there! I'm an AI assistant. How can I help you today?").trim(),
+        aiContext: String(ai.aiContext ?? "").trim(),
+        aiFaqs: Array.isArray(ai.aiFaqs)
+          ? ai.aiFaqs
+              .map((f) => ({
+                question: String(f?.question ?? "").trim(),
+                answer: String(f?.answer ?? "").trim(),
+              }))
+              .filter((f) => f.question && f.answer)
+          : []
+      };
+    }
+    if (has("statusGlow")) {
+      updatedData.statusGlow = String(body.statusGlow ?? "online").trim();
+    }
+    if (has("avatarBorder")) {
+      updatedData.avatarBorder = String(body.avatarBorder ?? "classic").trim();
     }
 
     const updatedUser = await Link.findByIdAndUpdate(

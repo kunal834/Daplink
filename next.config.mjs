@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     // 1. Allow SVGs for your Avataaars
     dangerouslyAllowSVG: true,

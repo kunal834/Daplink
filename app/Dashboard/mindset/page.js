@@ -10,10 +10,11 @@ import {
   Heart, MessageSquare, Repeat2, Share,
   Code2, MoreHorizontal, CheckCircle2,
   Sun, Moon, Loader2, Check, BarChart2,
-  Image as ImageIcon, X, Info, Search, Bell
+  Image as ImageIcon, X, Info, Search, Bell, Sparkles
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/Authenticate';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Helper for image loaders if needed
 const shimmer = (w, h) => `
@@ -66,13 +67,13 @@ const formatPostContent = (text, handleTagClick) => {
   return parts.map((part, index) => {
     if (part.match(/^@[\w\d_.]+$/)) {
       return (
-        <Link key={index} href={`/u/${part.slice(1)}`} className="text-[#1d9bf0] hover:underline" onClick={(e) => e.stopPropagation()}>
+        <Link key={index} href={`/u/${part.slice(1)}`} className="text-indigo-500 hover:underline font-bold" onClick={(e) => e.stopPropagation()}>
           {part}
         </Link>
       );
     } else if (part.match(/^#[\w\d_]+$/)) {
       return (
-        <span key={index} className="text-[#1d9bf0] hover:underline cursor-pointer" onClick={(e) => { e.stopPropagation(); if(handleTagClick) handleTagClick(part.slice(1)); }}>
+        <span key={index} className="text-indigo-550 dark:text-indigo-400 hover:underline cursor-pointer font-bold" onClick={(e) => { e.stopPropagation(); if(handleTagClick) handleTagClick(part.slice(1)); }}>
           {part}
         </span>
       );
@@ -94,12 +95,13 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [likedAnim, setLikedAnim] = useState(false);
   const menuRef = useRef(null);
 
-  const textPrimary = isDarkMode ? 'text-[#e7e9ea]' : 'text-[#0f1419]';
-  const textSecondary = isDarkMode ? 'text-[#71767b]' : 'text-[#536471]';
-  const border = isDarkMode ? 'border-[#2f3336]' : 'border-[#eff3f4]';
-  const hoverBg = isDarkMode ? 'hover:bg-white/[0.03]' : 'hover:bg-black/[0.03]';
+  const textPrimary = isDarkMode ? 'text-zinc-100' : 'text-zinc-900';
+  const textSecondary = isDarkMode ? 'text-zinc-550' : 'text-zinc-400';
+  const border = isDarkMode ? 'border-zinc-800/60' : 'border-zinc-200/50';
+  const hoverBg = isDarkMode ? 'hover:bg-white/[0.02]' : 'hover:bg-zinc-50/50';
 
   const uId = currentUser?._id || currentUser?.id;
   const dId = typeof currentUser?.daplinkID === 'object' ? (currentUser.daplinkID._id || currentUser.daplinkID.id) : currentUser?.daplinkID;
@@ -141,7 +143,17 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['posts'] });
       const previousPosts = queryClient.getQueryData(['posts']);
-      queryClient.setQueryData(['posts'], (old) => old.map(p => p.id === post.id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p));
+      
+      // Fix potential undefined map crash by checking Array.isArray
+      queryClient.setQueryData(['posts'], (old) => {
+        if (!Array.isArray(old)) return [];
+        return old.map(p => p.id === post.id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p);
+      });
+      
+      if (!post.liked) {
+        setLikedAnim(true);
+        setTimeout(() => setLikedAnim(false), 600);
+      }
       return { previousPosts };
     },
     onError: (err, variables, context) => queryClient.setQueryData(['posts'], context.previousPosts),
@@ -190,76 +202,83 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
   const isVideo = (url) => url && (post.mediaType === 'video' || url.match(/\.(mp4|webm|ogg|mov)$/i));
 
   return (
-    <div className={`px-4 pt-3 pb-2 border-b ${border} ${hoverBg} transition-colors duration-200 cursor-pointer`}>
-      <div className="flex gap-3 relative">
+    <div className={`px-5 py-5 border-b ${border} ${hoverBg} transition-all duration-300 cursor-pointer rounded-2xl mb-1`}>
+      <div className="flex gap-4.5 relative">
         <div className="flex flex-col items-center shrink-0">
           <Link href={`/u/${displayHandle.replace('@', '')}`}>
-             <div className="relative w-10 h-10 rounded-full overflow-hidden hover:opacity-80 transition-opacity">
+             <div className="relative w-11 h-11 rounded-2xl overflow-hidden hover:opacity-85 transition-all shadow-xs border border-zinc-200/50 dark:border-white/5">
                 <Image 
                   src={displayAvatar} 
                   alt={displayName} 
                   fill 
                   className="object-cover"
                   placeholder="blur"
-                  blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(40, 40))}`}
+                  blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(44, 44))}`}
                 />
              </div>
           </Link>
-          {showComments && <div className={`w-0.5 h-full mt-2 rounded-full ${isDarkMode ? 'bg-[#333639]' : 'bg-[#cfd9de]'}`}></div>}
+          {showComments && <div className={`w-0.5 h-full mt-3.5 rounded-full ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200/80'}`}></div>}
         </div>
 
         <div className="flex-1 min-w-0 pb-1">
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-1.5 truncate">
-              <Link href={`/u/${displayHandle.replace('@', '')}`} className={`font-bold text-[15px] hover:underline truncate ${textPrimary}`}>
+              <Link href={`/u/${displayHandle.replace('@', '')}`} className={`font-bold text-xs hover:underline truncate ${textPrimary}`}>
                 {displayName}
               </Link>
-              {post.verified && <CheckCircle2 size={16} className="text-[#1d9bf0] fill-white dark:fill-black shrink-0 relative top-0.5" />}
-              <span className={`text-[15px] ${textSecondary} truncate`}>{displayHandle}</span>
-              <span className={`text-[15px] ${textSecondary}`}>·</span>
-              <span className={`text-[15px] ${textSecondary} hover:underline`}>{timeAgo(post.time)}</span>
+              {post.verified && <CheckCircle2 size={13} className="text-blue-500 fill-white dark:fill-zinc-950 shrink-0 relative top-0.5" />}
+              <span className={`text-[10px] font-semibold truncate ${textSecondary}`}>{displayHandle}</span>
+              <span className={`text-[10px] font-semibold ${textSecondary}`}>·</span>
+              <span className={`text-[10px] font-semibold ${textSecondary} hover:underline`}>{timeAgo(post.time)}</span>
             </div>
 
             <div className="relative" ref={menuRef}>
-              <button onClick={(e) => { e.stopPropagation(); setIsMenuOpen(!isMenuOpen); }} className={`p-2 -mr-2 rounded-full hover:bg-[#1d9bf0]/10 hover:text-[#1d9bf0] transition-colors ${textSecondary}`}>
-                <MoreHorizontal size={18} />
+              <button onClick={(e) => { e.stopPropagation(); setIsMenuOpen(!isMenuOpen); }} className={`p-2 -mr-2 rounded-xl hover:bg-indigo-500/10 hover:text-indigo-500 transition-colors ${textSecondary}`}>
+                <MoreHorizontal size={15} />
               </button>
 
-              {isMenuOpen && (
-                <div className={`absolute right-0 top-full mt-1 w-36 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.2)] overflow-hidden z-50 ${isDarkMode ? 'bg-black border border-gray-800' : 'bg-white border border-gray-200'}`}>
-                  {isOwner ? (
-                    <>
-                      <button onClick={(e) => { e.stopPropagation(); setIsEditing(true); setIsMenuOpen(false); }} className={`w-full text-left px-4 py-3 text-[15px] font-bold transition-colors ${isDarkMode ? 'hover:bg-white/5 text-gray-200' : 'hover:bg-black/5 text-gray-800'}`}>Edit post</button>
-                      <button onClick={(e) => { e.stopPropagation(); deletePostMutation.mutate(); setIsMenuOpen(false); }} className={`w-full text-left px-4 py-3 text-[15px] font-bold text-[#f4212e] transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-black/5'}`}>Delete</button>
-                    </>
-                  ) : (
-                    <div className="px-4 py-3 text-[14px] text-gray-500 text-center cursor-default">Not your post</div>
-                  )}
-                </div>
-              )}
+              <AnimatePresence>
+                {isMenuOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                    className={`absolute right-0 top-full mt-1.5 w-36 rounded-2xl shadow-xl overflow-hidden z-50 backdrop-blur-md ${isDarkMode ? 'bg-zinc-950/95 border border-zinc-850' : 'bg-white/95 border border-zinc-150'}`}
+                  >
+                    {isOwner ? (
+                      <>
+                        <button onClick={(e) => { e.stopPropagation(); setIsEditing(true); setIsMenuOpen(false); }} className={`w-full text-left px-4 py-3 text-xs font-bold transition-colors ${isDarkMode ? 'hover:bg-white/5 text-zinc-200' : 'hover:bg-zinc-900/5 text-zinc-800'}`}>Edit post</button>
+                        <button onClick={(e) => { e.stopPropagation(); deletePostMutation.mutate(); setIsMenuOpen(false); }} className={`w-full text-left px-4 py-3 text-xs font-bold text-[#f4212e] transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-zinc-900/5'}`}>Delete</button>
+                      </>
+                    ) : (
+                      <div className="px-4 py-3 text-[11px] text-zinc-500 text-center cursor-default">Not your post</div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
           {isEditing ? (
-            <div className="mt-1" onClick={(e) => e.stopPropagation()}>
-              <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} className={`w-full bg-transparent border rounded-lg p-3 outline-none resize-none ${border} ${textPrimary} text-[15px] focus:border-[#1d9bf0] transition-colors`} rows={3} autoFocus />
-              <div className="flex justify-end gap-2 mt-2">
-                <button onClick={() => { setIsEditing(false); setEditContent(post.content); }} className={`px-4 py-1.5 rounded-full text-[14px] font-bold ${textPrimary} border ${border} hover:bg-gray-500/10 transition-colors`}>Cancel</button>
-                <button onClick={() => editPostMutation.mutate()} disabled={editPostMutation.isPending || !editContent.trim()} className="px-4 py-1.5 bg-[#1d9bf0] text-white rounded-full text-[14px] font-bold hover:bg-[#1a8cd8] transition-colors disabled:opacity-50 flex items-center gap-2">{editPostMutation.isPending && <Loader2 size={14} className="animate-spin" />} Save</button>
+            <div className="mt-2.5" onClick={(e) => e.stopPropagation()}>
+              <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} className={`w-full bg-transparent border-2 rounded-2xl p-4.5 outline-none resize-none ${border} ${textPrimary} text-xs focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all`} rows={3} autoFocus />
+              <div className="flex justify-end gap-2 mt-2.5">
+                <button onClick={() => { setIsEditing(false); setEditContent(post.content); }} className={`px-4.5 py-2 rounded-xl text-xs font-bold ${textPrimary} border ${border} hover:bg-zinc-800/10 transition-colors`}>Cancel</button>
+                <button onClick={() => editPostMutation.mutate()} disabled={editPostMutation.isPending || !editContent.trim()} className="px-4.5 py-2 bg-indigo-650 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center gap-2">{editPostMutation.isPending && <Loader2 size={12} className="animate-spin" />} Save</button>
               </div>
             </div>
           ) : (
-            <p className={`mt-0.5 text-[15px] leading-5 whitespace-pre-wrap wrap-break-word ${textPrimary}`}>
+            <p className={`mt-1.5 text-xs leading-relaxed whitespace-pre-wrap break-all ${textPrimary}`}>
               {formatPostContent(post.content, onTagClick)}
             </p>
           )}
 
           {post.mediaUrl && (
-            <div className={`mt-3 rounded-2xl overflow-hidden border ${border} bg-black/5`}>
+            <div className={`mt-4.5 rounded-3xl overflow-hidden border ${border} bg-black/5 dark:bg-white/[0.01] hover:scale-[1.005] transition-transform`}>
               {isVideo(post.mediaUrl) ? (
                 <video src={post.mediaUrl} controls className="w-full max-h-125 object-cover bg-black" onClick={(e) => e.stopPropagation()} />
               ) : (
-                <div className="relative w-full h-auto min-h-[300px]">
+                <div className="relative w-full h-auto min-h-[250px]">
                    <Image 
                     src={post.mediaUrl} 
                     alt="Post content" 
@@ -273,137 +292,166 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
           )}
 
           {post.tags?.length > 0 && (
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <div className="flex items-center gap-2 mt-3 flex-wrap">
               {post.tags.map(tag => (
-                <span key={tag} onClick={(e) => { e.stopPropagation(); if(onTagClick) onTagClick(tag); }} className="text-[14px] text-[#1d9bf0] hover:underline cursor-pointer">#{tag}</span>
+                <span key={tag} onClick={(e) => { e.stopPropagation(); if(onTagClick) onTagClick(tag); }} className="text-[11px] font-bold text-indigo-500 hover:underline cursor-pointer">#{tag}</span>
               ))}
             </div>
           )}
 
-          <div className={`flex items-center justify-between mt-3 w-full lg:w-[85%] ${textSecondary}`}>
-            <div className="flex items-center group text-[13px] hover:text-[#1d9bf0] transition-colors">
-              <button onClick={(e) => { e.stopPropagation(); setShowComments(!showComments); }} className="w-8 h-8 -ml-2 rounded-full flex items-center justify-center group-hover:bg-[#1d9bf0]/10 transition-colors">
-                <MessageSquare size={18} />
+          {/* Micro-Interaction Stats Panel */}
+          <div className={`flex items-center justify-between mt-4 w-full lg:w-[85%] ${textSecondary}`}>
+            <div className="flex items-center group text-[11px] font-bold hover:text-indigo-500 transition-colors">
+              <button onClick={(e) => { e.stopPropagation(); setShowComments(!showComments); }} className="w-8.5 h-8.5 -ml-2 rounded-xl flex items-center justify-center group-hover:bg-indigo-500/10 transition-all">
+                <MessageSquare size={15} />
               </button>
-              <span className="px-1">{baseComments > 0 ? baseComments : ''}</span>
+              <span className="px-1.5">{baseComments > 0 ? baseComments : ''}</span>
             </div>
 
-            <div className="flex items-center group text-[13px] hover:text-[#00ba7c] transition-colors">
-              <button onClick={(e) => { e.stopPropagation(); repostMutation.mutate(); }} className="w-8 h-8 -ml-2 rounded-full flex items-center justify-center group-hover:bg-[#00ba7c]/10 transition-colors">
-                <Repeat2 size={18} />
+            <div className="flex items-center group text-[11px] font-bold hover:text-emerald-500 transition-colors">
+              <button onClick={(e) => { e.stopPropagation(); repostMutation.mutate(); }} className="w-8.5 h-8.5 -ml-2 rounded-xl flex items-center justify-center group-hover:bg-emerald-500/10 transition-all">
+                <Repeat2 size={15} />
               </button>
-              <span className="px-1">{baseShares > 0 ? baseShares : ''}</span>
+              <span className="px-1.5">{baseShares > 0 ? baseShares : ''}</span>
             </div>
 
-            <div className="flex items-center group text-[13px] hover:text-[#f91880] transition-colors">
-              <button onClick={(e) => { e.stopPropagation(); toggleLikeMutation.mutate(); }} className="w-8 h-8 -ml-2 rounded-full flex items-center justify-center group-hover:bg-[#f91880]/10 transition-colors">
-                <Heart size={18} className={post.liked ? "fill-[#f91880] text-[#f91880]" : ""} />
-              </button>
-              <span className={`px-1 ${post.liked ? 'text-[#f91880]' : ''}`}>{baseLikes > 0 ? baseLikes : ''}</span>
+            <div className="flex items-center group text-[11px] font-bold hover:text-rose-500 transition-colors">
+              <motion.button 
+                animate={likedAnim ? { scale: [1, 1.4, 0.9, 1.1, 1] } : {}}
+                transition={{ duration: 0.5 }}
+                onClick={(e) => { e.stopPropagation(); toggleLikeMutation.mutate(); }} 
+                className="w-8.5 h-8.5 -ml-2 rounded-xl flex items-center justify-center group-hover:bg-rose-500/10 transition-all relative"
+              >
+                <Heart size={15} className={post.liked ? "fill-rose-550 text-rose-550 drop-shadow-[0_0_6px_rgba(244,63,94,0.4)]" : ""} />
+              </motion.button>
+              <span className={`px-1.5 ${post.liked ? 'text-rose-550' : ''}`}>{baseLikes > 0 ? baseLikes : ''}</span>
             </div>
 
-            <div className="items-center group text-[13px] hover:text-[#1d9bf0] transition-colors hidden sm:flex">
+            <div className="items-center group text-[11px] font-bold hover:text-indigo-500 transition-colors hidden sm:flex">
               <button onClick={(e) => { 
                 e.stopPropagation(); 
                 if (isOwner) setShowAnalytics(true); 
-                else toast("Only the author can view post analytics", { icon: '🔒', style: { borderRadius: '10px', background: isDarkMode ? '#333639' : '#fff', color: isDarkMode ? '#fff' : '#0f1419'} });
-              }} className={`w-8 h-8 -ml-2 rounded-full flex items-center justify-center transition-colors ${isOwner ? 'group-hover:bg-[#1d9bf0]/10 cursor-pointer' : 'cursor-default'}`}>
-                <BarChart2 size={18} />
+                else toast("Only the author can view post analytics", { icon: '🔒', style: { borderRadius: '12px', background: isDarkMode ? '#1e1e24' : '#fff', color: isDarkMode ? '#fff' : '#0f1419'} });
+              }} className={`w-8.5 h-8.5 -ml-2 rounded-xl flex items-center justify-center transition-all ${isOwner ? 'group-hover:bg-indigo-500/10 cursor-pointer' : 'cursor-default'}`}>
+                <BarChart2 size={15} />
               </button>
-              <span className="px-1">{formatNumber(impressions)}</span>
+              <span className="px-1.5">{formatNumber(impressions)}</span>
             </div>
 
-            <div className="flex items-center gap-2 group text-[13px] hover:text-[#1d9bf0] transition-colors">
-              <button onClick={handleCopy} className="w-8 h-8 -ml-2 rounded-full flex items-center justify-center group-hover:bg-[#1d9bf0]/10 transition-colors">
-                {copied ? <Check size={18} className="text-[#00ba7c]" /> : <Share size={18} />}
+            <div className="flex items-center gap-2 group text-[11px] hover:text-indigo-500 transition-colors">
+              <button onClick={handleCopy} className="w-8.5 h-8.5 -ml-2 rounded-xl flex items-center justify-center group-hover:bg-indigo-500/10 transition-all">
+                {copied ? <Check size={15} className="text-emerald-500" strokeWidth={3} /> : <Share size={15} />}
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {showComments && (
-        <div className="pl-13 pr-2 pt-2 mt-1 relative z-10" onClick={(e) => e.stopPropagation()}>
-          <div className="flex gap-3 items-center mb-4">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden">
-               <Image 
-                src={daplinkUser?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} 
-                alt="Me" 
-                fill 
-                className="object-cover" 
-              />
+      <AnimatePresence>
+        {showComments && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="pl-14 pr-2 pt-3 mt-1.5 relative z-10 overflow-hidden" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex gap-3.5 items-center mb-4.5">
+              <div className="relative w-8 h-8 rounded-xl overflow-hidden shadow-xs border border-zinc-200/50 dark:border-white/5 shrink-0">
+                 <Image 
+                  src={daplinkUser?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} 
+                  alt="Me" 
+                  fill 
+                  className="object-cover" 
+                />
+              </div>
+              <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Post your reply..." className={`flex-1 bg-transparent text-xs font-semibold outline-none py-2 ${textPrimary} placeholder:${textSecondary}`} onKeyDown={(e) => { if (e.key === 'Enter' && commentText.trim()) postCommentMutation.mutate(); }} />
+              <button onClick={() => postCommentMutation.mutate()} disabled={!commentText.trim() || postCommentMutation.isPending} className="bg-indigo-650 hover:bg-indigo-600 text-white font-black px-4 py-1.75 rounded-xl text-[11px] disabled:opacity-50 transition-all cursor-pointer">Reply</button>
             </div>
-            <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Post your reply" className={`flex-1 bg-transparent text-[15px] outline-none ${textPrimary} placeholder:${textSecondary}`} onKeyDown={(e) => { if (e.key === 'Enter' && commentText.trim()) postCommentMutation.mutate(); }} />
-            <button onClick={() => postCommentMutation.mutate()} disabled={!commentText.trim() || postCommentMutation.isPending} className="bg-[#1d9bf0] text-white font-bold px-4 py-1.5 rounded-full text-[14px] hover:bg-[#1a8cd8] disabled:opacity-50 disabled:bg-[#1d9bf0]/50 transition-colors">Reply</button>
-          </div>
-          {loadingComments ? (
-            <div className="flex justify-center py-4"><Loader2 className="w-5 h-5 animate-spin text-[#1d9bf0]" /></div>
-          ) : (
-            <div className="space-y-0">
-              {comments?.map((comment) => (
-                <div key={comment._id} className="flex gap-3 py-2">
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden mt-1 shrink-0">
-                     <Image 
-                      src={comment.author?.avatar || comment.author?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.handle || 'unknown'}`} 
-                      alt={comment.author?.handle || 'Avatar'} 
-                      fill 
-                      className="object-cover" 
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className={`font-bold text-[15px] ${textPrimary}`}>{comment.author?.handle || 'Unknown'}</span>
-                      <span className={`text-[14px] ${textSecondary}`}>· {timeAgo(comment.createdAt)}</span>
+            
+            {loadingComments ? (
+              <div className="flex justify-center py-4"><Loader2 className="w-4 h-4 animate-spin text-indigo-500" /></div>
+            ) : (
+              <div className="space-y-1.5">
+                {comments?.map((comment) => (
+                  <div key={comment._id} className="flex gap-3.5 py-3 border-t border-zinc-800/10 dark:border-zinc-800/30">
+                    <div className="relative w-8 h-8 rounded-xl overflow-hidden mt-0.5 shrink-0 shadow-xs">
+                       <Image 
+                        src={comment.author?.avatar || comment.author?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.handle || 'unknown'}`} 
+                        alt={comment.author?.handle || 'Avatar'} 
+                        fill 
+                        className="object-cover" 
+                      />
                     </div>
-                    <p className={`text-[15px] leading-5 mt-0.5 ${textPrimary}`}>{comment.content}</p>
+                    <div className="flex-1">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className={`font-bold text-xs ${textPrimary}`}>{comment.author?.handle || 'Unknown'}</span>
+                        <span className={`text-[10px] font-semibold ${textSecondary}`}>· {timeAgo(comment.createdAt)}</span>
+                      </div>
+                      <p className={`text-xs leading-relaxed mt-0.5 ${textPrimary}`}>{comment.content}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Analytics Modal... */}
-      {showAnalytics && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={(e) => { e.stopPropagation(); setShowAnalytics(false); }}>
-          <div className={`w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden ${isDarkMode ? 'bg-black border border-[#2f3336] text-white' : 'bg-white border border-[#eff3f4] text-black'}`} onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center px-4 py-3 border-b border-inherit">
-                <button onClick={() => setShowAnalytics(false)} className={`p-2 rounded-full transition-colors -ml-2 mr-4 ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}><X size={20} /></button>
-                <h2 className="text-xl font-bold">Post Analytics</h2>
-            </div>
-            <div className="p-4 md:p-6">
-                <div className={`p-4 rounded-xl border border-inherit mb-6 flex gap-3 ${isDarkMode ? 'bg-[#16181c]' : 'bg-[#f7f9f9]'}`}>
-                  {post.mediaUrl && (
-                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-black relative">
-                       {isVideo(post.mediaUrl) ? <video src={post.mediaUrl} className="w-full h-full object-cover" /> : <Image src={post.mediaUrl} alt="Preview" fill className="object-cover" />}
+      <AnimatePresence>
+        {showAnalytics && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 backdrop-blur-md p-4" 
+            onClick={(e) => { e.stopPropagation(); setShowAnalytics(false); }}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              className={`w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border backdrop-blur-xl ${isDarkMode ? 'bg-zinc-950/95 border-zinc-850 text-white' : 'bg-white border border-zinc-200 text-black'}`} 
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-inherit">
+                  <h2 className="text-base font-black tracking-tight">DapPost Analytics</h2>
+                  <button onClick={() => setShowAnalytics(false)} className={`p-2 rounded-xl transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}><X size={16} /></button>
+              </div>
+              <div className="p-6">
+                  <div className={`p-4 rounded-2xl border border-inherit mb-6 flex gap-3.5 ${isDarkMode ? 'bg-zinc-900/60' : 'bg-zinc-50'}`}>
+                    {post.mediaUrl && (
+                      <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-black relative shadow-xs">
+                         {isVideo(post.mediaUrl) ? <video src={post.mediaUrl} className="w-full h-full object-cover" /> : <Image src={post.mediaUrl} alt="Preview" fill className="object-cover" />}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                       <div className="flex items-baseline gap-1.5 text-xs mb-1">
+                          <span className="font-bold truncate">{displayName}</span>
+                          <span className={`truncate ${textSecondary}`}>{displayHandle}</span>
+                          <span className={textSecondary}>·</span>
+                          <span className={textSecondary}>{timeAgo(post.time)}</span>
+                       </div>
+                       <p className={`text-[11px] leading-relaxed line-clamp-2 ${textSecondary}`}>{post.content}</p>
                     </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                     <div className="flex items-baseline gap-1.5 text-[15px] mb-1">
-                        <span className="font-bold truncate">{displayName}</span>
-                        <span className={`truncate ${textSecondary}`}>{displayHandle}</span>
-                        <span className={textSecondary}>·</span>
-                        <span className={textSecondary}>{timeAgo(post.time)}</span>
-                     </div>
-                     <p className={`text-[14px] line-clamp-3 ${textSecondary}`}>{post.content}</p>
                   </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 pb-6 border-b border-inherit mb-6 text-center">
-                  <div><Heart size={20} className={`mx-auto mb-2 ${textSecondary}`} /><p className="text-xl font-bold">{baseLikes}</p></div>
-                  <div><Repeat2 size={20} className={`mx-auto mb-2 ${textSecondary}`} /><p className="text-xl font-bold">{baseShares}</p></div>
-                  <div><MessageSquare size={20} className={`mx-auto mb-2 ${textSecondary}`} /><p className="text-xl font-bold">{baseComments}</p></div>
-                </div>
-                <div className="grid grid-cols-2 gap-y-6">
-                  <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Impressions <Info size={14} /></div><p className="text-2xl font-bold">{impressions.toLocaleString()}</p></div>
-                  <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Engagements <Info size={14} /></div><p className="text-2xl font-bold">{engagements.toLocaleString()}</p></div>
-                  <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Detail expands <Info size={14} /></div><p className="text-2xl font-bold">{detailExpands.toLocaleString()}</p></div>
-                  <div><div className={`flex items-center gap-1 mb-1 text-[13px] ${textSecondary}`}>Profile visits <Info size={14} /></div><p className="text-2xl font-bold">{profileVisits.toLocaleString()}</p></div>
-                </div>
-            </div>
-          </div>
-        </div>
-      )}
+                  <div className="grid grid-cols-3 gap-4 pb-6 border-b border-inherit mb-6 text-center">
+                    <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><Heart size={18} className="mx-auto mb-1 text-rose-500" /><p className="text-base font-extrabold">{baseLikes}</p></div>
+                    <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><Repeat2 size={18} className="mx-auto mb-1 text-emerald-500" /><p className="text-base font-extrabold">{baseShares}</p></div>
+                    <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><MessageSquare size={18} className="mx-auto mb-1 text-indigo-500" /><p className="text-base font-extrabold">{baseComments}</p></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Impressions <Info size={12} /></div><p className="text-xl font-black">{impressions.toLocaleString()}</p></div>
+                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Engagements <Info size={12} /></div><p className="text-xl font-black">{engagements.toLocaleString()}</p></div>
+                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Detail expands <Info size={12} /></div><p className="text-xl font-black">{detailExpands.toLocaleString()}</p></div>
+                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Profile visits <Info size={12} /></div><p className="text-xl font-black">{profileVisits.toLocaleString()}</p></div>
+                  </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -434,6 +482,7 @@ export default function DaplinkCommunityFeed() {
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [debouncedMentionQuery, setDebouncedMentionQuery] = useState('');
+  const [debouncedMentionQuery, setDebouncedMentionQuery] = useState(''); 
 
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -444,6 +493,7 @@ export default function DaplinkCommunityFeed() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Debounce for Mention Searching to drastically speed up typing!
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedMentionQuery(mentionQuery), 200);
     return () => clearTimeout(timer);
@@ -596,138 +646,153 @@ export default function DaplinkCommunityFeed() {
       setContent(newTextBefore + textAfterCursor);
       setShowMentionDropdown(false);
       setMentionQuery('');
-      setDebouncedMentionQuery(''); // Clear the debounce too
+      setDebouncedMentionQuery(''); 
       textareaRef.current.focus();
     }
   };
 
   const unreadCount = notificationsData?.filter(n => n.status === 'unread').length || 0;
 
-  const bgMain = isDarkMode ? 'bg-black' : 'bg-white';
-  const textPrimary = isDarkMode ? 'text-[#e7e9ea]' : 'text-[#0f1419]';
-  const textSecondary = isDarkMode ? 'text-[#71767b]' : 'text-[#536471]';
-  const border = isDarkMode ? 'border-[#2f3336]' : 'border-[#eff3f4]';
-  const hoverBg = isDarkMode ? 'hover:bg-white/[0.03]' : 'hover:bg-black/[0.03]';
+  const bgMain = isDarkMode ? 'bg-transparent' : 'bg-transparent';
+  const textPrimary = isDarkMode ? 'text-zinc-100' : 'text-zinc-900';
+  const textSecondary = isDarkMode ? 'text-zinc-550' : 'text-zinc-400';
+  const border = isDarkMode ? 'border-zinc-800/60' : 'border-zinc-200/50';
+  const hoverBg = isDarkMode ? 'hover:bg-white/[0.02]' : 'hover:bg-zinc-50/50';
 
   return (
-    <div className={`min-h-screen ${bgMain} ${textPrimary} font-sans flex justify-center max-w-325 mx-auto xl:justify-between gap-4 lg:gap-8 px-4 sm:px-8`}>
-      <div className="hidden md:flex flex-col w-72 pt-2 sticky top-0 h-screen overflow-y-auto pb-20 pr-4 z-40">
+    <div className={`min-h-screen ${bgMain} ${textPrimary} font-sans flex justify-center max-w-325 mx-auto xl:justify-between gap-4 lg:gap-8 px-0 sm:px-4`}>
+      <div className="hidden md:flex flex-col w-72 pt-2 sticky top-0 h-[calc(100vh-96px)] overflow-y-auto pb-20 pr-4 z-40">
         
         {/* Search Bar */}
         <div ref={searchRef} className="relative w-full">
-          <div className={`flex items-center px-4 py-2.5 rounded-full border transition-colors ${isSearchFocused ? 'border-[#1d9bf0] bg-transparent' : isDarkMode ? 'border-transparent bg-[#202327]' : 'border-transparent bg-[#eff3f4]'}`}>
-            <Search className={`w-4 h-4 mr-3 ${isSearchFocused ? 'text-[#1d9bf0]' : textSecondary}`} />
+          <div className={`flex items-center px-4 py-2.5 rounded-2xl border transition-colors ${isSearchFocused ? 'border-indigo-500 bg-transparent shadow-[0_0_15px_rgba(99,102,241,0.15)]' : isDarkMode ? 'border-transparent bg-zinc-900/60' : 'border-transparent bg-zinc-100/80'}`}>
+            <Search className={`w-4 h-4 mr-3 ${isSearchFocused ? 'text-indigo-500' : textSecondary}`} />
             <input 
               type="text" 
-              placeholder="Search DapLink" 
+              placeholder="Search DapLink..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
-              className={`bg-transparent outline-none w-full text-[15px] placeholder:${textSecondary}`} 
+              className={`bg-transparent outline-none w-full text-xs font-semibold placeholder:${textSecondary}`} 
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className={`w-5 h-5 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-[#1d9bf0] text-black' : 'bg-[#1d9bf0] text-white'}`}>
+              <button onClick={() => setSearchQuery('')} className={`w-5 h-5 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-indigo-500 text-black' : 'bg-indigo-500 text-white'}`}>
                 <X size={12} strokeWidth={3} />
               </button>
             )}
           </div>
 
           {/* Search Dropdown */}
-          {isSearchFocused && searchQuery.trim() !== '' && (
-            <div className={`absolute top-13 left-0 w-full rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.2)] overflow-hidden border ${isDarkMode ? 'bg-black border-[#2f3336]' : 'bg-white border-[#eff3f4]'}`}>
-              {isSearching ? (
-                <div className="p-4 text-center text-[15px] text-[#1d9bf0] flex justify-center"><Loader2 className="w-5 h-5 animate-spin" /></div>
-              ) : searchResults ? (
-                <div>
-                  {searchResults.users?.length > 0 && (
-                    <div>
-                      <div className={`px-4 py-2 text-[15px] font-bold border-b ${border}`}>People</div>
-                      {searchResults.users.map(u => (
-                        <Link key={u._id} href={`/u/${u.handle.replace('@','')}`} className={`flex items-center gap-3 px-4 py-3 transition-colors ${hoverBg}`}>
-                          <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                             <Image src={u.avatar} alt={u.name} fill className="object-cover" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-bold text-[15px] truncate">{u.name}</p>
-                            <p className={`text-[15px] ${textSecondary} truncate`}>@{u.handle}</p>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                  {searchResults.users?.length === 0 && searchResults.posts?.length === 0 && (
-                    <div className={`p-4 text-center text-[15px] ${textSecondary}`}>No results for &quot;{searchQuery}&quot;</div>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          )}
+          <AnimatePresence>
+            {isSearchFocused && searchQuery.trim() !== '' && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className={`absolute top-13 left-0 w-full rounded-2xl shadow-xl overflow-hidden border backdrop-blur-md ${isDarkMode ? 'bg-zinc-950/95 border-zinc-850' : 'bg-white/95 border-zinc-150'}`}
+              >
+                {isSearching ? (
+                  <div className="p-4 text-center text-xs text-indigo-500 flex justify-center"><Loader2 className="w-5 h-5 animate-spin" /></div>
+                ) : searchResults ? (
+                  <div>
+                    {searchResults.users?.length > 0 && (
+                      <div>
+                        <div className={`px-4 py-2 text-[10px] font-extrabold uppercase tracking-widest border-b ${border} opacity-60`}>People</div>
+                        {searchResults.users.map(u => (
+                          <Link key={u._id} href={`/u/${u.handle.replace('@','')}`} className={`flex items-center gap-3 px-4 py-3 transition-colors ${hoverBg}`}>
+                            <div className="relative w-9 h-9 rounded-xl overflow-hidden">
+                               <Image src={u.avatar} alt={u.name} fill className="object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-bold text-xs truncate">{u.name}</p>
+                              <p className={`text-[10px] font-semibold ${textSecondary} truncate`}>@{u.handle}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    {searchResults.users?.length === 0 && searchResults.posts?.length === 0 && (
+                      <div className={`p-4 text-center text-xs font-semibold ${textSecondary}`}>No results for &quot;{searchQuery}&quot;</div>
+                    )}
+                  </div>
+                ) : null}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Navigation Tabs */}
         <div className="mt-6 space-y-2">
            <button 
              onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} 
-             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'feed' && !currentTagFilter ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
+             className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'feed' && !currentTagFilter ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
            >
-             Feed
+             Feed Canvas
            </button>
            <button 
              onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} 
-             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'myposts' ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
+             className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'myposts' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
            >
-             My Posts
+             My Content
            </button>
            <button 
              onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} 
-             className={`w-full flex items-center gap-4 px-4 py-3 rounded-full font-bold text-[18px] transition-colors ${activeTab === 'notifications' ? 'bg-[#1d9bf0] text-white' : hoverBg}`}
+             className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'notifications' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
            >
              <div className="relative">
-                <Bell size={24} />
-                {unreadCount > 0 && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#1d9bf0] rounded-full border-2 border-white dark:border-black"></span>}
+                <Bell size={18} />
+                {unreadCount > 0 && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-indigo-500 rounded-full border-2 border-white dark:border-zinc-950"></span>}
              </div>
-             Notifications
+             Activity Hub
            </button>
         </div>
       </div>
 
       {/*MIDDLE COLUMN*/}
-      <div className={`w-full max-w-150 border-x ${border} min-h-screen relative`}>
-        <div className={`sticky top-0 z-20 backdrop-blur-md bg-opacity-80 border-b ${border} ${isDarkMode ? 'bg-black/80' : 'bg-white/80'}`}>
+      <div className={`w-full max-w-150 border-x ${border} min-h-[calc(100vh-96px)] relative`}>
+        <div className={`sticky top-0 z-20 backdrop-blur-md bg-opacity-80 border-b ${border} ${isDarkMode ? 'bg-zinc-950/80' : 'bg-white/80'}`}>
           <div className="flex items-center justify-between px-4 h-[53px]">
-            <h1 className="font-bold text-[20px] tracking-tight cursor-pointer">
+            <h1 className="font-extrabold text-xs uppercase tracking-widest cursor-pointer flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" />
               {activeTab === 'feed' ? 'DapPost Feed' : activeTab === 'myposts' ? 'My Posts' : 'Notifications'}
             </h1>
             <div className="md:hidden flex gap-2 items-center">
-               <button onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} className={`text-[14px] font-bold ${activeTab === 'feed' ? 'text-[#1d9bf0]' : textSecondary}`}>Feed</button>
+               <button onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide ${activeTab === 'feed' ? 'text-indigo-500 font-black' : textSecondary}`}>Feed</button>
                <span className={textSecondary}>|</span>
-               <button onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} className={`text-[14px] font-bold ${activeTab === 'myposts' ? 'text-[#1d9bf0]' : textSecondary}`}>Me</button>
+               <button onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide ${activeTab === 'myposts' ? 'text-indigo-500 font-black' : textSecondary}`}>Me</button>
                <span className={textSecondary}>|</span>
-               <button onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} className={`text-[14px] font-bold relative ${activeTab === 'notifications' ? 'text-[#1d9bf0]' : textSecondary}`}>
+               <button onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide relative ${activeTab === 'notifications' ? 'text-indigo-500 font-black' : textSecondary}`}>
                  Notifs
-                 {unreadCount > 0 && <span className="absolute -top-1 -right-2 w-2 h-2 bg-[#1d9bf0] rounded-full"></span>}
+                 {unreadCount > 0 && <span className="absolute -top-1 -right-2 w-2 h-2 bg-indigo-500 rounded-full"></span>}
                </button>
             </div>
 
-            <button onClick={toggleTheme} className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}>
-              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            <button onClick={toggleTheme} className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}>
+              {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
             </button>
           </div>
         </div>
 
         {/* Tag Filter Indicator */}
-        {currentTagFilter && activeTab !== 'notifications' && (
-          <div className={`px-4 py-2 border-b flex justify-between items-center ${border} bg-[#1d9bf0]/10 text-[#1d9bf0]`}>
-            <span className="font-bold text-[15px]">Showing results for #{currentTagFilter}</span>
-            <button onClick={() => setCurrentTagFilter('')} className="p-1 hover:bg-[#1d9bf0]/20 rounded-full"><X size={16} /></button>
-          </div>
-        )}
+        <AnimatePresence>
+          {currentTagFilter && activeTab !== 'notifications' && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className={`px-4 py-2 border-b flex justify-between items-center ${border} bg-indigo-500/10 text-indigo-500 overflow-hidden`}
+            >
+              <span className="font-extrabold text-[11px] uppercase tracking-wide">Showing results for #{currentTagFilter}</span>
+              <button onClick={() => setCurrentTagFilter('')} className="p-1 hover:bg-indigo-500/20 rounded-xl"><X size={14} /></button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Post Creation Area (Hide on notifications tab) */}
         {activeTab !== 'notifications' && (
-          <div className={`px-4 pt-4 pb-2 border-b ${border} flex gap-3`}>
+          <div className={`px-5 pt-5 pb-3 border-b ${border} flex gap-4 bg-zinc-950/5 dark:bg-white/[0.005]`}>
             <div className="shrink-0 pt-1">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden">
+              <div className="relative w-10 h-10 rounded-2xl overflow-hidden shadow-xs border border-zinc-200/50 dark:border-white/5">
                  <Image src={daplink?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} alt="Avatar" fill className="object-cover" />
               </div>
             </div>
@@ -737,70 +802,79 @@ export default function DaplinkCommunityFeed() {
                 ref={textareaRef}
                 value={content}
                 onChange={handleTextChange} 
-                placeholder="What is happening?!"
-                className={`w-full bg-transparent outline-none text-[20px] resize-none placeholder:${textSecondary} pt-2 pb-2 overflow-hidden`}
+                placeholder="What is happening in your creator stack?!"
+                className={`w-full bg-transparent outline-none text-base font-semibold resize-none placeholder:${textSecondary} pt-2 pb-2 overflow-hidden`}
                 rows={1}
               />
 
               {/* MENTION DROPDOWN MENU */}
-              {showMentionDropdown && mentionQuery.length > 0 && (
-                <div className={`absolute z-50 left-0 mt-1 w-72 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden border ${isDarkMode ? 'bg-black border-[#2f3336]' : 'bg-white border-[#eff3f4]'}`}>
-                  {isFetchingMentions ? (
-                    <div className="p-4 flex justify-center"><Loader2 size={16} className="animate-spin text-[#1d9bf0]" /></div>
-                  ) : mentionSuggestions?.length > 0 ? (
-                    mentionSuggestions.map((mu) => (
-                      <div 
-                        key={mu._id} 
-                        onClick={() => handleMentionSelect(mu)}
-                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}
-                      >
-                        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
-                          <Image src={mu.avatar} alt={mu.name} fill className="object-cover" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1">
-                            <p className={`font-bold text-[15px] truncate ${textPrimary}`}>{mu.name}</p>
-                            <CheckCircle2 size={14} className="text-[#1d9bf0] fill-white dark:fill-black shrink-0" />
+              <AnimatePresence>
+                {showMentionDropdown && mentionQuery.length > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className={`absolute z-50 left-0 mt-1 w-72 rounded-2xl shadow-xl overflow-hidden border backdrop-blur-md ${isDarkMode ? 'bg-zinc-950/95 border-zinc-850' : 'bg-white/95 border-zinc-150'}`}
+                  >
+                    {isFetchingMentions ? (
+                      <div className="p-4 flex justify-center"><Loader2 size={14} className="animate-spin text-indigo-555" /></div>
+                    ) : mentionSuggestions?.length > 0 ? (
+                      mentionSuggestions.map((mu) => (
+                        <div 
+                          key={mu._id} 
+                          onClick={() => handleMentionSelect(mu)}
+                          className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}
+                        >
+                          <div className="relative w-9 h-9 rounded-xl overflow-hidden shrink-0">
+                            <Image src={mu.avatar} alt={mu.name} fill className="object-cover" />
                           </div>
-                          <p className={`text-[15px] truncate ${textSecondary}`}>@{mu.handle}</p>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1">
+                              <p className={`font-bold text-xs truncate ${textPrimary}`}>{mu.name}</p>
+                              <CheckCircle2 size={12} className="text-blue-500 fill-white dark:fill-zinc-950 shrink-0" />
+                            </div>
+                            <p className={`text-[10px] font-semibold truncate ${textSecondary}`}>@{mu.handle}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className={`p-4 text-[14px] text-center ${textSecondary}`}>No matching users found</div>
-                  )}
-                </div>
-              )}
+                      ))
+                    ) : (
+                      <div className={`p-4 text-xs font-semibold text-center ${textSecondary}`}>No matching creators found</div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {mediaPreview && (
-                <div className="relative mt-2 mb-3 rounded-2xl overflow-hidden border border-[#2f3336]">
-                  <button onClick={removeMedia} className="absolute top-2 right-2 z-10 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-full backdrop-blur-sm transition-colors"><X size={18} /></button>
+                <div className="relative mt-3 mb-3 rounded-2xl overflow-hidden border border-zinc-800/60 shadow-md">
+                  <button onClick={removeMedia} className="absolute top-2.5 right-2.5 z-10 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-xl backdrop-blur-md transition-colors"><X size={15} /></button>
                   {mediaFile?.type.startsWith('video/') ? <video src={mediaPreview} controls className="w-full max-h-125 object-cover" /> : <Image src={mediaPreview} alt="Upload preview" width={800} height={600} className="w-full h-auto max-h-125 object-cover" />}
                 </div>
               )}
 
               {content.length > 0 && !mediaPreview && (
-                <div className={`border-b ${border} mb-2 w-[90%] mx-auto opacity-50`}></div>
+                <div className={`border-b ${border} mb-3.5 w-[95%] mx-auto opacity-30`}></div>
               )}
 
-              <div className="flex items-center justify-between mt-2 pt-1 border-t border-transparent">
-                <div className="flex gap-1 text-[#1d9bf0] -ml-2">
+              <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-transparent">
+                <div className="flex gap-1 text-indigo-500 -ml-2">
                   <input type="file" ref={fileInputRef} onChange={handleMediaSelect} accept="image/*,video/*" className="hidden" />
-                  <button onClick={() => fileInputRef.current?.click()} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#1d9bf0]/10 transition-colors" title="Media"><ImageIcon size={20} /></button>
-                  <button className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#1d9bf0]/10 transition-colors"><Code2 size={20} /></button>
+                  <button onClick={() => fileInputRef.current?.click()} className="w-8.5 h-8.5 rounded-xl flex items-center justify-center hover:bg-indigo-500/10 transition-colors cursor-pointer animate-pulse" title="Media Attachment"><ImageIcon size={16} /></button>
+                  <button className="w-8.5 h-8.5 rounded-xl flex items-center justify-center hover:bg-indigo-500/10 transition-colors cursor-pointer" title="Code block"><Code2 size={16} /></button>
                 </div>
+                
                 <button
                   onClick={() => createPostMutation.mutate()}
                   disabled={(!content.trim() && !mediaFile) || createPostMutation.isPending}
-                  className="bg-[#1d9bf0] text-white font-bold px-5 py-1.5 rounded-full text-[15px] hover:bg-[#1a8cd8] disabled:opacity-50 disabled:bg-[#1d9bf0]/50 transition-colors flex items-center gap-2"
+                  className="bg-indigo-650 hover:bg-indigo-600 text-white font-black px-5 py-2 rounded-xl text-xs hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:bg-indigo-650/50 flex items-center gap-2 cursor-pointer shadow-md shadow-indigo-650/10"
                 >
-                  {createPostMutation.isPending && <Loader2 size={16} className="animate-spin" />} Post
+                  {createPostMutation.isPending && <Loader2 size={12} className="animate-spin" />} Post Vibe
                 </button>
               </div>
             </div>
           </div>
         )}
 
+        {/* Dynamic transition wrap for Post list feed / Notifications list */}
         <div className="pb-20">
           {activeTab === 'notifications' ? (
             // NOTIFICATIONS VIEW 
@@ -876,42 +950,132 @@ export default function DaplinkCommunityFeed() {
               postsData.map((post) => (
                 <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
               ))
+          <AnimatePresence mode="wait">
+            {activeTab === 'notifications' ? (
+              // NOTIFICATIONS VIEW 
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.25 }}
+                key="notifications"
+              >
+                {unreadCount > 0 && (
+                  <div className={`px-5 py-3 flex justify-end border-b ${border} bg-zinc-950/5 dark:bg-white/[0.005]`}>
+                    <button 
+                      onClick={() => markAllAsReadMutation.mutate()}
+                      disabled={markAllAsReadMutation.isPending}
+                      className="text-xs text-indigo-500 hover:underline font-extrabold uppercase tracking-wider transition-colors disabled:opacity-50"
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+                )}
+                {isNotificationsLoading ? (
+                   <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>
+                ) : notificationsData?.length > 0 ? (
+                   notificationsData.map((notif) => {
+                     const isUnread = notif.status === 'unread';
+                     
+                     let actionText = "interacted with your post";
+                     let Icon = Bell;
+                     let iconColor = "text-indigo-500";
+                     
+                     if (notif.notificationType === 'mention') {
+                         actionText = "mentioned you in a post";
+                     } else if (notif.notificationType === 'like') {
+                         actionText = "liked your post";
+                         Icon = Heart;
+                         iconColor = "text-rose-500";
+                     } else if (notif.notificationType === 'comment') {
+                         actionText = "commented on your post";
+                         Icon = MessageSquare;
+                     } else if (notif.notificationType === 'repost') {
+                         actionText = "reposted your post";
+                         Icon = Repeat2;
+                         iconColor = "text-emerald-500";
+                     }
+                     
+                     return (
+                       <div 
+                         key={notif._id} 
+                         onClick={() => {
+                           if (isUnread) markAsReadMutation.mutate(notif._id);
+                         }}
+                         className={`px-5 py-4.5 border-b cursor-pointer transition-all duration-300 flex gap-4.5 ${border} ${isUnread ? (isDarkMode ? 'bg-indigo-500/10 hover:bg-indigo-500/15' : 'bg-indigo-500/5 hover:bg-indigo-500/10') : hoverBg}`}
+                       >
+                          <div className="relative shrink-0 mt-1">
+                            <Icon className={isUnread ? `${iconColor} drop-shadow-sm` : textSecondary} size={20} />
+                            {isUnread && <span className={`absolute top-0 right-0 w-2 h-2 bg-indigo-500 rounded-full border-2 border-white dark:border-zinc-950`}></span>}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <img src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-xl mb-2 object-cover border border-zinc-200/50 dark:border-white/5 shadow-xs" alt={notif.senderId?.handle} />
+                            <p className={`text-xs ${textPrimary}`}>
+                              <span className="font-extrabold">@{notif.senderId?.handle}</span> {actionText}.
+                            </p>
+                            {notif.postId && <p className={`text-xs mt-1.5 line-clamp-2 leading-relaxed ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
+                          </div>
+                       </div>
+                     );
+                   })
+                ) : (
+                   <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>No notifications yet. Activity will trigger alerts!</div>
+                )}
+              </motion.div>
             ) : (
-              <div className={`text-center py-10 text-[15px] ${textSecondary}`}>
-                 {currentTagFilter ? `No posts found for #${currentTagFilter}.` : activeTab === 'feed' ? "No posts yet. Be the first to post!" : "You haven't posted anything yet."}
-              </div>
-            )
-          )}
+              // POSTS VIEW
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.25 }}
+                key="posts"
+              >
+                {isPostsLoading ? (
+                  <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>
+                ) : postsData?.length > 0 ? (
+                  postsData.map((post) => (
+                    <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
+                  ))
+                ) : (
+                  <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>
+                     {currentTagFilter ? `No posts found matching #${currentTagFilter}.` : activeTab === 'feed' ? "No posts yet. Be the first to share your stack vibes!" : "You haven't posted anything yet."}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      {/*RIGHT COLUMN*/}
-      <div className="hidden lg:block w-[350px] pt-2 pb-20 space-y-4 sticky top-0 h-screen overflow-y-auto pl-4">
-        <div className={`rounded-2xl border flex flex-col ${isDarkMode ? 'bg-[#16181c] border-transparent' : 'bg-[#f7f9f9] border-[#eff3f4]'}`}>
-          <h2 className="font-extrabold text-[20px] px-4 py-3">What&apos;s happening</h2>
+      {/*RIGHT COLUMN (TRENDS)*/}
+      <div className="hidden lg:block w-[320px] pt-2 pb-20 space-y-4 sticky top-0 h-[calc(100vh-96px)] overflow-y-auto pl-4">
+        <div className={`rounded-3xl border flex flex-col p-1 transition-all ${isDarkMode ? 'bg-zinc-950/40 border-zinc-800/60 shadow-lg' : 'bg-white border-zinc-200/50 shadow-sm'}`}>
+          <h2 className="font-extrabold text-[13px] uppercase tracking-widest px-5 py-4 border-b border-inherit opacity-85">Trending Stack Topics</h2>
           
           {isTrendingLoading ? (
-            <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#1d9bf0]" /></div>
+            <div className="flex justify-center py-6"><Loader2 className="w-4 h-4 animate-spin text-indigo-500" /></div>
           ) : trendingTopics && trendingTopics.length > 0 ? (
             trendingTopics.map((trend, index) => (
-              <div key={index} onClick={() => handleTagClick(trend.tag)} className={`px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}>
-                <div className="flex justify-between">
-                  <span className={`text-[13px] ${textSecondary}`}>Trending topic</span>
-                  <MoreHorizontal size={16} className={textSecondary} />
+              <div key={index} onClick={() => handleTagClick(trend.tag)} className={`px-5 py-4.5 cursor-pointer transition-colors border-b last:border-b-0 border-inherit ${hoverBg}`}>
+                <div className="flex justify-between items-center">
+                  <span className={`text-[10px] font-extrabold uppercase tracking-wide ${textSecondary}`}>Trending topic</span>
+                  <MoreHorizontal size={14} className={textSecondary} />
                 </div>
-                <p className="font-bold text-[15px] mt-0.5 hover:underline">
+                <p className="font-bold text-xs mt-1 hover:underline text-indigo-500 dark:text-indigo-400">
                   {trend.tag.startsWith('#') ? trend.tag : `#${trend.tag}`}
                 </p>
-                <p className={`text-[13px] mt-1 ${textSecondary}`}>{formatNumber(trend.posts * 14)} posts</p>
+                <p className={`text-[10px] mt-1 font-semibold ${textSecondary}`}>{formatNumber(trend.posts * 14)} stack vibes</p>
               </div>
             ))
           ) : (
-            <div className={`px-4 py-6 text-center text-[15px] ${textSecondary}`}>
-              No trending topics right now. Post something!
+            <div className={`px-5 py-8 text-center text-xs font-semibold leading-relaxed ${textSecondary}`}>
+              No trending topics cataloged right now. Post your vibes!
             </div>
           )}
 
-          <div className={`px-4 py-3 cursor-pointer rounded-b-2xl transition-colors text-[#1d9bf0] text-[15px] ${hoverBg}`}>
+          <div className={`px-5 py-4.5 cursor-pointer rounded-b-3xl text-center border-t border-inherit text-indigo-500 font-extrabold text-[10px] uppercase tracking-widest hover:bg-indigo-500/5 transition-colors`}>
             Show more
           </div>
         </div>

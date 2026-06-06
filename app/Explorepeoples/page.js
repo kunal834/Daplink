@@ -4,7 +4,8 @@ import axios from 'axios';
 import Link from 'next/link';
 import { io } from "socket.io-client";
 import {
-  Send, User, Briefcase, Search, Loader2, X, Minimize2, CheckCircle2, Maximize2, Bell
+  Send, User, Briefcase, Search, Loader2, X, Minimize2, CheckCircle2, Maximize2, Bell,
+  Heart, Volume2, Eye
 } from 'lucide-react';
 import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
@@ -221,6 +222,187 @@ const ChatWidget = ({
     </div>
   );
 };
+
+function TrendingFeed({ theme, user }) {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchTrending = async () => {
+    try {
+      const res = await axios.get("/api/posts/recommend");
+      if (res.data?.success) {
+        setPosts(res.data.posts || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch trending posts", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrending();
+  }, []);
+
+  const cardBg = theme === 'dark' ? 'bg-[#141414] border-zinc-800' : 'bg-white border-zinc-200';
+  const textColors = theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900';
+  const subtextColors = theme === 'dark' ? 'text-zinc-400' : 'text-zinc-500';
+
+  return (
+    <div className={`rounded-2xl border p-5 flex flex-col gap-4 shadow-sm h-fit ${cardBg}`}>
+      <div className="flex items-center justify-between pb-3 border-b border-inherit">
+        <h2 className={`text-base font-black tracking-tight flex items-center gap-2 ${textColors}`}>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+          </span>
+          Trending Creator Feed
+        </h2>
+        <button
+          onClick={fetchTrending}
+          className="text-[10px] font-black uppercase tracking-wider text-indigo-400 hover:text-indigo-300 cursor-pointer"
+        >
+          Refresh
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
+        </div>
+      ) : posts.length > 0 ? (
+        <div className="space-y-4 max-h-[600px] overflow-y-auto pr-1 scrollbar-thin">
+          {posts.map((post) => {
+            const totalVotes = Array.isArray(post.pollOptions)
+              ? post.pollOptions.reduce((acc, opt) => acc + (opt.votes || 0), 0)
+              : 0;
+            const hasLiked = user?._id && Array.isArray(post.likes) && post.likes.includes(user._id);
+            const hasVoted = user?._id && Array.isArray(post.pollVoters) && post.pollVoters.includes(user._id);
+
+            const handleLike = async () => {
+              if (!user?._id) {
+                alert("Please login to react to posts");
+                return;
+              }
+              try {
+                const res = await axios.post(`/api/posts/${post._id}/interact`, { action: "like" });
+                if (res.data.success) {
+                  fetchTrending();
+                }
+              } catch (err) {
+                console.error("Like failed", err);
+              }
+            };
+
+            const handleVote = async (optionIndex) => {
+              if (!user?._id) {
+                alert("Please login to vote");
+                return;
+              }
+              if (hasVoted) return;
+              try {
+                const res = await axios.post(`/api/posts/${post._id}/interact`, {
+                  action: "vote",
+                  optionIndex
+                });
+                if (res.data.success) {
+                  fetchTrending();
+                }
+              } catch (err) {
+                console.error("Vote failed", err);
+              }
+            };
+
+            const author = post.authorInfo || {};
+            const borderStyle =
+              author.avatarBorder === 'emerald-glow' ? 'p-[2px] bg-gradient-to-tr from-emerald-500 via-teal-400 to-green-500 animate-pulse animate-duration-1000' :
+              author.avatarBorder === 'aurora' ? 'p-[2px] bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_8px_rgba(168,85,247,0.3)]' :
+              author.avatarBorder === 'neon-sunset' ? 'p-[2px] bg-gradient-to-tr from-orange-500 via-rose-500 to-fuchsia-600 shadow-[0_0_8px_rgba(244,63,94,0.3)]' :
+              author.avatarBorder === 'cyberpunk' ? 'p-[2px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 shadow-[0_0_8px_rgba(236,72,153,0.3)]' :
+              'border border-zinc-700/40';
+
+            return (
+              <div key={post._id} className="p-3.5 rounded-xl bg-black/5 dark:bg-white/5 border border-zinc-800/10 dark:border-white/5 space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center overflow-hidden shrink-0 ${borderStyle}`}>
+                    <img
+                      src={author.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(post.handle)}`}
+                      alt={post.handle}
+                      className="h-full w-full object-cover rounded-full bg-zinc-900"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Link href={`/u/${post.handle}`} className={`text-xs font-bold truncate hover:underline block ${textColors}`}>
+                      @{post.handle}
+                    </Link>
+                    <span className="text-[9px] text-zinc-500 font-medium">
+                      {new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                </div>
+
+                <p className={`text-xs font-medium leading-relaxed ${textColors} whitespace-pre-wrap`}>{post.content}</p>
+
+                {/* Polls */}
+                {post.type === 'poll' && (
+                  <div className="space-y-1.5 mt-1.5">
+                    {post.pollOptions.map((opt, idx) => {
+                      const percentage = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
+                      return (
+                        <div key={idx} className="relative overflow-hidden rounded-xl border border-zinc-800/10 dark:border-white/5 text-[10px]">
+                          {hasVoted ? (
+                            <>
+                              <div className="absolute inset-y-0 left-0 bg-indigo-500/10 transition-all duration-300" style={{ width: `${percentage}%` }} />
+                              <div className="relative z-10 flex items-center justify-between px-3 py-2 font-bold text-zinc-300">
+                                <span>{opt.optionText}</span>
+                                <span>{percentage}%</span>
+                              </div>
+                            </>
+                          ) : (
+                            <button
+                              onClick={() => handleVote(idx)}
+                              className="w-full text-left px-3 py-2 font-bold text-zinc-400 hover:bg-black/10 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                            >
+                              {opt.optionText}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Audio */}
+                {post.type === 'audio' && post.audioUrl && (
+                  <div className="p-2 rounded-xl bg-black/10 dark:bg-white/5 border border-zinc-800/10 dark:border-white/5 flex items-center gap-2">
+                    <Volume2 size={12} className="text-zinc-400 font-bold" />
+                    <audio src={post.audioUrl} controls className="w-full h-6 accent-indigo-600 text-[10px]" />
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3 pt-2.5 border-t border-zinc-800/5 dark:border-white/5">
+                  <button
+                    onClick={handleLike}
+                    className={`flex items-center gap-1 text-[10px] font-bold ${hasLiked ? 'text-rose-500' : 'text-zinc-500'}`}
+                  >
+                    <Heart size={10} fill={hasLiked ? 'currentColor' : 'none'} />
+                    {post.likes?.length || 0}
+                  </button>
+                  <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+                    <Eye size={10} />
+                    {post.views || 0}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className={`text-center text-xs py-8 ${subtextColors}`}>No posts trending yet.</p>
+      )}
+    </div>
+  );
+}
 
 // --- MAIN USER PROFILE COMPONENT ---
 const UserProfile = ({ params }) => {
@@ -547,104 +729,117 @@ const UserProfile = ({ params }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {visiblePeople.map((user, index) => {
-              const unread = unreadCounts[String(user._id)] || 0;
-              
-              // All profile data for the grid cards
-              const handle = user?.daplinkID?.handle || user?.handle || "Incognito";
-              const avatar = user?.daplinkID?.profile || user?.avatar || user?.profile;
-              const profession = user?.daplinkID?.profession || user?.profession || "Creator";
-              const bio = user?.daplinkID?.bio || user?.bio || "Building something amazing on Daplink. Ask me about my projects!";
-
-              return (
-                <div key={user._id || index} className={`relative group rounded-2xl border transition-all duration-200 flex flex-col p-6 shadow-sm hover:shadow-md ${colors.card} ${colors.cardHover}`}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {visiblePeople.map((user, index) => {
+                  const unread = unreadCounts[String(user._id)] || 0;
                   
-                  {unread > 0 && (
-                    <div className="absolute -top-3 -right-3 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg animate-bounce z-10">
-                      {unread}
-                    </div>
-                  )}
+                  // All profile data for the grid cards
+                  const handle = user?.daplinkID?.handle || user?.handle || "Incognito";
+                  const avatar = user?.daplinkID?.profile || user?.avatar || user?.profile;
+                  const profession = user?.daplinkID?.profession || user?.profession || "Creator";
+                  const bio = user?.daplinkID?.bio || user?.bio || "Building something amazing on Daplink. Ask me about my projects!";
+
+                  return (
+                    <div key={user._id || index} className={`relative group rounded-2xl border transition-all duration-200 flex flex-col p-6 shadow-sm hover:shadow-md ${colors.card} ${colors.cardHover}`}>
+                      
+                      {unread > 0 && (
+                        <div className="absolute -top-3 -right-3 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg animate-bounce z-10">
+                          {unread}
+                        </div>
+                      )}
 
                   <div className="flex items-start justify-between mb-4">
                     <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
                       {avatar ? (
                         <Image src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
                       ) : getInitials(handle)}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
+                          {avatar ? (
+                            <img src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
+                          ) : getInitials(handle)}
+                        </div>
+                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 border ${colors.tag}`}>
+                           <CheckCircle2 className="w-3 h-3" /> User
+                        </span>
+                      </div>
+
+                      <div className="mb-4 flex-1">
+                        <h3 className={`text-lg font-bold mb-1 ${colors.text}`}>@{handle}</h3>
+                        <div className={`flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider mb-3 ${colors.subtext}`}>
+                          <Briefcase className="w-3.5 h-3.5" />
+                          {profession}
+                        </div>
+                        <p className={`text-sm leading-relaxed line-clamp-2 ${colors.subtext}`}>
+                          {bio}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 pt-4 mt-auto">
+                        <Link href={`/u/${handle}`} className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${colors.btnSecondary}`}>
+                          <User className="w-4 h-4" /> Profile
+                        </Link>
+
+                        <button
+                          onClick={() => handleOpenChat(user)}
+                          disabled={handle === myHandle}
+                          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
+                            ${handle === myHandle ? "opacity-50 cursor-not-allowed bg-zinc-200 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" : colors.btnPrimary}
+                            ${unread > 0 ? "ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#141414]" : ""}
+                          `}
+                        >
+                          {unread > 0 ? <Bell className="w-4 h-4 animate-pulse text-red-500" /> : <Send className="w-4 h-4" />}
+                          {unread > 0 ? 'New Message' : 'Message'}
+                        </button>
+                      </div>
                     </div>
-                    <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 border ${colors.tag}`}>
-                       <CheckCircle2 className="w-3 h-3" /> User
-                    </span>
-                  </div>
+                  );
+                })}
+              </div>
 
-                  <div className="mb-4 flex-1">
-                    <h3 className={`text-lg font-bold mb-1 ${colors.text}`}>@{handle}</h3>
-                    <div className={`flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider mb-3 ${colors.subtext}`}>
-                      <Briefcase className="w-3.5 h-3.5" />
-                      {profession}
-                    </div>
-                    <p className={`text-sm leading-relaxed line-clamp-2 ${colors.subtext}`}>
-                      {bio}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 pt-4 mt-auto">
-                    <Link href={`/u/${handle}`} className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${colors.btnSecondary}`}>
-                      <User className="w-4 h-4" /> Profile
-                    </Link>
-
-                    <button
-                      onClick={() => handleOpenChat(user)}
-                      disabled={handle === myHandle}
-                      className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
-                        ${handle === myHandle ? "opacity-50 cursor-not-allowed bg-zinc-200 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" : colors.btnPrimary}
-                        ${unread > 0 ? "ring-2 ring-red-500 ring-offset-2 dark:ring-offset-[#141414]" : ""}
-                      `}
-                    >
-                      {unread > 0 ? <Bell className="w-4 h-4 animate-pulse text-red-500" /> : <Send className="w-4 h-4" />}
-                      {unread > 0 ? 'New Message' : 'Message'}
-                    </button>
-                  </div>
+              {!loading && hasMorePeople && (
+                <div className="flex justify-center pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_STEP)}
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border transition-colors ${colors.btnSecondary}`}
+                  >
+                    Load more
+                  </button>
                 </div>
-              );
-            })}
+              )}
+              
+              {people.length === 0 && !loading && (
+                <div className={`text-center py-24 rounded-2xl border border-dashed ${colors.emptyState}`}>
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 ${theme === 'dark' ? 'bg-zinc-800 text-zinc-400' : 'bg-zinc-100 text-zinc-400'}`}>
+                    <Search className="w-6 h-6" />
+                  </div>
+                  <h3 className={`text-base font-semibold ${colors.text}`}>No creators found yet</h3>
+                  <p className={`mt-2 text-sm ${colors.subtext}`}>
+                    Click the Explore Directory button above to fetch users.
+                  </p>
+                </div>
+              )}
+
+              {people.length > 0 && filteredPeople.length === 0 && !loading && (
+                <div className={`text-center py-24 rounded-2xl border border-dashed ${colors.emptyState}`}>
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 ${theme === 'dark' ? 'bg-zinc-800 text-zinc-400' : 'bg-zinc-100 text-zinc-400'}`}>
+                    <Search className="w-6 h-6" />
+                  </div>
+                  <h3 className={`text-base font-semibold ${colors.text}`}>No matching creators</h3>
+                  <p className={`mt-2 text-sm ${colors.subtext}`}>
+                    Try a different keyword.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="lg:col-span-4">
+              <TrendingFeed theme={theme} user={myself} />
+            </div>
           </div>
-
-          {!loading && hasMorePeople && (
-            <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_STEP)}
-                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border transition-colors ${colors.btnSecondary}`}
-              >
-                Load more
-              </button>
-            </div>
-          )}
-          
-          {people.length === 0 && !loading && (
-            <div className={`text-center py-24 rounded-2xl border border-dashed ${colors.emptyState}`}>
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 ${theme === 'dark' ? 'bg-zinc-800 text-zinc-400' : 'bg-zinc-100 text-zinc-400'}`}>
-                <Search className="w-6 h-6" />
-              </div>
-              <h3 className={`text-base font-semibold ${colors.text}`}>No creators found yet</h3>
-              <p className={`mt-2 text-sm ${colors.subtext}`}>
-                Click the Explore Directory button above to fetch users.
-              </p>
-            </div>
-          )}
-
-          {people.length > 0 && filteredPeople.length === 0 && !loading && (
-            <div className={`text-center py-24 rounded-2xl border border-dashed ${colors.emptyState}`}>
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 ${theme === 'dark' ? 'bg-zinc-800 text-zinc-400' : 'bg-zinc-100 text-zinc-400'}`}>
-                <Search className="w-6 h-6" />
-              </div>
-              <h3 className={`text-base font-semibold ${colors.text}`}>No matching creators</h3>
-              <p className={`mt-2 text-sm ${colors.subtext}`}>
-                Try a different keyword.
-              </p>
-            </div>
-          )}
 
         </div>
       </main>
