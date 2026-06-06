@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import Reveal from './ui/Reveal';
 import FeatureCard from './ui/FeatureCard';
+import Image from 'next/image';
 
 // You can create a simple animated item for the Ad Network card
 const TransactionItem = ({ theme, amount, source, delay }) => (
@@ -188,7 +189,7 @@ export default function FeaturesSection({ theme }) {
       <div className="flex items-center gap-3">
         {/* Avatar */}
         <div className="relative">
-          <img 
+          <Image
             src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" 
             alt="Avatar" 
             className="w-10 h-10 rounded-full border border-gray-500/10"

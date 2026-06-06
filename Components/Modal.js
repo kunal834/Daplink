@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image';
 import React from 'react';
 
 export default function Modal({ isOpen, onClose, children }) {
@@ -26,7 +27,7 @@ export default function Modal({ isOpen, onClose, children }) {
           zIndex: 1001
         }}
       >
-          <button onClick={onClose} className='w-4'> <img src="/close.png" alt="" /></button>
+          <button onClick={onClose} className='w-4'> <Image src="/close.png" alt="" /></button>
         {children}
       
       </div>

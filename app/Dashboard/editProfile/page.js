@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/Authenticate";
 import { useTheme } from "@/context/ThemeContext";
+import Image from "next/image";
 
 const PRESETS = [
   {
@@ -179,7 +180,7 @@ function PhonePreview({ profile, links, preset, vibe }) {
 
       <div className="relative z-10 flex h-full flex-col items-center overflow-y-auto p-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ fontFamily: vibe.font }}>
         <div className="mt-8 mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-white/15 bg-zinc-700">
-          <img
+          <Image
             src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
             alt="avatar"
             className="h-full w-full object-cover"
@@ -459,7 +460,7 @@ export default function EditProfilePage() {
           <div className={`rounded-3xl border p-5 ${ui.panel}`}>
             <div className="mb-6 flex items-center gap-5">
               <div className={`group relative h-24 w-24 overflow-hidden rounded-full ${ui.border}`}>
-                <img
+                <Image
                   src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
                   alt="avatar"
                   className="h-full w-full object-cover"

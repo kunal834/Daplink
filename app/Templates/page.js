@@ -1,14 +1,31 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { useState, useMemo } from 'react';
 import { Search, Sparkles, Layout, ArrowRight } from 'lucide-react';
 import Reveal from '@/Components/ui/Reveal';
 import { useTheme } from '@/context/ThemeContext';
 import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
+import Image from 'next/image';
 
 // --- MOCK DATA ---
 const templates = [
-  /* ... keep your existing templates array ... */
+  {
+    id: 1,
+    title: "Modern Portfolio",
+    description: "A sleek, dark-themed portfolio for digital artists and designers.",
+    category: "Designers",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80",
+    featured: true
+  },
+  {
+    id: 2,
+    title: "Dev Showcase",
+    description: "Highlight your GitHub repos and tech stack with this clean layout.",
+    category: "Developers",
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&q=80",
+    featured: false
+  }
 ];
 
 const categories = ["All", "Students", "Designers", "Developers", "Creators", "Business"];
@@ -18,33 +35,36 @@ export default function TemplateGallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [search, setSearch] = useState("");
 
-  const filteredTemplates = templates.filter(template =>
-    (selectedCategory === "All" || template.category === selectedCategory) &&
-    (template.title.toLowerCase().includes(search.toLowerCase()) || template.description.toLowerCase().includes(search.toLowerCase()))
-  );
+  // Memoize filtering for performance as the list grows
+  const filteredTemplates = useMemo(() => {
+    return templates.filter(template => {
+      const matchesCategory = selectedCategory === "All" || template.category === selectedCategory;
+      const matchesSearch = template.title.toLowerCase().includes(search.toLowerCase()) || 
+                            template.description.toLowerCase().includes(search.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [selectedCategory, search]);
 
   return (
     <>
       <Navbar />
       
-      {/* Container to handle global background and consistency */}
       <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 ${theme === 'dark' ? 'bg-[#020202]' : 'bg-gray-50'}`}>
         
-        {/* 1. Consistent Beta Banner (The Trust Element) */}
-        <div className="relative z-[40] w-full bg-teal-500/10 border-b border-teal-500/20 py-2 text-center pt-24 md:pt-2">
+        {/* 1. Beta Banner */}
+        <div className="relative z-40 w-full bg-teal-500/10 border-b border-teal-500/20 py-2 text-center pt-24 md:pt-4">
             <p className={`text-[10px] md:text-xs font-medium tracking-wide ${theme === 'dark' ? 'text-teal-400' : 'text-teal-600'}`}>
-                {`Template feature under construction stay tuned for more updates!`}
+                Template feature under construction stay tuned for updates!
             </p>
         </div>
 
         {/* Global Background Ambience */}
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[500px] h-[500px] bg-purple-900/20 top-[-10%] left-[-10%] rounded-full blur-[80px] animate-pulse"></div>
-          <div className="absolute w-[600px] h-[600px] bg-teal-900/20 bottom-[-10%] right-[-10%] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '-2s' }}></div>
+          <div className="absolute w-125 h-125 bg-purple-900/20 top-[-10%] left-[-10%] rounded-full blur-[80px] animate-pulse"></div>
+          <div className="absolute w-150 h-150 bg-teal-900/20 bottom-[-10%] right-[-10%] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '-2s' }}></div>
           {theme === 'light' && <div className="absolute inset-0 bg-white/60 z-[-1]"></div>}
         </div>
 
-        {/* 2. Main Content - Adjusted Padding for Banner */}
         <main className="relative z-10 pt-12 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
           {/* Header Section */}
@@ -58,23 +78,22 @@ export default function TemplateGallery() {
 
             <Reveal delayClass="stagger-1">
               <h1 className={`text-4xl md:text-6xl font-bold tracking-tight mb-4 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                Choose Your <span className="gradient-text">Perfect Template</span>
+                Choose Your <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-purple-500">Perfect Template</span>
               </h1>
             </Reveal>
 
             <Reveal delayClass="stagger-2">
               <p className={`text-lg max-w-2xl mx-auto ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-               {` Pre-built, customizable designs tailored for every profession. Start building your digital identity in seconds.`}
+                Pre-built, customizable designs tailored for every profession. Start building your digital identity in seconds.
               </p>
             </Reveal>
           </div>
 
-          {/* Controls Section (Search & Filter) */}
+          {/* Controls Section */}
           <Reveal delayClass="stagger-3" className="mb-12 relative z-20">
             <div className={`p-4 rounded-2xl border backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-4 ${theme === 'dark' ? 'bg-[#0A0A0A]/80 border-white/10' : 'bg-white/80 border-gray-200 shadow-xl'}`}>
 
-              {/* Search Bar */}
-              <div className={`relative w-full md:w-80 group`}>
+              <div className="relative w-full md:w-80 group">
                 <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${theme === 'dark' ? 'text-gray-500 group-focus-within:text-teal-400' : 'text-gray-400 group-focus-within:text-teal-600'}`} />
                 <input
                   type="text"
@@ -88,7 +107,6 @@ export default function TemplateGallery() {
                 />
               </div>
 
-              {/* Category Chips */}
               <div className="flex flex-wrap justify-center gap-2">
                 {categories.map(cat => (
                   <button
@@ -111,26 +129,25 @@ export default function TemplateGallery() {
           {/* Templates Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTemplates.map((template, idx) => (
-              <Reveal key={idx} delayClass={`stagger-${(idx % 3) + 1}`}>
-                <div className={`group relative flex flex-col overflow-hidden rounded-[2rem] h-[440px] transition-all duration-500 border hover:-translate-y-2 ${theme === 'dark' ? 'bg-[#0A0A0A] border-white/5 hover:border-teal-500/30' : 'bg-white border-gray-100 hover:border-teal-500/50 hover:shadow-xl'}`}>
+              <Reveal key={template.id} delayClass={`stagger-${(idx % 3) + 1}`}>
+                <div className={`group relative flex flex-col overflow-hidden rounded-4xl h-115 transition-all duration-500 border hover:-translate-y-2 ${theme === 'dark' ? 'bg-[#0A0A0A] border-white/5 hover:border-teal-500/30' : 'bg-white border-gray-100 hover:border-teal-500/50 hover:shadow-xl'}`}>
 
-                  {/* Image Section */}
                   <div className="relative h-56 w-full overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity" />
-                    <img
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity" />
+                    <Image
                       src={template.image}
                       alt={template.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
 
-                    {/* Category Badge */}
                     <div className="absolute top-4 left-4 z-20">
                       <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-black/60 backdrop-blur-md text-white border border-white/10">
                         {template.category}
                       </span>
                     </div>
 
-                    {/* Featured Badge */}
                     {template.featured && (
                       <div className="absolute top-4 right-4 z-20">
                         <span className="flex items-center gap-1 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-amber-500 text-black shadow-lg">
@@ -140,7 +157,6 @@ export default function TemplateGallery() {
                     )}
                   </div>
 
-                  {/* Content Section */}
                   <div className="flex flex-col flex-1 p-6">
                     <div className="flex justify-between items-start mb-3">
                       <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
@@ -164,7 +180,6 @@ export default function TemplateGallery() {
                       </button>
                     </div>
                   </div>
-
                 </div>
               </Reveal>
             ))}
@@ -172,15 +187,13 @@ export default function TemplateGallery() {
 
           {/* Empty State */}
           {filteredTemplates.length === 0 && (
-            <Reveal>
-              <div className="text-center py-20">
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${theme === 'dark' ? 'bg-white/5' : 'bg-gray-100'}`}>
-                  <Search className={`w-8 h-8 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}`} />
-                </div>
-                <h3 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>No templates found</h3>
-                <p className={theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}>Try adjusting your search or category filter.</p>
+            <div className="text-center py-20">
+              <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${theme === 'dark' ? 'bg-white/5' : 'bg-gray-100'}`}>
+                <Search className={`w-8 h-8 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}`} />
               </div>
-            </Reveal>
+              <h3 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>No templates found</h3>
+              <p className="text-gray-500">Try adjusting your search or category filter.</p>
+            </div>
           )}
 
         </main>

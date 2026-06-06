@@ -9,6 +9,7 @@ import {
   TrendingUp, MousePointerClick, AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // ==========================================
 // 1. BIO PAGE TAB
@@ -33,7 +34,7 @@ export const BioPageTab = ({ isDarkMode, profile, updateProfile }) => (
             isDarkMode ? 'bg-zinc-800/50 border-zinc-700 text-zinc-500 hover:border-indigo-500 hover:text-indigo-400' : 'bg-zinc-50 border-zinc-300 text-zinc-400 hover:border-indigo-500 hover:text-indigo-600'
           }`}>
             {profile.avatarUrl ? (
-              <img src={profile.avatarUrl} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Avatar" />
+              <Image src={profile.avatarUrl} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Avatar" />
             ) : (
               <Camera className="w-10 h-10 transition-transform duration-300 group-hover:scale-110" />
             )}
@@ -268,7 +269,7 @@ export const QrCodeTab = ({ isDarkMode, profile }) => (
       <div className="relative group perspective-1000 mb-8">
         <div className={`absolute -inset-1 bg-linear-to-r from-indigo-500 via-purple-500 to-rose-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200`}></div>
         <div className="relative bg-white p-6 rounded-3xl shadow-2xl border border-zinc-100 transform transition-transform duration-500 group-hover:scale-[1.02]">
-          <img 
+          <Image
             src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://daplink.app/${profile.username || 'user'}&color=000000&bgcolor=ffffff`} 
             alt="QR Code" 
             className="w-48 h-48 rounded-lg" 

@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import {
     Send, Search, MoreVertical, Check, CheckCheck, MessageSquare, Loader2
 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function MessagePage() {
     const [myself, setMyself] = useState(null);
@@ -274,7 +275,7 @@ export default function MessagePage() {
                                 <div className="relative shrink-0">
                                     <div className="w-12 h-12 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden shadow-sm">
                                         {profilePic ? (
-                                            <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                                            <Image src={profilePic} alt="Profile" className="w-full h-full object-cover" />
                                         ) : getInitials(handle)}
                                     </div>
                                     {unread > 0 && (
@@ -325,7 +326,7 @@ export default function MessagePage() {
                                 <div className="relative">
                                     <div className="w-10 h-10 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center font-bold overflow-hidden">
                                         {activeChat.user?.daplinkID?.profile || activeChat.user?.profile ? (
-                                            <img src={activeChat.user?.daplinkID?.profile || activeChat.user?.profile} className="w-full h-full object-cover" />
+                                            <Image src={activeChat.user?.daplinkID?.profile || activeChat.user?.profile} className="w-full h-full object-cover" alt='profile'/>
                                         ) : getInitials(activeChat.user?.daplinkID?.handle || activeChat.user?.handle || "In")}
                                     </div>
                                     <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#0a0a0a]"></div>

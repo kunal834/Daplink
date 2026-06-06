@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 const StorySection = ({ isDarkMode }) => {
@@ -41,7 +42,7 @@ const StorySection = ({ isDarkMode }) => {
                 isDarkMode ? 'border-gray-700 shadow-indigo-500/10' : 'border-gray-100'
               }`}
             >
-              <img
+              <Image
                 src="/innovate.png" 
                 alt="A large piece of construction machinery, symbolizing the building of a digital future."
                 className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"

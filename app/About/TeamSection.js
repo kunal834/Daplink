@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import { FiLinkedin } from 'react-icons/fi';
 
@@ -21,7 +22,7 @@ const TeamSection = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {teamMembers.map((member, index) => (
             <div key={index} className="flex flex-col items-center">
-              <img
+              <Image
                 className="w-32 h-32 rounded-full object-cover mb-4 ring-4 ring-indigo-300"
                 src={member.image}
                 alt={`Portrait of ${member.name}`}

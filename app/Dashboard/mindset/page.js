@@ -433,7 +433,7 @@ export default function DaplinkCommunityFeed() {
   // MENTIONS State
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
-  const [debouncedMentionQuery, setDebouncedMentionQuery] = useState(''); // NEW DEBOUNCE STATE
+  const [debouncedMentionQuery, setDebouncedMentionQuery] = useState('');
 
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -444,7 +444,6 @@ export default function DaplinkCommunityFeed() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // FIX: Debounce for Mention Searching to drastically speed up typing!
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedMentionQuery(mentionQuery), 200);
     return () => clearTimeout(timer);
@@ -506,7 +505,6 @@ export default function DaplinkCommunityFeed() {
     refetchInterval: 30000 
   });
 
-  // Fetch mention suggestions using the DEBOUNCED query 
   const { data: mentionSuggestions, isLoading: isFetchingMentions } = useQuery({
     queryKey: ['mentionSuggestions', debouncedMentionQuery],
     queryFn: async () => {
@@ -857,7 +855,7 @@ export default function DaplinkCommunityFeed() {
                         </div>
                         
                         <div className="flex-1">
-                          <img src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-full mb-2 object-cover" alt={notif.senderId?.handle} />
+                          <Image src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-full mb-2 object-cover" alt={notif.senderId?.handle} />
                           <p className={`text-[15px] ${textPrimary}`}>
                             <span className="font-bold">{notif.senderId?.handle}</span> {actionText}.
                           </p>
