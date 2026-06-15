@@ -137,7 +137,7 @@ export default function HeroSection({ theme }) {
             <Reveal delayClass="stagger-4" className="mt-10 flex items-center justify-center lg:justify-start gap-4">
               <div className="flex -space-x-3">
                 {[1, 5, 8].map(i => (
-                  <Image key={i} className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-black' : 'border-white'}`} src={`https://i.pravatar.cc/100?img=${i}`} alt="User" />
+                  <Image key={i} width={40} height={40} className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-black' : 'border-white'}`} src={`https://i.pravatar.cc/100?img=${i}`} alt="User" />
                 ))}
                 <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold ${theme === 'dark' ? 'border-black bg-gray-800 text-white' : 'border-white bg-gray-100 text-black'}`}>+more</div>
               </div>
@@ -160,7 +160,7 @@ export default function HeroSection({ theme }) {
                         <div className="h-full w-full overflow-y-auto pt-14 px-5 pb-8 no-scrollbar">
                           <div className="flex flex-col items-center mb-6">
                             <div className="w-24 h-24 rounded-full border-[3px] border-teal-500 p-1 mb-4 shadow-[0_0_20px_rgba(20,184,166,0.3)]">
-                              <Image src="https://images.unsplash.com/photo-1531379410502-63bfe8cdaf6f?fit=crop&w=300&h=300" alt="Profile" className="w-full h-full rounded-full object-cover" />
+                              <Image width={96} height={96} src="https://images.unsplash.com/photo-1531379410502-63bfe8cdaf6f?fit=crop&w=300&h=300" alt="Profile" className="w-full h-full rounded-full object-cover" />
                             </div>
                             <h3 className={`font-bold text-2xl mb-1 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Sarah Jenkins</h3>
                             <p className="text-sm text-gray-400">Digital Artist & UX Designer</p>

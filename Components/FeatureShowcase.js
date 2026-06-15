@@ -190,8 +190,10 @@ export default function FeaturesSection({ theme }) {
         {/* Avatar */}
         <div className="relative">
           <Image
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" 
-            alt="Avatar" 
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+            alt="Avatar"
+            width={40}
+            height={40}
             className="w-10 h-10 rounded-full border border-gray-500/10"
           />
           <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-[#151515]"></div>
