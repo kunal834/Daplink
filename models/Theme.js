@@ -18,4 +18,8 @@ const ThemeSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model("Theme", ThemeSchema);
+const Theme =
+  mongoose.models.Theme ||
+  mongoose.model("Theme", ThemeSchema);
+
+export default Theme;

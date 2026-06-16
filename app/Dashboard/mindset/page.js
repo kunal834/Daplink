@@ -950,102 +950,11 @@ export default function DaplinkCommunityFeed() {
               postsData.map((post) => (
                 <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
               ))
-          <AnimatePresence mode="wait">
-            {activeTab === 'notifications' ? (
-              // NOTIFICATIONS VIEW 
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.25 }}
-                key="notifications"
-              >
-                {unreadCount > 0 && (
-                  <div className={`px-5 py-3 flex justify-end border-b ${border} bg-zinc-950/5 dark:bg-white/[0.005]`}>
-                    <button 
-                      onClick={() => markAllAsReadMutation.mutate()}
-                      disabled={markAllAsReadMutation.isPending}
-                      className="text-xs text-indigo-500 hover:underline font-extrabold uppercase tracking-wider transition-colors disabled:opacity-50"
-                    >
-                      Mark all as read
-                    </button>
-                  </div>
-                )}
-                {isNotificationsLoading ? (
-                   <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>
-                ) : notificationsData?.length > 0 ? (
-                   notificationsData.map((notif) => {
-                     const isUnread = notif.status === 'unread';
-                     
-                     let actionText = "interacted with your post";
-                     let Icon = Bell;
-                     let iconColor = "text-indigo-500";
-                     
-                     if (notif.notificationType === 'mention') {
-                         actionText = "mentioned you in a post";
-                     } else if (notif.notificationType === 'like') {
-                         actionText = "liked your post";
-                         Icon = Heart;
-                         iconColor = "text-rose-500";
-                     } else if (notif.notificationType === 'comment') {
-                         actionText = "commented on your post";
-                         Icon = MessageSquare;
-                     } else if (notif.notificationType === 'repost') {
-                         actionText = "reposted your post";
-                         Icon = Repeat2;
-                         iconColor = "text-emerald-500";
-                     }
-                     
-                     return (
-                       <div 
-                         key={notif._id} 
-                         onClick={() => {
-                           if (isUnread) markAsReadMutation.mutate(notif._id);
-                         }}
-                         className={`px-5 py-4.5 border-b cursor-pointer transition-all duration-300 flex gap-4.5 ${border} ${isUnread ? (isDarkMode ? 'bg-indigo-500/10 hover:bg-indigo-500/15' : 'bg-indigo-500/5 hover:bg-indigo-500/10') : hoverBg}`}
-                       >
-                          <div className="relative shrink-0 mt-1">
-                            <Icon className={isUnread ? `${iconColor} drop-shadow-sm` : textSecondary} size={20} />
-                            {isUnread && <span className={`absolute top-0 right-0 w-2 h-2 bg-indigo-500 rounded-full border-2 border-white dark:border-zinc-950`}></span>}
-                          </div>
-                          
-                          <div className="flex-1">
-                            <img src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-xl mb-2 object-cover border border-zinc-200/50 dark:border-white/5 shadow-xs" alt={notif.senderId?.handle} />
-                            <p className={`text-xs ${textPrimary}`}>
-                              <span className="font-extrabold">@{notif.senderId?.handle}</span> {actionText}.
-                            </p>
-                            {notif.postId && <p className={`text-xs mt-1.5 line-clamp-2 leading-relaxed ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
-                          </div>
-                       </div>
-                     );
-                   })
-                ) : (
-                   <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>No notifications yet. Activity will trigger alerts!</div>
-                )}
-              </motion.div>
             ) : (
-              // POSTS VIEW
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.25 }}
-                key="posts"
-              >
-                {isPostsLoading ? (
-                  <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>
-                ) : postsData?.length > 0 ? (
-                  postsData.map((post) => (
-                    <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
-                  ))
-                ) : (
-                  <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>
-                     {currentTagFilter ? `No posts found matching #${currentTagFilter}.` : activeTab === 'feed' ? "No posts yet. Be the first to share your stack vibes!" : "You haven't posted anything yet."}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>
+                 {currentTagFilter ? `No posts found matching #${currentTagFilter}.` : activeTab === 'feed' ? "No posts yet. Be the first to share your stack vibes!" : "You haven't posted anything yet."}
+              </div>
+            )
         </div>
       </div>
 

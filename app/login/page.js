@@ -63,8 +63,10 @@ export default function Login() {
     setLoading(true);
     try {
       const response = await axios.post("/api/auth/register", { name, email, password });
-      if (response.data.user) {
-        toast.success("Signup Successful! Please login to continue.");
+      console.log(response);
+      if (response.data.success) {
+        toast.success(response.data.message || "Registration successful! Please check your email to verify your account.");
+        toast.info("Unverified accounts will be deleted after 24 hours.");
         setIsLogin(true); // Switch to login view automatically
       }
     } catch (error) {

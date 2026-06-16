@@ -750,20 +750,22 @@ const UserProfile = ({ params }) => {
                         </div>
                       )}
 
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
-                      {avatar ? (
-                        <Image src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
-                      ) : getInitials(handle)}
                       <div className="flex items-start justify-between mb-4">
                         <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
                           {avatar ? (
-                            <img src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
+                            <Image src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
                           ) : getInitials(handle)}
                         </div>
-                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 border ${colors.tag}`}>
-                           <CheckCircle2 className="w-3 h-3" /> User
-                        </span>
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
+                            {avatar ? (
+                              <img src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
+                            ) : getInitials(handle)}
+                          </div>
+                          <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1 border ${colors.tag}`}>
+                             <CheckCircle2 className="w-3 h-3" /> User
+                          </span>
+                        </div>
                       </div>
 
                       <div className="mb-4 flex-1">
