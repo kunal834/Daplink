@@ -16,17 +16,15 @@ import {
   Trash2,
   Upload,
   UserCircle,
+  MapPin,
+  Sparkle,
+  Camera,
+  Share2,
+  Vote,
+  Mic
 } from "lucide-react";
 import { useAuth } from "@/context/Authenticate";
 import { useTheme } from "@/context/ThemeContext";
-import Image from "next/image";
-  Check, Globe, GripVertical, Layout, Palette,
-  Plus, Save, SlidersHorizontal, Sparkles, Trash2,
-  Upload, UserCircle, MapPin, Sparkle, Camera,
-  Share2, Vote, Mic
-} from 'lucide-react';
-import { useAuth } from '@/context/Authenticate';
-import { useTheme } from '@/context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PRESETS = [
@@ -187,7 +185,6 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
         color: textColor,
       };
     }
-    // Default 'glass'
     return {
       backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.6)',
       backdropFilter: `blur(${vibe.blur}px)`,
@@ -216,31 +213,6 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
           }}
         />
       )}
-      <div className={`absolute inset-0 ${overlayClass}`} />
-
-      <div className="relative z-10 flex h-full flex-col items-center overflow-y-auto p-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ fontFamily: vibe.font }}>
-        <div className="mt-8 mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-white/15 bg-zinc-700">
-          <Image
-            src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
-            alt="avatar"
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <h2 className="mb-1 text-xl font-black" style={{ color: textColor }}>
-          {profile.name || "Your Name"}
-        </h2>
-        <p className={`mb-6 px-4 text-center text-xs ${vibe.softText ? "opacity-75" : "opacity-95"}`} style={{ color: textColor }}>
-          {profile.bio || "Write something about yourself..."}
-        </p>
-
-        <div className="w-full space-y-3">
-          {active.map((link) => (
-            <div
-              key={link.id}
-              className="w-full cursor-pointer px-4 py-3.5 text-center text-sm font-semibold transition-transform active:scale-95"
-              style={{ ...buttonStyle, borderRadius: `${vibe.radius}px` }}
-            >
-              {link.title}
       <div className={`absolute inset-0 ${overlayClass} z-0`} />
       
       <div className="absolute inset-0 z-20 pointer-events-none bg-linear-to-tr from-transparent via-white/[0.05] to-white/[0.12] mix-blend-overlay" />
@@ -252,10 +224,8 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
 
       <div className="relative z-10 flex h-full flex-col items-center overflow-y-auto p-5 pt-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ fontFamily: vibe.font }}>
         
-        {/* Render layouts dynamically based on vibe.layoutStyle */}
         {vibe.layoutStyle === 'bento' && (
           <div className="w-full space-y-3 mt-4 animate-fade-in">
-            {/* Bento Profile Card */}
             <div style={getCardStyle(vibe.cardStyle)} className="w-full p-4 flex flex-col items-center justify-center text-center">
               <div className={`relative mb-2 shrink-0 ${
                 avatarBorder === 'emerald-glow' ? 'p-[2px] bg-gradient-to-tr from-emerald-500 via-teal-400 to-green-500 animate-pulse' :
@@ -279,7 +249,6 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
               <p className="text-[9px] opacity-75 mt-1 line-clamp-2 max-w-[200px]">{profile.bio || 'Digital Creator'}</p>
             </div>
 
-            {/* Bento Stats Card */}
             <div style={getCardStyle(vibe.cardStyle)} className="w-full py-2 px-3 flex items-center justify-around text-[10px] font-extrabold uppercase tracking-wide">
               <div className="flex flex-col items-center">
                 <span>1.4k</span>
@@ -292,7 +261,6 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
               </div>
             </div>
 
-            {/* Bento Links Grid */}
             <div className="grid grid-cols-2 gap-2">
               {active.map((link, idx) => (
                 <div 
@@ -311,7 +279,6 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
 
         {vibe.layoutStyle === 'split' && (
           <div className="w-full space-y-3 mt-4 animate-fade-in">
-            {/* Split Top Sticky Profile Card */}
             <div style={getCardStyle(vibe.cardStyle)} className="w-full p-4 flex items-center gap-3">
               <div className="h-12 w-12 rounded-full overflow-hidden shrink-0 border border-white/10">
                 <img src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || 'user')}`} alt="avatar" className="h-full w-full object-cover" />
@@ -322,7 +289,6 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
               </div>
             </div>
 
-            {/* Scrollable Links Portion */}
             <div className="w-full space-y-2.5 max-h-[300px] overflow-y-auto pr-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {active.map((link) => (
                 <div 
@@ -585,7 +551,6 @@ export default function EditProfilePage() {
     });
     setLinks(mappedLinks.length ? mappedLinks : [{ id: '1', title: 'My Link', url: '', active: true }]);
 
-    // Map AI Config from DB
     setAiConfig({
       aiEnabled: daplink.aiConfig?.aiEnabled ?? false,
       aiPrompt: daplink.aiConfig?.aiPrompt ?? "Hi there! I'm an AI assistant. How can I help you today?",
@@ -843,48 +808,6 @@ export default function EditProfilePage() {
                   </div>
                 </div>
 
-        {tab === "profile" && (
-          <div className={`rounded-3xl border p-5 ${ui.panel}`}>
-            <div className="mb-6 flex items-center gap-5">
-              <div className={`group relative h-24 w-24 overflow-hidden rounded-full ${ui.border}`}>
-                <Image
-                  src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
-                  alt="avatar"
-                  className="h-full w-full object-cover"
-                />
-                <label className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100  ">
-                  <Plus size={18} className="text-white" />
-                  <input type="file" accept="image/*" className="hidden" onChange={onAvatarUpload} />
-                </label>
-              </div>
-              <p className={`text-sm ${ui.muted}`}>Upload avatar, edit location and bio.</p>
-            </div>
-            <div className="space-y-3">
-            <label className={`text-md font-semibold mx-2 ${ui.muted}`}>Display Handle</label>
-              <input
-                value={profile?.name}
-                // onChange={(e) => setProfile((p) => ({ ...p, handle: e.target.value }))}
-                disabled={true}
-                className={`w-full rounded-2xl border px-4 py-3 mb-4 cursor-not-allowed ${ui.input}`}
-                placeholder="Display Handle"
-              />
-              {/* <label className={`text-xs font-semibold ${ui.muted}`}>Note: Display Handle cannot be changed due to technical limitations. Please contact support if you want to change it.</label> */}
-
-              <label className={`text-md font-semibold m-2 ${ui.muted}`}>Location</label>
-              <input
-                value={profile.location}
-                onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
-                className={`w-full rounded-2xl border px-4 py-3 ${ui.input}`}
-                placeholder="Location"
-              />
-              <label className={`text-md font-semibold m-2 ${ui.muted}`}>Bio</label>
-              <textarea
-                rows={3}
-                value={profile.bio}
-                onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
-                className={`w-full resize-none rounded-2xl border px-4 py-3 ${ui.input}`}
-                placeholder="Bio"
-              />
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -919,7 +842,6 @@ export default function EditProfilePage() {
                   </div>
                 </div>
 
-                {/* Custom Avatar Ring and status selector */}
                 <div className="pt-6 border-t border-inherit space-y-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-400">Avatar Identity Rings</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -953,7 +875,6 @@ export default function EditProfilePage() {
                     </div>
                   </div>
                 </div>
-
               </motion.div>
             )}
 
@@ -1007,7 +928,6 @@ export default function EditProfilePage() {
                   })}
                 </div>
 
-                {/* Custom Layout Templates Studio */}
                 <div className={`rounded-3xl border p-5 ${ui.panel}`}>
                   <div className="mb-4 flex items-center gap-2">
                     <Layout size={14} className="text-teal-400" />
@@ -1254,7 +1174,6 @@ export default function EditProfilePage() {
                 transition={{ duration: 0.25 }}
                 className="space-y-6"
               >
-                {/* Feed Composer Card */}
                 <div className={`rounded-3xl border p-6 space-y-5 ${ui.panel}`}>
                   <div className="space-y-1">
                     <h3 className="text-sm font-bold flex items-center gap-2">
@@ -1264,7 +1183,6 @@ export default function EditProfilePage() {
                     <p className={`text-xs ${ui.muted}`}>Create rich updates, interactive polls, or voice note files to engage your community feed.</p>
                   </div>
 
-                  {/* Post Type Selector */}
                   <div className="flex gap-2 p-1 rounded-xl bg-black/10 dark:bg-white/5 border border-zinc-800/10 dark:border-white/5 w-fit">
                     {[
                       { id: 'text', icon: Layout, label: 'Text Card' },
@@ -1291,7 +1209,6 @@ export default function EditProfilePage() {
                     })}
                   </div>
 
-                  {/* Post Content Input */}
                   <div className="space-y-2">
                     <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Post Message</label>
                     <textarea
@@ -1307,7 +1224,6 @@ export default function EditProfilePage() {
                     />
                   </div>
 
-                  {/* Type Specific Fields */}
                   {postType === 'poll' && (
                     <div className="space-y-3 p-4.5 rounded-2xl border border-dashed border-zinc-700/50">
                       <div className="flex items-center justify-between">
@@ -1390,7 +1306,6 @@ export default function EditProfilePage() {
                 transition={{ duration: 0.25 }}
                 className="space-y-6"
               >
-                {/* AI Enable Toggle Card */}
                 <div className={`rounded-3xl border p-6 flex items-center justify-between ${ui.panel}`}>
                   <div className="space-y-1">
                     <h3 className="text-sm font-bold flex items-center gap-2">
@@ -1410,7 +1325,6 @@ export default function EditProfilePage() {
                   </button>
                 </div>
 
-                {/* AI Settings Form */}
                 <div className={`rounded-3xl border p-6 space-y-5 ${ui.panel}`}>
                   <div className="space-y-2">
                     <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>AI Welcome Message</label>
@@ -1434,14 +1348,12 @@ export default function EditProfilePage() {
                   </div>
                 </div>
 
-                {/* FAQ Trainer Section */}
                 <div className={`rounded-3xl border p-6 space-y-6 ${ui.panel}`}>
                   <div>
                     <h3 className="text-sm font-bold">Trained FAQ Base</h3>
                     <p className={`text-xs mt-1 ${ui.muted}`}>Provide exact Q&A pairs to train your AI on specific questions visitors frequently ask.</p>
                   </div>
 
-                  {/* FAQ Creator Form */}
                   <div className="flex flex-col gap-3 p-4.5 rounded-2xl border border-dashed border-zinc-700/50">
                     <input
                       value={faqQuestion}
@@ -1473,7 +1385,6 @@ export default function EditProfilePage() {
                     </button>
                   </div>
 
-                  {/* FAQ List */}
                   <div className="space-y-3">
                     {aiConfig.aiFaqs.map((faq, index) => (
                       <div key={index} className="flex items-start justify-between gap-4 p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-zinc-800/10 dark:border-white/5">

@@ -1,0 +1,152 @@
+"filename", "language", "JavaScript", "Markdown", "XML", "JSON", "JavaScript JSX", "PostCSS", "JSON with Comments", "comment", "blank", "total"
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\CalltoAction.js", "JavaScript", 48, 0, 0, 0, 0, 0, 0, 2, 6, 56
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ClientAnalytics.js", "JavaScript", 24, 0, 0, 0, 0, 0, 0, 0, 6, 30
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ClientLayout.js", "JavaScript", 33, 0, 0, 0, 0, 0, 0, 0, 6, 39
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\DashboardSidebar.js", "JavaScript", 282, 0, 0, 0, 0, 0, 0, 0, 22, 304
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\DashboardTabs.js", "JavaScript", 459, 0, 0, 0, 0, 0, 0, 18, 41, 518
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\DashboardTopbar.jsx", "JavaScript JSX", 0, 0, 0, 0, 344, 0, 0, 6, 41, 391
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\WorldMap.jsx", "JavaScript JSX", 0, 0, 0, 0, 346, 0, 0, 2, 29, 377
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\FAQs.js", "JavaScript", 58, 0, 0, 0, 0, 0, 0, 0, 4, 62
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\FeatureShowcase.js", "JavaScript", 245, 0, 0, 0, 0, 0, 0, 1, 21, 267
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Footer.js", "JavaScript", 89, 0, 0, 0, 0, 0, 0, 2, 3, 94
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Modal.js", "JavaScript", 31, 0, 0, 0, 0, 0, 0, 0, 6, 37
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Navbar.js", "JavaScript", 246, 0, 0, 0, 0, 0, 0, 0, 19, 265
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\PostHogProvider.jsx", "JavaScript JSX", 0, 0, 0, 0, 39, 0, 0, 2, 9, 50
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Pricing.js", "JavaScript", 228, 0, 0, 0, 0, 0, 0, 2, 16, 246
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Realanalytics.js", "JavaScript", 294, 0, 0, 0, 0, 0, 0, 5, 28, 327
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\SkeletonScreen\GenerateSkeleton.js", "JavaScript", 26, 0, 0, 0, 0, 0, 0, 0, 5, 31
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\SkeletonScreen\dashboardSkeleton.js", "JavaScript", 65, 0, 0, 0, 0, 0, 0, 0, 8, 73
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Testimonial.js", "JavaScript", 91, 0, 0, 0, 0, 0, 0, 1, 11, 103
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\heroSection.js", "JavaScript", 189, 0, 0, 0, 0, 0, 0, 4, 21, 214
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\modals\followModals.jsx", "JavaScript JSX", 0, 0, 0, 0, 114, 0, 0, 6, 14, 134
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\modals\userList.jsx", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\ArticleCard.js", "JavaScript", 56, 0, 0, 0, 0, 0, 0, 0, 9, 65
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\FeatureCard.js", "JavaScript", 20, 0, 0, 0, 0, 0, 0, 0, 4, 24
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\FooterColumn.js", "JavaScript", 20, 0, 0, 0, 0, 0, 0, 1, 2, 23
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\JobItem.js", "JavaScript", 13, 0, 0, 0, 0, 0, 0, 0, 1, 14
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\Reveal.js", "JavaScript", 28, 0, 0, 0, 0, 0, 0, 0, 5, 33
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\StepWrapper.jsx", "JavaScript JSX", 0, 0, 0, 0, 88, 0, 0, 6, 16, 110
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\TestimonialCard.js", "JavaScript", 28, 0, 0, 0, 0, 0, 0, 0, 5, 33
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\README.md", "Markdown", 0, 209, 0, 0, 0, 0, 0, 0, 40, 249
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\CTASection.js", "JavaScript", 27, 0, 0, 0, 0, 0, 0, 0, 1, 28
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\HeroSection.js", "JavaScript", 22, 0, 0, 0, 0, 0, 0, 0, 2, 24
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\MetricSection.js", "JavaScript", 27, 0, 0, 0, 0, 0, 0, 0, 3, 30
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\StorySection.js", "JavaScript", 54, 0, 0, 0, 0, 0, 0, 0, 4, 58
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\TeamSection.js", "JavaScript", 38, 0, 0, 0, 0, 0, 0, 0, 3, 41
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\ValueSection.js", "JavaScript", 48, 0, 0, 0, 0, 0, 0, 1, 3, 52
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\page.js", "JavaScript", 39, 0, 0, 0, 0, 0, 0, 2, 8, 49
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Blog\Newsletter.js", "JavaScript", 49, 0, 0, 0, 0, 0, 0, 1, 9, 59
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Blog\page.js", "JavaScript", 144, 0, 0, 0, 0, 0, 0, 2, 17, 163
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Contact\page.js", "JavaScript", 276, 0, 0, 0, 0, 0, 0, 5, 24, 305
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\Monetize\page.js", "JavaScript", 282, 0, 0, 0, 0, 0, 0, 6, 28, 316
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\analytics\page.js", "JavaScript", 1565, 0, 0, 0, 0, 0, 0, 0, 93, 1658
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\bioPage\page.jsx", "JavaScript JSX", 0, 0, 0, 0, 178, 0, 0, 11, 20, 209
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\community\page.jsx", "JavaScript JSX", 0, 0, 0, 0, 185, 0, 0, 7, 14, 206
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\editProfile\page.js", "JavaScript", 1342, 0, 0, 0, 0, 0, 0, 2, 92, 1436
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\Qrcode\Qrcode.js", "JavaScript", 283, 0, 0, 0, 0, 0, 0, 4, 29, 316
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\Qrcode\page.js", "JavaScript", 19, 0, 0, 0, 0, 0, 0, 0, 5, 24
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\URLshorten\page.js", "JavaScript", 68, 0, 0, 0, 0, 0, 0, 0, 13, 81
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\URLshorten\shorten.js", "JavaScript", 320, 0, 0, 0, 0, 0, 0, 1, 34, 355
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\page.jsx", "JavaScript JSX", 0, 0, 0, 0, 95, 0, 0, 4, 12, 111
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\layout.jsx", "JavaScript JSX", 0, 0, 0, 0, 26, 0, 0, 1, 7, 34
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\messages\page.js", "JavaScript", 463, 0, 0, 0, 0, 0, 0, 0, 47, 510
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\mindset\page.js", "JavaScript", 964, 0, 0, 0, 0, 0, 0, 19, 103, 1086
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\page.js", "JavaScript", 4, 0, 0, 0, 0, 0, 0, 0, 2, 6
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\settings\page.js", "JavaScript", 301, 0, 0, 0, 0, 0, 0, 11, 30, 342
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Docu\page.js", "JavaScript", 151, 0, 0, 0, 0, 0, 0, 0, 13, 164
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Explorepeoples\page.js", "JavaScript", 763, 0, 0, 0, 0, 0, 0, 3, 97, 863
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\GoalStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 58, 0, 0, 2, 7, 67
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\LinkStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 48, 0, 0, 2, 6, 56
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\PlatformStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 78, 0, 0, 2, 9, 89
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\ProfileStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 90, 0, 0, 4, 12, 106
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\PublishStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 29, 0, 0, 2, 7, 38
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\SuccessStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 101, 0, 0, 7, 14, 122
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\ThemeStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 58, 0, 0, 4, 9, 71
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\UsernameStep.jsx", "JavaScript JSX", 0, 0, 0, 0, 99, 0, 0, 6, 15, 120
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\page.js", "JavaScript", 287, 0, 0, 0, 0, 0, 0, 10, 33, 330
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Helper\getDataFromToken.js", "JavaScript", 14, 0, 0, 0, 0, 0, 0, 3, 5, 22
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Pricing\page.js", "JavaScript", 72, 0, 0, 0, 0, 0, 0, 2, 8, 82
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Products\page.js", "JavaScript", 234, 0, 0, 0, 0, 0, 0, 3, 29, 266
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Templates\page.js", "JavaScript", 177, 0, 0, 0, 0, 0, 0, 2, 25, 204
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Trust\page.js", "JavaScript", 126, 0, 0, 0, 0, 0, 0, 0, 13, 139
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\[code]\route.js", "JavaScript", 65, 0, 0, 0, 0, 0, 0, 2, 6, 73
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\follow\route.js", "JavaScript", 43, 0, 0, 0, 0, 0, 0, 2, 15, 60
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\getFollow\[userId]\route.js", "JavaScript", 53, 0, 0, 0, 0, 0, 0, 4, 9, 66
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\getuser\route.js", "JavaScript", 39, 0, 0, 0, 0, 0, 0, 0, 4, 43
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\isFollowing\route.js", "JavaScript", 23, 0, 0, 0, 0, 0, 0, 2, 8, 33
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\unfollow\route.js", "JavaScript", 17, 0, 0, 0, 0, 0, 0, 0, 1, 18
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(UrlShortner)\addLink\route.js", "JavaScript", 46, 0, 0, 0, 0, 0, 0, 0, 5, 51
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(UrlShortner)\getLinks\route.js", "JavaScript", 22, 0, 0, 0, 0, 0, 0, 0, 2, 24
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\check-handle\route.js", "JavaScript", 18, 0, 0, 0, 0, 0, 0, 0, 7, 25
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\complete\route.js", "JavaScript", 20, 0, 0, 0, 0, 0, 0, 0, 7, 27
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\links\route.js", "JavaScript", 20, 0, 0, 0, 0, 0, 0, 0, 8, 28
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\profile\route.js", "JavaScript", 21, 0, 0, 0, 0, 0, 0, 0, 7, 28
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\status\route.js", "JavaScript", 12, 0, 0, 0, 0, 0, 0, 0, 4, 16
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\theme\route.js", "JavaScript", 18, 0, 0, 0, 0, 0, 0, 1, 7, 26
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\username\route.js", "JavaScript", 38, 0, 0, 0, 0, 0, 0, 1, 10, 49
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\ContactusApi\route.js", "JavaScript", 26, 0, 0, 0, 0, 0, 0, 0, 6, 32
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\GetReview\route.js", "JavaScript", 16, 0, 0, 0, 0, 0, 0, 0, 10, 26
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Peoples\route.js", "JavaScript", 26, 0, 0, 0, 0, 0, 0, 0, 5, 31
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Review\route.js", "JavaScript", 26, 0, 0, 0, 0, 0, 0, 0, 16, 42
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Socket\route.js", "JavaScript", 4, 0, 0, 0, 0, 0, 0, 0, 3, 7
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Updatedetails\route.js", "JavaScript", 134, 0, 0, 0, 0, 0, 0, 0, 8, 142
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\ai\chat\route.js", "JavaScript", 139, 0, 0, 0, 0, 0, 0, 9, 24, 172
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\forgot-password\route.js", "JavaScript", 59, 0, 0, 0, 0, 0, 0, 0, 14, 73
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\google\callback\route.js", "JavaScript", 58, 0, 0, 0, 0, 0, 0, 3, 19, 80
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\login\route.js", "JavaScript", 70, 0, 0, 0, 0, 0, 0, 4, 11, 85
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\logout\route.js", "JavaScript", 23, 0, 0, 0, 0, 0, 0, 1, 5, 29
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\me\route.js", "JavaScript", 34, 0, 0, 0, 0, 0, 0, 5, 10, 49
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\register\route.js", "JavaScript", 49, 0, 0, 0, 0, 0, 0, 3, 13, 65
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\socket-token\route.js", "JavaScript", 19, 0, 0, 0, 0, 0, 0, 0, 4, 23
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\backend\[...path]\route.js", "JavaScript", 69, 0, 0, 0, 0, 0, 0, 0, 15, 84
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\getDaplink\route.js", "JavaScript", 21, 0, 0, 0, 0, 0, 0, 0, 3, 24
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\getQrcode\route.js", "JavaScript", 16, 0, 0, 0, 0, 0, 0, 0, 8, 24
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\links\[handle]\route.js", "JavaScript", 48, 0, 0, 0, 0, 0, 0, 1, 10, 59
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posthog\analytics\route.js", "JavaScript", 507, 0, 0, 0, 0, 0, 0, 0, 37, 544
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posts\[postId]\interact\route.js", "JavaScript", 92, 0, 0, 0, 0, 0, 0, 5, 14, 111
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posts\recommend\route.js", "JavaScript", 55, 0, 0, 0, 0, 0, 0, 6, 12, 73
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posts\route.js", "JavaScript", 94, 0, 0, 0, 0, 0, 0, 1, 17, 112
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\qrcode\route.js", "JavaScript", 34, 0, 0, 0, 0, 0, 0, 2, 8, 44
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\reset-password\route.js", "JavaScript", 43, 0, 0, 0, 0, 0, 0, 0, 10, 53
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\theme\themes\route.js", "JavaScript", 27, 0, 0, 0, 0, 0, 0, 0, 6, 33
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\globals.css", "PostCSS", 0, 0, 0, 0, 0, 186, 0, 17, 48, 251
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\layout.js", "JavaScript", 76, 0, 0, 0, 0, 0, 0, 4, 17, 97
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\login\page.js", "JavaScript", 276, 0, 0, 0, 0, 0, 0, 1, 25, 302
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\page.js", "JavaScript", 34, 0, 0, 0, 0, 0, 0, 3, 8, 45
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\reset-password\page.jsx", "JavaScript JSX", 0, 0, 0, 0, 115, 0, 0, 0, 13, 128
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\robots.js", "JavaScript", 10, 0, 0, 0, 0, 0, 0, 0, 0, 10
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\sitemap.js", "JavaScript", 35, 0, 0, 0, 0, 0, 0, 5, 5, 45
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\u\[handle]\page.js", "JavaScript", 1065, 0, 0, 0, 0, 0, 0, 2, 80, 1147
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\context\Authenticate.js", "JavaScript", 98, 0, 0, 0, 0, 0, 0, 3, 16, 117
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\context\ThemeContext.js", "JavaScript", 32, 0, 0, 0, 0, 0, 0, 2, 9, 43
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\eslint.config.mjs", "JavaScript", 10, 0, 0, 0, 0, 0, 0, 0, 5, 15
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\jsconfig.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 7, 0, 1, 8
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\QueryProvider.js", "JavaScript", 19, 0, 0, 0, 0, 0, 0, 1, 4, 24
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\api\client.js", "JavaScript", 17, 0, 0, 0, 0, 0, 0, 0, 4, 21
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\api\onboarding.js", "JavaScript", 13, 0, 0, 0, 0, 0, 0, 0, 7, 20
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\auth.js", "JavaScript", 26, 0, 0, 0, 0, 0, 0, 0, 10, 36
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\mongodb.js", "JavaScript", 33, 0, 0, 0, 0, 0, 0, 6, 12, 51
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\ratelimit.js", "JavaScript", 14, 0, 0, 0, 0, 0, 0, 0, 2, 16
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\redis.js", "JavaScript", 9, 0, 0, 0, 0, 0, 0, 0, 4, 13
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\registerModels.js", "JavaScript", 9, 0, 0, 0, 0, 0, 0, 1, 2, 12
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\middleware.js", "JavaScript", 16, 0, 0, 0, 0, 0, 0, 1, 5, 22
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Contact.js", "JavaScript", 21, 0, 0, 0, 0, 0, 0, 0, 6, 27
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Link.js", "JavaScript", 97, 0, 0, 0, 0, 0, 0, 7, 14, 118
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Post.js", "JavaScript", 56, 0, 0, 0, 0, 0, 0, 0, 3, 59
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Review.js", "JavaScript", 27, 0, 0, 0, 0, 0, 0, 0, 6, 33
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\ShortUrl.js", "JavaScript", 23, 0, 0, 0, 0, 0, 0, 0, 4, 27
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Theme.js", "JavaScript", 16, 0, 0, 0, 0, 0, 0, 2, 5, 23
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\qrcode.js", "JavaScript", 20, 0, 0, 0, 0, 0, 0, 0, 3, 23
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\user.js", "JavaScript", 49, 0, 0, 0, 0, 0, 0, 2, 4, 55
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\next.config.mjs", "JavaScript", 29, 0, 0, 0, 0, 0, 0, 3, 3, 35
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\package-lock.json", "JSON", 0, 0, 0, 8631, 0, 0, 0, 0, 1, 8632
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\package.json", "JSON", 0, 0, 0, 62, 0, 0, 0, 0, 1, 63
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\postcss.config.mjs", "JavaScript", 4, 0, 0, 0, 0, 0, 0, 0, 2, 6
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\file.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\geography\world.json", "JSON", 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\globe.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\next.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\window.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\utils\GenerateShortCode.js", "JavaScript", 4, 0, 0, 0, 0, 0, 0, 0, 1, 5
+"e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\utils\Socket.js", "JavaScript", 24, 0, 0, 0, 0, 0, 0, 7, 10, 41
+"Total", "-", 15038, 209, 4, 8694, 2091, 186, 7, 306, 2032, 28567

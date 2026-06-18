@@ -18,4 +18,5 @@ const ThemeSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model("Theme", ThemeSchema);
+// it will show error if we not use model.theme every time it will try recreate model if use this only mongoose.model("Theme", ThemeSchema)
+export default mongoose.models.Theme || mongoose.model("Theme", ThemeSchema);

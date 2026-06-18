@@ -1,0 +1,282 @@
+Date : 2026-06-17 15:48:07
+Directory : e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink
+Total : 150 files,  26229 codes, 306 comments, 2032 blanks, all 28567 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JavaScript         |        121 |     15,038 |        215 |      1,686 |     16,939 |
+| JSON               |          3 |      8,694 |          0 |          2 |      8,696 |
+| JavaScript JSX     |         19 |      2,091 |         74 |        255 |      2,420 |
+| Markdown           |          1 |        209 |          0 |         40 |        249 |
+| PostCSS            |          1 |        186 |         17 |         48 |        251 |
+| JSON with Comments |          1 |          7 |          0 |          1 |          8 |
+| XML                |          4 |          4 |          0 |          0 |          4 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                       | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                          |        150 |     26,229 |        306 |      2,032 |     28,567 |
+| . (Files)                                                                                                  |          8 |      8,968 |          4 |         58 |      9,030 |
+| Components                                                                                                 |         28 |      3,504 |         58 |        359 |      3,921 |
+| Components (Files)                                                                                         |         13 |      1,615 |         19 |        156 |      1,790 |
+| Components\DashboardComponents                                                                             |          4 |      1,431 |         26 |        133 |      1,590 |
+| Components\SkeletonScreen                                                                                  |          2 |         91 |          0 |         13 |        104 |
+| Components\modals                                                                                          |          2 |        114 |          6 |         15 |        135 |
+| Components\ui                                                                                              |          7 |        253 |          7 |         42 |        302 |
+| app                                                                                                        |         89 |     13,145 |        213 |      1,489 |     14,847 |
+| app (Files)                                                                                                |          5 |        341 |         29 |         78 |        448 |
+| app\About                                                                                                  |          7 |        255 |          3 |         24 |        282 |
+| app\Blog                                                                                                   |          2 |        193 |          3 |         26 |        222 |
+| app\Contact                                                                                                |          1 |        276 |          5 |         24 |        305 |
+| app\Dashboard                                                                                              |         15 |      6,095 |         66 |        529 |      6,690 |
+| app\Dashboard (Files)                                                                                      |          2 |         30 |          1 |          9 |         40 |
+| app\Dashboard\Monetize                                                                                     |          1 |        282 |          6 |         28 |        316 |
+| app\Dashboard\analytics                                                                                    |          1 |      1,565 |          0 |         93 |      1,658 |
+| app\Dashboard\bioPage                                                                                      |          1 |        178 |         11 |         20 |        209 |
+| app\Dashboard\community                                                                                    |          1 |        185 |          7 |         14 |        206 |
+| app\Dashboard\editProfile                                                                                  |          1 |      1,342 |          2 |         92 |      1,436 |
+| app\Dashboard\features                                                                                     |          5 |        785 |          9 |         93 |        887 |
+| app\Dashboard\features (Files)                                                                             |          1 |         95 |          4 |         12 |        111 |
+| app\Dashboard\features\Qrcode                                                                              |          2 |        302 |          4 |         34 |        340 |
+| app\Dashboard\features\URLshorten                                                                          |          2 |        388 |          1 |         47 |        436 |
+| app\Dashboard\messages                                                                                     |          1 |        463 |          0 |         47 |        510 |
+| app\Dashboard\mindset                                                                                      |          1 |        964 |         19 |        103 |      1,086 |
+| app\Dashboard\settings                                                                                     |          1 |        301 |         11 |         30 |        342 |
+| app\Docu                                                                                                   |          1 |        151 |          0 |         13 |        164 |
+| app\Explorepeoples                                                                                         |          1 |        763 |          3 |         97 |        863 |
+| app\Generate                                                                                               |          9 |        848 |         39 |        112 |        999 |
+| app\Helper                                                                                                 |          1 |         14 |          3 |          5 |         22 |
+| app\Pricing                                                                                                |          1 |         72 |          2 |          8 |         82 |
+| app\Products                                                                                               |          1 |        234 |          3 |         29 |        266 |
+| app\Templates                                                                                              |          1 |        177 |          2 |         25 |        204 |
+| app\Trust                                                                                                  |          1 |        126 |          0 |         13 |        139 |
+| app\[code]                                                                                                 |          1 |         65 |          2 |          6 |         73 |
+| app\api                                                                                                    |         39 |      2,079 |         50 |        382 |      2,511 |
+| app\api\(Follow)                                                                                           |          5 |        175 |          8 |         37 |        220 |
+| app\api\(Follow)\follow                                                                                    |          1 |         43 |          2 |         15 |         60 |
+| app\api\(Follow)\getFollow                                                                                 |          1 |         53 |          4 |          9 |         66 |
+| app\api\(Follow)\getFollow\[userId]                                                                        |          1 |         53 |          4 |          9 |         66 |
+| app\api\(Follow)\getuser                                                                                   |          1 |         39 |          0 |          4 |         43 |
+| app\api\(Follow)\isFollowing                                                                               |          1 |         23 |          2 |          8 |         33 |
+| app\api\(Follow)\unfollow                                                                                  |          1 |         17 |          0 |          1 |         18 |
+| app\api\(UrlShortner)                                                                                      |          2 |         68 |          0 |          7 |         75 |
+| app\api\(UrlShortner)\addLink                                                                              |          1 |         46 |          0 |          5 |         51 |
+| app\api\(UrlShortner)\getLinks                                                                             |          1 |         22 |          0 |          2 |         24 |
+| app\api\(onboarding)                                                                                       |          7 |        147 |          2 |         50 |        199 |
+| app\api\(onboarding)\check-handle                                                                          |          1 |         18 |          0 |          7 |         25 |
+| app\api\(onboarding)\onboarding                                                                            |          6 |        129 |          2 |         43 |        174 |
+| app\api\(onboarding)\onboarding\complete                                                                   |          1 |         20 |          0 |          7 |         27 |
+| app\api\(onboarding)\onboarding\links                                                                      |          1 |         20 |          0 |          8 |         28 |
+| app\api\(onboarding)\onboarding\profile                                                                    |          1 |         21 |          0 |          7 |         28 |
+| app\api\(onboarding)\onboarding\status                                                                     |          1 |         12 |          0 |          4 |         16 |
+| app\api\(onboarding)\onboarding\theme                                                                      |          1 |         18 |          1 |          7 |         26 |
+| app\api\(onboarding)\onboarding\username                                                                   |          1 |         38 |          1 |         10 |         49 |
+| app\api\ContactusApi                                                                                       |          1 |         26 |          0 |          6 |         32 |
+| app\api\GetReview                                                                                          |          1 |         16 |          0 |         10 |         26 |
+| app\api\Peoples                                                                                            |          1 |         26 |          0 |          5 |         31 |
+| app\api\Review                                                                                             |          1 |         26 |          0 |         16 |         42 |
+| app\api\Socket                                                                                             |          1 |          4 |          0 |          3 |          7 |
+| app\api\Updatedetails                                                                                      |          1 |        134 |          0 |          8 |        142 |
+| app\api\ai                                                                                                 |          1 |        139 |          9 |         24 |        172 |
+| app\api\ai\chat                                                                                            |          1 |        139 |          9 |         24 |        172 |
+| app\api\auth                                                                                               |          7 |        312 |         16 |         76 |        404 |
+| app\api\auth\forgot-password                                                                               |          1 |         59 |          0 |         14 |         73 |
+| app\api\auth\google                                                                                        |          1 |         58 |          3 |         19 |         80 |
+| app\api\auth\google\callback                                                                               |          1 |         58 |          3 |         19 |         80 |
+| app\api\auth\login                                                                                         |          1 |         70 |          4 |         11 |         85 |
+| app\api\auth\logout                                                                                        |          1 |         23 |          1 |          5 |         29 |
+| app\api\auth\me                                                                                            |          1 |         34 |          5 |         10 |         49 |
+| app\api\auth\register                                                                                      |          1 |         49 |          3 |         13 |         65 |
+| app\api\auth\socket-token                                                                                  |          1 |         19 |          0 |          4 |         23 |
+| app\api\backend                                                                                            |          1 |         69 |          0 |         15 |         84 |
+| app\api\backend\[...path]                                                                                  |          1 |         69 |          0 |         15 |         84 |
+| app\api\getDaplink                                                                                         |          1 |         21 |          0 |          3 |         24 |
+| app\api\getQrcode                                                                                          |          1 |         16 |          0 |          8 |         24 |
+| app\api\links                                                                                              |          1 |         48 |          1 |         10 |         59 |
+| app\api\links\[handle]                                                                                     |          1 |         48 |          1 |         10 |         59 |
+| app\api\posthog                                                                                            |          1 |        507 |          0 |         37 |        544 |
+| app\api\posthog\analytics                                                                                  |          1 |        507 |          0 |         37 |        544 |
+| app\api\posts                                                                                              |          3 |        241 |         12 |         43 |        296 |
+| app\api\posts (Files)                                                                                      |          1 |         94 |          1 |         17 |        112 |
+| app\api\posts\[postId]                                                                                     |          1 |         92 |          5 |         14 |        111 |
+| app\api\posts\[postId]\interact                                                                            |          1 |         92 |          5 |         14 |        111 |
+| app\api\posts\recommend                                                                                    |          1 |         55 |          6 |         12 |         73 |
+| app\api\qrcode                                                                                             |          1 |         34 |          2 |          8 |         44 |
+| app\api\reset-password                                                                                     |          1 |         43 |          0 |         10 |         53 |
+| app\api\theme                                                                                              |          1 |         27 |          0 |          6 |         33 |
+| app\api\theme\themes                                                                                       |          1 |         27 |          0 |          6 |         33 |
+| app\login                                                                                                  |          1 |        276 |          1 |         25 |        302 |
+| app\reset-password                                                                                         |          1 |        115 |          0 |         13 |        128 |
+| app\u                                                                                                      |          1 |      1,065 |          2 |         80 |      1,147 |
+| app\u\[handle]                                                                                             |          1 |      1,065 |          2 |         80 |      1,147 |
+| context                                                                                                    |          2 |        130 |          5 |         25 |        160 |
+| lib                                                                                                        |          8 |        140 |          8 |         45 |        193 |
+| lib (Files)                                                                                                |          6 |        110 |          8 |         34 |        152 |
+| lib\api                                                                                                    |          2 |         30 |          0 |         11 |         41 |
+| models                                                                                                     |          8 |        309 |         11 |         45 |        365 |
+| public                                                                                                     |          5 |          5 |          0 |          0 |          5 |
+| public (Files)                                                                                             |          4 |          4 |          0 |          0 |          4 |
+| public\geography                                                                                           |          1 |          1 |          0 |          0 |          1 |
+| utils                                                                                                      |          2 |         28 |          7 |         11 |         46 |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                                   | language           | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\CalltoAction.js                         | JavaScript         |         48 |          2 |          6 |         56 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ClientAnalytics.js                      | JavaScript         |         24 |          0 |          6 |         30 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ClientLayout.js                         | JavaScript         |         33 |          0 |          6 |         39 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\DashboardSidebar.js | JavaScript         |        282 |          0 |         22 |        304 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\DashboardTabs.js    | JavaScript         |        459 |         18 |         41 |        518 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\DashboardTopbar.jsx | JavaScript JSX     |        344 |          6 |         41 |        391 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\DashboardComponents\WorldMap.jsx        | JavaScript JSX     |        346 |          2 |         29 |        377 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\FAQs.js                                 | JavaScript         |         58 |          0 |          4 |         62 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\FeatureShowcase.js                      | JavaScript         |        245 |          1 |         21 |        267 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Footer.js                               | JavaScript         |         89 |          2 |          3 |         94 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Modal.js                                | JavaScript         |         31 |          0 |          6 |         37 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Navbar.js                               | JavaScript         |        246 |          0 |         19 |        265 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\PostHogProvider.jsx                     | JavaScript JSX     |         39 |          2 |          9 |         50 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Pricing.js                              | JavaScript         |        228 |          2 |         16 |        246 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Realanalytics.js                        | JavaScript         |        294 |          5 |         28 |        327 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\SkeletonScreen\GenerateSkeleton.js      | JavaScript         |         26 |          0 |          5 |         31 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\SkeletonScreen\dashboardSkeleton.js     | JavaScript         |         65 |          0 |          8 |         73 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\Testimonial.js                          | JavaScript         |         91 |          1 |         11 |        103 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\heroSection.js                          | JavaScript         |        189 |          4 |         21 |        214 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\modals\followModals.jsx                 | JavaScript JSX     |        114 |          6 |         14 |        134 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\modals\userList.jsx                     | JavaScript JSX     |          0 |          0 |          1 |          1 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\ArticleCard.js                       | JavaScript         |         56 |          0 |          9 |         65 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\FeatureCard.js                       | JavaScript         |         20 |          0 |          4 |         24 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\FooterColumn.js                      | JavaScript         |         20 |          1 |          2 |         23 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\JobItem.js                           | JavaScript         |         13 |          0 |          1 |         14 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\Reveal.js                            | JavaScript         |         28 |          0 |          5 |         33 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\StepWrapper.jsx                      | JavaScript JSX     |         88 |          6 |         16 |        110 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\Components\ui\TestimonialCard.js                   | JavaScript         |         28 |          0 |          5 |         33 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\README.md                                          | Markdown           |        209 |          0 |         40 |        249 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\CTASection.js                            | JavaScript         |         27 |          0 |          1 |         28 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\HeroSection.js                           | JavaScript         |         22 |          0 |          2 |         24 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\MetricSection.js                         | JavaScript         |         27 |          0 |          3 |         30 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\StorySection.js                          | JavaScript         |         54 |          0 |          4 |         58 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\TeamSection.js                           | JavaScript         |         38 |          0 |          3 |         41 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\ValueSection.js                          | JavaScript         |         48 |          1 |          3 |         52 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\About\page.js                                  | JavaScript         |         39 |          2 |          8 |         49 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Blog\Newsletter.js                             | JavaScript         |         49 |          1 |          9 |         59 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Blog\page.js                                   | JavaScript         |        144 |          2 |         17 |        163 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Contact\page.js                                | JavaScript         |        276 |          5 |         24 |        305 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\Monetize\page.js                     | JavaScript         |        282 |          6 |         28 |        316 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\analytics\page.js                    | JavaScript         |      1,565 |          0 |         93 |      1,658 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\bioPage\page.jsx                     | JavaScript JSX     |        178 |         11 |         20 |        209 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\community\page.jsx                   | JavaScript JSX     |        185 |          7 |         14 |        206 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\editProfile\page.js                  | JavaScript         |      1,342 |          2 |         92 |      1,436 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\Qrcode\Qrcode.js            | JavaScript         |        283 |          4 |         29 |        316 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\Qrcode\page.js              | JavaScript         |         19 |          0 |          5 |         24 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\URLshorten\page.js          | JavaScript         |         68 |          0 |         13 |         81 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\URLshorten\shorten.js       | JavaScript         |        320 |          1 |         34 |        355 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\features\page.jsx                    | JavaScript JSX     |         95 |          4 |         12 |        111 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\layout.jsx                           | JavaScript JSX     |         26 |          1 |          7 |         34 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\messages\page.js                     | JavaScript         |        463 |          0 |         47 |        510 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\mindset\page.js                      | JavaScript         |        964 |         19 |        103 |      1,086 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\page.js                              | JavaScript         |          4 |          0 |          2 |          6 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Dashboard\settings\page.js                     | JavaScript         |        301 |         11 |         30 |        342 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Docu\page.js                                   | JavaScript         |        151 |          0 |         13 |        164 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Explorepeoples\page.js                         | JavaScript         |        763 |          3 |         97 |        863 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\GoalStep.jsx                          | JavaScript JSX     |         58 |          2 |          7 |         67 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\LinkStep.jsx                          | JavaScript JSX     |         48 |          2 |          6 |         56 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\PlatformStep.jsx                      | JavaScript JSX     |         78 |          2 |          9 |         89 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\ProfileStep.jsx                       | JavaScript JSX     |         90 |          4 |         12 |        106 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\PublishStep.jsx                       | JavaScript JSX     |         29 |          2 |          7 |         38 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\SuccessStep.jsx                       | JavaScript JSX     |        101 |          7 |         14 |        122 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\ThemeStep.jsx                         | JavaScript JSX     |         58 |          4 |          9 |         71 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\UsernameStep.jsx                      | JavaScript JSX     |         99 |          6 |         15 |        120 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Generate\page.js                               | JavaScript         |        287 |         10 |         33 |        330 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Helper\getDataFromToken.js                     | JavaScript         |         14 |          3 |          5 |         22 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Pricing\page.js                                | JavaScript         |         72 |          2 |          8 |         82 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Products\page.js                               | JavaScript         |        234 |          3 |         29 |        266 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Templates\page.js                              | JavaScript         |        177 |          2 |         25 |        204 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\Trust\page.js                                  | JavaScript         |        126 |          0 |         13 |        139 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\[code]\route.js                                | JavaScript         |         65 |          2 |          6 |         73 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\follow\route.js                   | JavaScript         |         43 |          2 |         15 |         60 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\getFollow\[userId]\route.js       | JavaScript         |         53 |          4 |          9 |         66 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\getuser\route.js                  | JavaScript         |         39 |          0 |          4 |         43 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\isFollowing\route.js              | JavaScript         |         23 |          2 |          8 |         33 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(Follow)\unfollow\route.js                 | JavaScript         |         17 |          0 |          1 |         18 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(UrlShortner)\addLink\route.js             | JavaScript         |         46 |          0 |          5 |         51 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(UrlShortner)\getLinks\route.js            | JavaScript         |         22 |          0 |          2 |         24 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\check-handle\route.js         | JavaScript         |         18 |          0 |          7 |         25 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\complete\route.js  | JavaScript         |         20 |          0 |          7 |         27 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\links\route.js     | JavaScript         |         20 |          0 |          8 |         28 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\profile\route.js   | JavaScript         |         21 |          0 |          7 |         28 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\status\route.js    | JavaScript         |         12 |          0 |          4 |         16 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\theme\route.js     | JavaScript         |         18 |          1 |          7 |         26 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\(onboarding)\onboarding\username\route.js  | JavaScript         |         38 |          1 |         10 |         49 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\ContactusApi\route.js                      | JavaScript         |         26 |          0 |          6 |         32 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\GetReview\route.js                         | JavaScript         |         16 |          0 |         10 |         26 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Peoples\route.js                           | JavaScript         |         26 |          0 |          5 |         31 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Review\route.js                            | JavaScript         |         26 |          0 |         16 |         42 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Socket\route.js                            | JavaScript         |          4 |          0 |          3 |          7 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\Updatedetails\route.js                     | JavaScript         |        134 |          0 |          8 |        142 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\ai\chat\route.js                           | JavaScript         |        139 |          9 |         24 |        172 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\forgot-password\route.js              | JavaScript         |         59 |          0 |         14 |         73 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\google\callback\route.js              | JavaScript         |         58 |          3 |         19 |         80 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\login\route.js                        | JavaScript         |         70 |          4 |         11 |         85 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\logout\route.js                       | JavaScript         |         23 |          1 |          5 |         29 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\me\route.js                           | JavaScript         |         34 |          5 |         10 |         49 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\register\route.js                     | JavaScript         |         49 |          3 |         13 |         65 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\auth\socket-token\route.js                 | JavaScript         |         19 |          0 |          4 |         23 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\backend\[...path]\route.js                 | JavaScript         |         69 |          0 |         15 |         84 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\getDaplink\route.js                        | JavaScript         |         21 |          0 |          3 |         24 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\getQrcode\route.js                         | JavaScript         |         16 |          0 |          8 |         24 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\links\[handle]\route.js                    | JavaScript         |         48 |          1 |         10 |         59 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posthog\analytics\route.js                 | JavaScript         |        507 |          0 |         37 |        544 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posts\[postId]\interact\route.js           | JavaScript         |         92 |          5 |         14 |        111 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posts\recommend\route.js                   | JavaScript         |         55 |          6 |         12 |         73 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\posts\route.js                             | JavaScript         |         94 |          1 |         17 |        112 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\qrcode\route.js                            | JavaScript         |         34 |          2 |          8 |         44 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\reset-password\route.js                    | JavaScript         |         43 |          0 |         10 |         53 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\api\theme\themes\route.js                      | JavaScript         |         27 |          0 |          6 |         33 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\globals.css                                    | PostCSS            |        186 |         17 |         48 |        251 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\layout.js                                      | JavaScript         |         76 |          4 |         17 |         97 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\login\page.js                                  | JavaScript         |        276 |          1 |         25 |        302 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\page.js                                        | JavaScript         |         34 |          3 |          8 |         45 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\reset-password\page.jsx                        | JavaScript JSX     |        115 |          0 |         13 |        128 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\robots.js                                      | JavaScript         |         10 |          0 |          0 |         10 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\sitemap.js                                     | JavaScript         |         35 |          5 |          5 |         45 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\app\u\[handle]\page.js                             | JavaScript         |      1,065 |          2 |         80 |      1,147 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\context\Authenticate.js                            | JavaScript         |         98 |          3 |         16 |        117 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\context\ThemeContext.js                            | JavaScript         |         32 |          2 |          9 |         43 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\eslint.config.mjs                                  | JavaScript         |         10 |          0 |          5 |         15 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\jsconfig.json                                      | JSON with Comments |          7 |          0 |          1 |          8 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\QueryProvider.js                               | JavaScript         |         19 |          1 |          4 |         24 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\api\client.js                                  | JavaScript         |         17 |          0 |          4 |         21 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\api\onboarding.js                              | JavaScript         |         13 |          0 |          7 |         20 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\auth.js                                        | JavaScript         |         26 |          0 |         10 |         36 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\mongodb.js                                     | JavaScript         |         33 |          6 |         12 |         51 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\ratelimit.js                                   | JavaScript         |         14 |          0 |          2 |         16 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\redis.js                                       | JavaScript         |          9 |          0 |          4 |         13 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\lib\registerModels.js                              | JavaScript         |          9 |          1 |          2 |         12 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\middleware.js                                      | JavaScript         |         16 |          1 |          5 |         22 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Contact.js                                  | JavaScript         |         21 |          0 |          6 |         27 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Link.js                                     | JavaScript         |         97 |          7 |         14 |        118 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Post.js                                     | JavaScript         |         56 |          0 |          3 |         59 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Review.js                                   | JavaScript         |         27 |          0 |          6 |         33 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\ShortUrl.js                                 | JavaScript         |         23 |          0 |          4 |         27 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\Theme.js                                    | JavaScript         |         16 |          2 |          5 |         23 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\qrcode.js                                   | JavaScript         |         20 |          0 |          3 |         23 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\models\user.js                                     | JavaScript         |         49 |          2 |          4 |         55 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\next.config.mjs                                    | JavaScript         |         29 |          3 |          3 |         35 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\package-lock.json                                  | JSON               |      8,631 |          0 |          1 |      8,632 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\package.json                                       | JSON               |         62 |          0 |          1 |         63 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\postcss.config.mjs                                 | JavaScript         |          4 |          0 |          2 |          6 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\file.svg                                    | XML                |          1 |          0 |          0 |          1 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\geography\world.json                        | JSON               |          1 |          0 |          0 |          1 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\globe.svg                                   | XML                |          1 |          0 |          0 |          1 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\next.svg                                    | XML                |          1 |          0 |          0 |          1 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\public\window.svg                                  | XML                |          1 |          0 |          0 |          1 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\utils\GenerateShortCode.js                         | JavaScript         |          4 |          0 |          1 |          5 |
+| e:\Kunal\codingplay\Projects\PROJECT-7(DapLink)\daplink\utils\Socket.js                                    | JavaScript         |         24 |          7 |         10 |         41 |
+| Total                                                                                                      |                    |     26,229 |        306 |      2,032 |     28,567 |
++------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

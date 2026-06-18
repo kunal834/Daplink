@@ -62,8 +62,8 @@ const formatNumber = (num) => {
 // ==========================================
 const formatPostContent = (text, handleTagClick) => {
   if (!text) return null;
-  const parts = text.split(/(\s+)/); 
-  
+  const parts = text.split(/(\s+)/);
+
   return parts.map((part, index) => {
     if (part.match(/^@[\w\d_.]+$/)) {
       return (
@@ -73,7 +73,7 @@ const formatPostContent = (text, handleTagClick) => {
       );
     } else if (part.match(/^#[\w\d_]+$/)) {
       return (
-        <span key={index} className="text-indigo-550 dark:text-indigo-400 hover:underline cursor-pointer font-bold" onClick={(e) => { e.stopPropagation(); if(handleTagClick) handleTagClick(part.slice(1)); }}>
+        <span key={index} className="text-indigo-550 dark:text-indigo-400 hover:underline cursor-pointer font-bold" onClick={(e) => { e.stopPropagation(); if (handleTagClick) handleTagClick(part.slice(1)); }}>
           {part}
         </span>
       );
@@ -112,7 +112,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
   const isOwner = isIdMatch || isHandleMatch;
 
   const authorObj = post.author || (typeof post.authorId === 'object' ? post.authorId : null);
-  
+
   let displayName = post.name;
   let displayHandle = post.handle;
   let displayAvatar = post.avatar;
@@ -143,13 +143,13 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['posts'] });
       const previousPosts = queryClient.getQueryData(['posts']);
-      
+
       // Fix potential undefined map crash by checking Array.isArray
       queryClient.setQueryData(['posts'], (old) => {
         if (!Array.isArray(old)) return [];
         return old.map(p => p.id === post.id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p);
       });
-      
+
       if (!post.liked) {
         setLikedAnim(true);
         setTimeout(() => setLikedAnim(false), 600);
@@ -163,8 +163,8 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
   const repostMutation = useMutation({
     mutationFn: async () => axios.post(`/api/backend/posts/${post.id}/repost`, {}),
     onSuccess: () => {
-        toast.success("Reposted!");
-        queryClient.invalidateQueries({ queryKey: ['posts'] });
+      toast.success("Reposted!");
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: () => toast.error("Failed to repost")
   });
@@ -206,16 +206,16 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
       <div className="flex gap-4.5 relative">
         <div className="flex flex-col items-center shrink-0">
           <Link href={`/u/${displayHandle.replace('@', '')}`}>
-             <div className="relative w-11 h-11 rounded-2xl overflow-hidden hover:opacity-85 transition-all shadow-xs border border-zinc-200/50 dark:border-white/5">
-                <Image 
-                  src={displayAvatar} 
-                  alt={displayName} 
-                  fill 
-                  className="object-cover"
-                  placeholder="blur"
-                  blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(44, 44))}`}
-                />
-             </div>
+            <div className="relative w-11 h-11 rounded-2xl overflow-hidden hover:opacity-85 transition-all shadow-xs border border-zinc-200/50 dark:border-white/5">
+              <Image
+                src={displayAvatar}
+                alt={displayName}
+                fill
+                className="object-cover"
+                placeholder="blur"
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(44, 44))}`}
+              />
+            </div>
           </Link>
           {showComments && <div className={`w-0.5 h-full mt-3.5 rounded-full ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200/80'}`}></div>}
         </div>
@@ -239,7 +239,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
 
               <AnimatePresence>
                 {isMenuOpen && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 5 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 5 }}
@@ -279,12 +279,12 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
                 <video src={post.mediaUrl} controls className="w-full max-h-125 object-cover bg-black" onClick={(e) => e.stopPropagation()} />
               ) : (
                 <div className="relative w-full h-auto min-h-[250px]">
-                   <Image 
-                    src={post.mediaUrl} 
-                    alt="Post content" 
-                    width={800} 
-                    height={600} 
-                    className="w-full h-auto max-h-125 object-cover" 
+                  <Image
+                    src={post.mediaUrl}
+                    alt="Post content"
+                    width={800}
+                    height={600}
+                    className="w-full h-auto max-h-125 object-cover"
                   />
                 </div>
               )}
@@ -294,7 +294,7 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
           {post.tags?.length > 0 && (
             <div className="flex items-center gap-2 mt-3 flex-wrap">
               {post.tags.map(tag => (
-                <span key={tag} onClick={(e) => { e.stopPropagation(); if(onTagClick) onTagClick(tag); }} className="text-[11px] font-bold text-indigo-500 hover:underline cursor-pointer">#{tag}</span>
+                <span key={tag} onClick={(e) => { e.stopPropagation(); if (onTagClick) onTagClick(tag); }} className="text-[11px] font-bold text-indigo-500 hover:underline cursor-pointer">#{tag}</span>
               ))}
             </div>
           )}
@@ -316,10 +316,10 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
             </div>
 
             <div className="flex items-center group text-[11px] font-bold hover:text-rose-500 transition-colors">
-              <motion.button 
+              <motion.button
                 animate={likedAnim ? { scale: [1, 1.4, 0.9, 1.1, 1] } : {}}
                 transition={{ duration: 0.5 }}
-                onClick={(e) => { e.stopPropagation(); toggleLikeMutation.mutate(); }} 
+                onClick={(e) => { e.stopPropagation(); toggleLikeMutation.mutate(); }}
                 className="w-8.5 h-8.5 -ml-2 rounded-xl flex items-center justify-center group-hover:bg-rose-500/10 transition-all relative"
               >
                 <Heart size={15} className={post.liked ? "fill-rose-550 text-rose-550 drop-shadow-[0_0_6px_rgba(244,63,94,0.4)]" : ""} />
@@ -328,10 +328,10 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
             </div>
 
             <div className="items-center group text-[11px] font-bold hover:text-indigo-500 transition-colors hidden sm:flex">
-              <button onClick={(e) => { 
-                e.stopPropagation(); 
-                if (isOwner) setShowAnalytics(true); 
-                else toast("Only the author can view post analytics", { icon: '🔒', style: { borderRadius: '12px', background: isDarkMode ? '#1e1e24' : '#fff', color: isDarkMode ? '#fff' : '#0f1419'} });
+              <button onClick={(e) => {
+                e.stopPropagation();
+                if (isOwner) setShowAnalytics(true);
+                else toast("Only the author can view post analytics", { icon: '🔒', style: { borderRadius: '12px', background: isDarkMode ? '#1e1e24' : '#fff', color: isDarkMode ? '#fff' : '#0f1419' } });
               }} className={`w-8.5 h-8.5 -ml-2 rounded-xl flex items-center justify-center transition-all ${isOwner ? 'group-hover:bg-indigo-500/10 cursor-pointer' : 'cursor-default'}`}>
                 <BarChart2 size={15} />
               </button>
@@ -349,26 +349,26 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
 
       <AnimatePresence>
         {showComments && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="pl-14 pr-2 pt-3 mt-1.5 relative z-10 overflow-hidden" 
+            className="pl-14 pr-2 pt-3 mt-1.5 relative z-10 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex gap-3.5 items-center mb-4.5">
               <div className="relative w-8 h-8 rounded-xl overflow-hidden shadow-xs border border-zinc-200/50 dark:border-white/5 shrink-0">
-                 <Image 
-                  src={daplinkUser?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} 
-                  alt="Me" 
-                  fill 
-                  className="object-cover" 
+                <Image
+                  src={daplinkUser?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`}
+                  alt="Me"
+                  fill
+                  className="object-cover"
                 />
               </div>
               <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Post your reply..." className={`flex-1 bg-transparent text-xs font-semibold outline-none py-2 ${textPrimary} placeholder:${textSecondary}`} onKeyDown={(e) => { if (e.key === 'Enter' && commentText.trim()) postCommentMutation.mutate(); }} />
               <button onClick={() => postCommentMutation.mutate()} disabled={!commentText.trim() || postCommentMutation.isPending} className="bg-indigo-650 hover:bg-indigo-600 text-white font-black px-4 py-1.75 rounded-xl text-[11px] disabled:opacity-50 transition-all cursor-pointer">Reply</button>
             </div>
-            
+
             {loadingComments ? (
               <div className="flex justify-center py-4"><Loader2 className="w-4 h-4 animate-spin text-indigo-500" /></div>
             ) : (
@@ -376,11 +376,11 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
                 {comments?.map((comment) => (
                   <div key={comment._id} className="flex gap-3.5 py-3 border-t border-zinc-800/10 dark:border-zinc-800/30">
                     <div className="relative w-8 h-8 rounded-xl overflow-hidden mt-0.5 shrink-0 shadow-xs">
-                       <Image 
-                        src={comment.author?.avatar || comment.author?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.handle || 'unknown'}`} 
-                        alt={comment.author?.handle || 'Avatar'} 
-                        fill 
-                        className="object-cover" 
+                      <Image
+                        src={comment.author?.avatar || comment.author?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.handle || 'unknown'}`}
+                        alt={comment.author?.handle || 'Avatar'}
+                        fill
+                        className="object-cover"
                       />
                     </div>
                     <div className="flex-1">
@@ -401,52 +401,52 @@ const PostItem = ({ post, isDarkMode, daplinkUser, currentUser, onTagClick }) =>
       {/* Analytics Modal... */}
       <AnimatePresence>
         {showAnalytics && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 backdrop-blur-md p-4" 
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 backdrop-blur-md p-4"
             onClick={(e) => { e.stopPropagation(); setShowAnalytics(false); }}
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className={`w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border backdrop-blur-xl ${isDarkMode ? 'bg-zinc-950/95 border-zinc-850 text-white' : 'bg-white border border-zinc-200 text-black'}`} 
+              className={`w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border backdrop-blur-xl ${isDarkMode ? 'bg-zinc-950/95 border-zinc-850 text-white' : 'bg-white border border-zinc-200 text-black'}`}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between px-6 py-4 border-b border-inherit">
-                  <h2 className="text-base font-black tracking-tight">DapPost Analytics</h2>
-                  <button onClick={() => setShowAnalytics(false)} className={`p-2 rounded-xl transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}><X size={16} /></button>
+                <h2 className="text-base font-black tracking-tight">DapPost Analytics</h2>
+                <button onClick={() => setShowAnalytics(false)} className={`p-2 rounded-xl transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}><X size={16} /></button>
               </div>
               <div className="p-6">
-                  <div className={`p-4 rounded-2xl border border-inherit mb-6 flex gap-3.5 ${isDarkMode ? 'bg-zinc-900/60' : 'bg-zinc-50'}`}>
-                    {post.mediaUrl && (
-                      <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-black relative shadow-xs">
-                         {isVideo(post.mediaUrl) ? <video src={post.mediaUrl} className="w-full h-full object-cover" /> : <Image src={post.mediaUrl} alt="Preview" fill className="object-cover" />}
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                       <div className="flex items-baseline gap-1.5 text-xs mb-1">
-                          <span className="font-bold truncate">{displayName}</span>
-                          <span className={`truncate ${textSecondary}`}>{displayHandle}</span>
-                          <span className={textSecondary}>·</span>
-                          <span className={textSecondary}>{timeAgo(post.time)}</span>
-                       </div>
-                       <p className={`text-[11px] leading-relaxed line-clamp-2 ${textSecondary}`}>{post.content}</p>
+                <div className={`p-4 rounded-2xl border border-inherit mb-6 flex gap-3.5 ${isDarkMode ? 'bg-zinc-900/60' : 'bg-zinc-50'}`}>
+                  {post.mediaUrl && (
+                    <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-black relative shadow-xs">
+                      {isVideo(post.mediaUrl) ? <video src={post.mediaUrl} className="w-full h-full object-cover" /> : <Image src={post.mediaUrl} alt="Preview" fill className="object-cover" />}
                     </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-1.5 text-xs mb-1">
+                      <span className="font-bold truncate">{displayName}</span>
+                      <span className={`truncate ${textSecondary}`}>{displayHandle}</span>
+                      <span className={textSecondary}>·</span>
+                      <span className={textSecondary}>{timeAgo(post.time)}</span>
+                    </div>
+                    <p className={`text-[11px] leading-relaxed line-clamp-2 ${textSecondary}`}>{post.content}</p>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 pb-6 border-b border-inherit mb-6 text-center">
-                    <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><Heart size={18} className="mx-auto mb-1 text-rose-500" /><p className="text-base font-extrabold">{baseLikes}</p></div>
-                    <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><Repeat2 size={18} className="mx-auto mb-1 text-emerald-500" /><p className="text-base font-extrabold">{baseShares}</p></div>
-                    <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><MessageSquare size={18} className="mx-auto mb-1 text-indigo-500" /><p className="text-base font-extrabold">{baseComments}</p></div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Impressions <Info size={12} /></div><p className="text-xl font-black">{impressions.toLocaleString()}</p></div>
-                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Engagements <Info size={12} /></div><p className="text-xl font-black">{engagements.toLocaleString()}</p></div>
-                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Detail expands <Info size={12} /></div><p className="text-xl font-black">{detailExpands.toLocaleString()}</p></div>
-                    <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Profile visits <Info size={12} /></div><p className="text-xl font-black">{profileVisits.toLocaleString()}</p></div>
-                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4 pb-6 border-b border-inherit mb-6 text-center">
+                  <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><Heart size={18} className="mx-auto mb-1 text-rose-500" /><p className="text-base font-extrabold">{baseLikes}</p></div>
+                  <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><Repeat2 size={18} className="mx-auto mb-1 text-emerald-500" /><p className="text-base font-extrabold">{baseShares}</p></div>
+                  <div className="p-3 rounded-2xl bg-zinc-800/10 dark:bg-white/5"><MessageSquare size={18} className="mx-auto mb-1 text-indigo-500" /><p className="text-base font-extrabold">{baseComments}</p></div>
+                </div>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+                  <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Impressions <Info size={12} /></div><p className="text-xl font-black">{impressions.toLocaleString()}</p></div>
+                  <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Engagements <Info size={12} /></div><p className="text-xl font-black">{engagements.toLocaleString()}</p></div>
+                  <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Detail expands <Info size={12} /></div><p className="text-xl font-black">{detailExpands.toLocaleString()}</p></div>
+                  <div><div className={`flex items-center gap-1 mb-1 text-[10px] font-extrabold uppercase tracking-wider ${textSecondary}`}>Profile visits <Info size={12} /></div><p className="text-xl font-black">{profileVisits.toLocaleString()}</p></div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -468,11 +468,11 @@ export default function DaplinkCommunityFeed() {
   const [content, setContent] = useState('');
   const [mediaFile, setMediaFile] = useState(null);
   const [mediaPreview, setMediaPreview] = useState(null);
-  
+
   // Tag filter state & Navigation Tabs
-  const [activeTab, setActiveTab] = useState('feed'); 
-  const [currentTagFilter, setCurrentTagFilter] = useState(''); 
-  
+  const [activeTab, setActiveTab] = useState('feed');
+  const [currentTagFilter, setCurrentTagFilter] = useState('');
+
   // Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -482,7 +482,6 @@ export default function DaplinkCommunityFeed() {
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [debouncedMentionQuery, setDebouncedMentionQuery] = useState('');
-  const [debouncedMentionQuery, setDebouncedMentionQuery] = useState(''); 
 
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -552,7 +551,7 @@ export default function DaplinkCommunityFeed() {
   const { data: notificationsData, isLoading: isNotificationsLoading } = useQuery({
     queryKey: ['notifications'],
     queryFn: async () => (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/notifications`, { withCredentials: true })).data.notifications,
-    refetchInterval: 30000 
+    refetchInterval: 30000
   });
 
   const { data: mentionSuggestions, isLoading: isFetchingMentions } = useQuery({
@@ -583,11 +582,11 @@ export default function DaplinkCommunityFeed() {
     mutationFn: async () => {
       const formData = new FormData();
       formData.append('content', content);
-      
+
       const extractedTags = content.match(/#[a-z0-9_]+/gi) || [];
       const cleanTags = extractedTags.map(t => t.replace('#', ''));
       formData.append('tags', JSON.stringify(cleanTags));
-      
+
       if (userId) formData.append('authorId', userId);
       if (mediaFile) formData.append('media', mediaFile);
 
@@ -595,12 +594,12 @@ export default function DaplinkCommunityFeed() {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
     },
-    onSuccess: () => { 
-      setContent(''); 
-      removeMedia(); 
-      queryClient.invalidateQueries({ queryKey: ['posts'] }); 
-      queryClient.invalidateQueries({ queryKey: ['trending'] }); 
-      setActiveTab('myposts'); 
+    onSuccess: () => {
+      setContent('');
+      removeMedia();
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['trending'] });
+      setActiveTab('myposts');
       setCurrentTagFilter('');
     }
   });
@@ -624,7 +623,7 @@ export default function DaplinkCommunityFeed() {
 
     const cursorPos = e.target.selectionStart;
     const textBeforeCursor = val.slice(0, cursorPos);
-    
+
     const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
 
     if (match) {
@@ -639,14 +638,14 @@ export default function DaplinkCommunityFeed() {
     const cursorPos = textareaRef.current.selectionStart;
     const textBeforeCursor = content.slice(0, cursorPos);
     const textAfterCursor = content.slice(cursorPos);
-    
+
     const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
     if (match) {
       const newTextBefore = textBeforeCursor.slice(0, match.index) + `@${userToMention.handle} `;
       setContent(newTextBefore + textAfterCursor);
       setShowMentionDropdown(false);
       setMentionQuery('');
-      setDebouncedMentionQuery(''); 
+      setDebouncedMentionQuery('');
       textareaRef.current.focus();
     }
   };
@@ -662,18 +661,18 @@ export default function DaplinkCommunityFeed() {
   return (
     <div className={`min-h-screen ${bgMain} ${textPrimary} font-sans flex justify-center max-w-325 mx-auto xl:justify-between gap-4 lg:gap-8 px-0 sm:px-4`}>
       <div className="hidden md:flex flex-col w-72 pt-2 sticky top-0 h-[calc(100vh-96px)] overflow-y-auto pb-20 pr-4 z-40">
-        
+
         {/* Search Bar */}
         <div ref={searchRef} className="relative w-full">
           <div className={`flex items-center px-4 py-2.5 rounded-2xl border transition-colors ${isSearchFocused ? 'border-indigo-500 bg-transparent shadow-[0_0_15px_rgba(99,102,241,0.15)]' : isDarkMode ? 'border-transparent bg-zinc-900/60' : 'border-transparent bg-zinc-100/80'}`}>
             <Search className={`w-4 h-4 mr-3 ${isSearchFocused ? 'text-indigo-500' : textSecondary}`} />
-            <input 
-              type="text" 
-              placeholder="Search DapLink..." 
+            <input
+              type="text"
+              placeholder="Search DapLink..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
-              className={`bg-transparent outline-none w-full text-xs font-semibold placeholder:${textSecondary}`} 
+              className={`bg-transparent outline-none w-full text-xs font-semibold placeholder:${textSecondary}`}
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery('')} className={`w-5 h-5 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-indigo-500 text-black' : 'bg-indigo-500 text-white'}`}>
@@ -685,7 +684,7 @@ export default function DaplinkCommunityFeed() {
           {/* Search Dropdown */}
           <AnimatePresence>
             {isSearchFocused && searchQuery.trim() !== '' && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
@@ -699,9 +698,9 @@ export default function DaplinkCommunityFeed() {
                       <div>
                         <div className={`px-4 py-2 text-[10px] font-extrabold uppercase tracking-widest border-b ${border} opacity-60`}>People</div>
                         {searchResults.users.map(u => (
-                          <Link key={u._id} href={`/u/${u.handle.replace('@','')}`} className={`flex items-center gap-3 px-4 py-3 transition-colors ${hoverBg}`}>
+                          <Link key={u._id} href={`/u/${u.handle.replace('@', '')}`} className={`flex items-center gap-3 px-4 py-3 transition-colors ${hoverBg}`}>
                             <div className="relative w-9 h-9 rounded-xl overflow-hidden">
-                               <Image src={u.avatar} alt={u.name} fill className="object-cover" />
+                              <Image src={u.avatar} alt={u.name} fill className="object-cover" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-bold text-xs truncate">{u.name}</p>
@@ -723,28 +722,28 @@ export default function DaplinkCommunityFeed() {
 
         {/* Navigation Tabs */}
         <div className="mt-6 space-y-2">
-           <button 
-             onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} 
-             className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'feed' && !currentTagFilter ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
-           >
-             Feed Canvas
-           </button>
-           <button 
-             onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} 
-             className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'myposts' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
-           >
-             My Content
-           </button>
-           <button 
-             onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} 
-             className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'notifications' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
-           >
-             <div className="relative">
-                <Bell size={18} />
-                {unreadCount > 0 && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-indigo-500 rounded-full border-2 border-white dark:border-zinc-950"></span>}
-             </div>
-             Activity Hub
-           </button>
+          <button
+            onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }}
+            className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'feed' && !currentTagFilter ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
+          >
+            Feed Canvas
+          </button>
+          <button
+            onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }}
+            className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'myposts' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
+          >
+            My Content
+          </button>
+          <button
+            onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }}
+            className={`w-full flex items-center gap-4 px-4 py-3.25 rounded-2xl font-bold text-xs tracking-tight transition-all ${activeTab === 'notifications' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-650/15' : `${hoverBg} text-zinc-400 hover:text-zinc-150`}`}
+          >
+            <div className="relative">
+              <Bell size={18} />
+              {unreadCount > 0 && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-indigo-500 rounded-full border-2 border-white dark:border-zinc-950"></span>}
+            </div>
+            Activity Hub
+          </button>
         </div>
       </div>
 
@@ -757,14 +756,14 @@ export default function DaplinkCommunityFeed() {
               {activeTab === 'feed' ? 'DapPost Feed' : activeTab === 'myposts' ? 'My Posts' : 'Notifications'}
             </h1>
             <div className="md:hidden flex gap-2 items-center">
-               <button onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide ${activeTab === 'feed' ? 'text-indigo-500 font-black' : textSecondary}`}>Feed</button>
-               <span className={textSecondary}>|</span>
-               <button onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide ${activeTab === 'myposts' ? 'text-indigo-500 font-black' : textSecondary}`}>Me</button>
-               <span className={textSecondary}>|</span>
-               <button onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide relative ${activeTab === 'notifications' ? 'text-indigo-500 font-black' : textSecondary}`}>
-                 Notifs
-                 {unreadCount > 0 && <span className="absolute -top-1 -right-2 w-2 h-2 bg-indigo-500 rounded-full"></span>}
-               </button>
+              <button onClick={() => { setActiveTab('feed'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide ${activeTab === 'feed' ? 'text-indigo-500 font-black' : textSecondary}`}>Feed</button>
+              <span className={textSecondary}>|</span>
+              <button onClick={() => { setActiveTab('myposts'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide ${activeTab === 'myposts' ? 'text-indigo-500 font-black' : textSecondary}`}>Me</button>
+              <span className={textSecondary}>|</span>
+              <button onClick={() => { setActiveTab('notifications'); setCurrentTagFilter(''); }} className={`text-[10px] font-extrabold uppercase tracking-wide relative ${activeTab === 'notifications' ? 'text-indigo-500 font-black' : textSecondary}`}>
+                Notifs
+                {unreadCount > 0 && <span className="absolute -top-1 -right-2 w-2 h-2 bg-indigo-500 rounded-full"></span>}
+              </button>
             </div>
 
             <button onClick={toggleTheme} className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}>
@@ -776,7 +775,7 @@ export default function DaplinkCommunityFeed() {
         {/* Tag Filter Indicator */}
         <AnimatePresence>
           {currentTagFilter && activeTab !== 'notifications' && (
-            <motion.div 
+            <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -793,7 +792,7 @@ export default function DaplinkCommunityFeed() {
           <div className={`px-5 pt-5 pb-3 border-b ${border} flex gap-4 bg-zinc-950/5 dark:bg-white/[0.005]`}>
             <div className="shrink-0 pt-1">
               <div className="relative w-10 h-10 rounded-2xl overflow-hidden shadow-xs border border-zinc-200/50 dark:border-white/5">
-                 <Image src={daplink?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} alt="Avatar" fill className="object-cover" />
+                <Image src={daplink?.profile || `https://api.dicebear.com/7.x/avataaars/svg?seed=me`} alt="Avatar" fill className="object-cover" />
               </div>
             </div>
 
@@ -801,7 +800,7 @@ export default function DaplinkCommunityFeed() {
               <textarea
                 ref={textareaRef}
                 value={content}
-                onChange={handleTextChange} 
+                onChange={handleTextChange}
                 placeholder="What is happening in your creator stack?!"
                 className={`w-full bg-transparent outline-none text-base font-semibold resize-none placeholder:${textSecondary} pt-2 pb-2 overflow-hidden`}
                 rows={1}
@@ -810,7 +809,7 @@ export default function DaplinkCommunityFeed() {
               {/* MENTION DROPDOWN MENU */}
               <AnimatePresence>
                 {showMentionDropdown && mentionQuery.length > 0 && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
@@ -820,8 +819,8 @@ export default function DaplinkCommunityFeed() {
                       <div className="p-4 flex justify-center"><Loader2 size={14} className="animate-spin text-indigo-555" /></div>
                     ) : mentionSuggestions?.length > 0 ? (
                       mentionSuggestions.map((mu) => (
-                        <div 
-                          key={mu._id} 
+                        <div
+                          key={mu._id}
                           onClick={() => handleMentionSelect(mu)}
                           className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${hoverBg}`}
                         >
@@ -861,7 +860,7 @@ export default function DaplinkCommunityFeed() {
                   <button onClick={() => fileInputRef.current?.click()} className="w-8.5 h-8.5 rounded-xl flex items-center justify-center hover:bg-indigo-500/10 transition-colors cursor-pointer animate-pulse" title="Media Attachment"><ImageIcon size={16} /></button>
                   <button className="w-8.5 h-8.5 rounded-xl flex items-center justify-center hover:bg-indigo-500/10 transition-colors cursor-pointer" title="Code block"><Code2 size={16} /></button>
                 </div>
-                
+
                 <button
                   onClick={() => createPostMutation.mutate()}
                   disabled={(!content.trim() && !mediaFile) || createPostMutation.isPending}
@@ -881,7 +880,7 @@ export default function DaplinkCommunityFeed() {
             <div>
               {unreadCount > 0 && (
                 <div className={`px-4 py-3 flex justify-end border-b ${border}`}>
-                  <button 
+                  <button
                     onClick={() => markAllAsReadMutation.mutate()}
                     disabled={markAllAsReadMutation.isPending}
                     className="text-[14px] text-[#1d9bf0] hover:underline font-bold transition-colors disabled:opacity-50"
@@ -891,55 +890,55 @@ export default function DaplinkCommunityFeed() {
                 </div>
               )}
               {isNotificationsLoading ? (
-                 <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
+                <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-[#1d9bf0]" /></div>
               ) : notificationsData?.length > 0 ? (
-                 notificationsData.map((notif) => {
-                   const isUnread = notif.status === 'unread';
-                   
-                   let actionText = "interacted with your post";
-                   let Icon = Bell;
-                   let iconColor = "text-[#1d9bf0]";
-                   
-                   if (notif.notificationType === 'mention') {
-                       actionText = "mentioned you in a post";
-                   } else if (notif.notificationType === 'like') {
-                       actionText = "liked your post";
-                       Icon = Heart;
-                       iconColor = "text-[#f91880]";
-                   } else if (notif.notificationType === 'comment') {
-                       actionText = "commented on your post";
-                       Icon = MessageSquare;
-                   } else if (notif.notificationType === 'repost') {
-                       actionText = "reposted your post";
-                       Icon = Repeat2;
-                       iconColor = "text-[#00ba7c]";
-                   }
-                   
-                   return (
-                     <div 
-                       key={notif._id} 
-                       onClick={() => {
-                         if (isUnread) markAsReadMutation.mutate(notif._id);
-                       }}
-                       className={`px-4 py-4 border-b cursor-pointer transition-colors flex gap-4 ${border} ${isUnread ? (isDarkMode ? 'bg-[#1d9bf0]/10' : 'bg-[#1d9bf0]/5') : hoverBg}`}
-                     >
-                        <div className="relative shrink-0 mt-1">
-                          <Icon className={isUnread ? iconColor : textSecondary} size={24} />
-                          {isUnread && <span className={`absolute top-0 right-0 w-2.5 h-2.5 bg-[#1d9bf0] rounded-full border-2 border-white dark:border-black`}></span>}
-                        </div>
-                        
-                        <div className="flex-1">
-                          <Image src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-full mb-2 object-cover" alt={notif.senderId?.handle} />
-                          <p className={`text-[15px] ${textPrimary}`}>
-                            <span className="font-bold">{notif.senderId?.handle}</span> {actionText}.
-                          </p>
-                          {notif.postId && <p className={`text-[15px] mt-1 line-clamp-2 ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
-                        </div>
-                     </div>
-                   );
-                 })
+                notificationsData.map((notif) => {
+                  const isUnread = notif.status === 'unread';
+
+                  let actionText = "interacted with your post";
+                  let Icon = Bell;
+                  let iconColor = "text-[#1d9bf0]";
+
+                  if (notif.notificationType === 'mention') {
+                    actionText = "mentioned you in a post";
+                  } else if (notif.notificationType === 'like') {
+                    actionText = "liked your post";
+                    Icon = Heart;
+                    iconColor = "text-[#f91880]";
+                  } else if (notif.notificationType === 'comment') {
+                    actionText = "commented on your post";
+                    Icon = MessageSquare;
+                  } else if (notif.notificationType === 'repost') {
+                    actionText = "reposted your post";
+                    Icon = Repeat2;
+                    iconColor = "text-[#00ba7c]";
+                  }
+
+                  return (
+                    <div
+                      key={notif._id}
+                      onClick={() => {
+                        if (isUnread) markAsReadMutation.mutate(notif._id);
+                      }}
+                      className={`px-4 py-4 border-b cursor-pointer transition-colors flex gap-4 ${border} ${isUnread ? (isDarkMode ? 'bg-[#1d9bf0]/10' : 'bg-[#1d9bf0]/5') : hoverBg}`}
+                    >
+                      <div className="relative shrink-0 mt-1">
+                        <Icon className={isUnread ? iconColor : textSecondary} size={24} />
+                        {isUnread && <span className={`absolute top-0 right-0 w-2.5 h-2.5 bg-[#1d9bf0] rounded-full border-2 border-white dark:border-black`}></span>}
+                      </div>
+
+                      <div className="flex-1">
+                        <Image src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-full mb-2 object-cover" alt={notif.senderId?.handle} />
+                        <p className={`text-[15px] ${textPrimary}`}>
+                          <span className="font-bold">{notif.senderId?.handle}</span> {actionText}.
+                        </p>
+                        {notif.postId && <p className={`text-[15px] mt-1 line-clamp-2 ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
+                      </div>
+                    </div>
+                  );
+                })
               ) : (
-                 <div className={`text-center py-10 text-[15px] ${textSecondary}`}>No notifications yet.</div>
+                <div className={`text-center py-10 text-[15px] ${textSecondary}`}>No notifications yet.</div>
               )}
             </div>
           ) : (
@@ -950,102 +949,12 @@ export default function DaplinkCommunityFeed() {
               postsData.map((post) => (
                 <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
               ))
-          <AnimatePresence mode="wait">
-            {activeTab === 'notifications' ? (
-              // NOTIFICATIONS VIEW 
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.25 }}
-                key="notifications"
-              >
-                {unreadCount > 0 && (
-                  <div className={`px-5 py-3 flex justify-end border-b ${border} bg-zinc-950/5 dark:bg-white/[0.005]`}>
-                    <button 
-                      onClick={() => markAllAsReadMutation.mutate()}
-                      disabled={markAllAsReadMutation.isPending}
-                      className="text-xs text-indigo-500 hover:underline font-extrabold uppercase tracking-wider transition-colors disabled:opacity-50"
-                    >
-                      Mark all as read
-                    </button>
-                  </div>
-                )}
-                {isNotificationsLoading ? (
-                   <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>
-                ) : notificationsData?.length > 0 ? (
-                   notificationsData.map((notif) => {
-                     const isUnread = notif.status === 'unread';
-                     
-                     let actionText = "interacted with your post";
-                     let Icon = Bell;
-                     let iconColor = "text-indigo-500";
-                     
-                     if (notif.notificationType === 'mention') {
-                         actionText = "mentioned you in a post";
-                     } else if (notif.notificationType === 'like') {
-                         actionText = "liked your post";
-                         Icon = Heart;
-                         iconColor = "text-rose-500";
-                     } else if (notif.notificationType === 'comment') {
-                         actionText = "commented on your post";
-                         Icon = MessageSquare;
-                     } else if (notif.notificationType === 'repost') {
-                         actionText = "reposted your post";
-                         Icon = Repeat2;
-                         iconColor = "text-emerald-500";
-                     }
-                     
-                     return (
-                       <div 
-                         key={notif._id} 
-                         onClick={() => {
-                           if (isUnread) markAsReadMutation.mutate(notif._id);
-                         }}
-                         className={`px-5 py-4.5 border-b cursor-pointer transition-all duration-300 flex gap-4.5 ${border} ${isUnread ? (isDarkMode ? 'bg-indigo-500/10 hover:bg-indigo-500/15' : 'bg-indigo-500/5 hover:bg-indigo-500/10') : hoverBg}`}
-                       >
-                          <div className="relative shrink-0 mt-1">
-                            <Icon className={isUnread ? `${iconColor} drop-shadow-sm` : textSecondary} size={20} />
-                            {isUnread && <span className={`absolute top-0 right-0 w-2 h-2 bg-indigo-500 rounded-full border-2 border-white dark:border-zinc-950`}></span>}
-                          </div>
-                          
-                          <div className="flex-1">
-                            <img src={notif.senderId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.senderId?.handle}`} className="w-8 h-8 rounded-xl mb-2 object-cover border border-zinc-200/50 dark:border-white/5 shadow-xs" alt={notif.senderId?.handle} />
-                            <p className={`text-xs ${textPrimary}`}>
-                              <span className="font-extrabold">@{notif.senderId?.handle}</span> {actionText}.
-                            </p>
-                            {notif.postId && <p className={`text-xs mt-1.5 line-clamp-2 leading-relaxed ${textSecondary}`}>&quot;{notif.postId.content}&quot;</p>}
-                          </div>
-                       </div>
-                     );
-                   })
-                ) : (
-                   <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>No notifications yet. Activity will trigger alerts!</div>
-                )}
-              </motion.div>
             ) : (
-              // POSTS VIEW
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.25 }}
-                key="posts"
-              >
-                {isPostsLoading ? (
-                  <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>
-                ) : postsData?.length > 0 ? (
-                  postsData.map((post) => (
-                    <PostItem key={post.id} post={post} isDarkMode={isDarkMode} daplinkUser={daplink} currentUser={user} onTagClick={handleTagClick} />
-                  ))
-                ) : (
-                  <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>
-                     {currentTagFilter ? `No posts found matching #${currentTagFilter}.` : activeTab === 'feed' ? "No posts yet. Be the first to share your stack vibes!" : "You haven't posted anything yet."}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              <div className={`text-center py-12 text-xs font-semibold leading-relaxed ${textSecondary}`}>
+                {currentTagFilter ? `No posts found matching #${currentTagFilter}.` : activeTab === 'feed' ? "No posts yet. Be the first to share your stack vibes!" : "You haven't posted anything yet."}
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -1053,7 +962,7 @@ export default function DaplinkCommunityFeed() {
       <div className="hidden lg:block w-[320px] pt-2 pb-20 space-y-4 sticky top-0 h-[calc(100vh-96px)] overflow-y-auto pl-4">
         <div className={`rounded-3xl border flex flex-col p-1 transition-all ${isDarkMode ? 'bg-zinc-950/40 border-zinc-800/60 shadow-lg' : 'bg-white border-zinc-200/50 shadow-sm'}`}>
           <h2 className="font-extrabold text-[13px] uppercase tracking-widest px-5 py-4 border-b border-inherit opacity-85">Trending Stack Topics</h2>
-          
+
           {isTrendingLoading ? (
             <div className="flex justify-center py-6"><Loader2 className="w-4 h-4 animate-spin text-indigo-500" /></div>
           ) : trendingTopics && trendingTopics.length > 0 ? (
@@ -1080,7 +989,7 @@ export default function DaplinkCommunityFeed() {
           </div>
         </div>
       </div>
-      
+
     </div>
   );
 }
