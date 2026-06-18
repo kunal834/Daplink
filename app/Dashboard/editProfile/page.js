@@ -148,17 +148,17 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
   const buttonStyle =
     vibe.buttonStyle === 'glass'
       ? {
-        backgroundColor: 'rgba(255,255,255,0.14)',
-        border: '1px solid rgba(255,255,255,0.3)',
-        color: textColor,
-        backdropFilter: `blur(${vibe.blur}px)`,
-      }
+          backgroundColor: 'rgba(255,255,255,0.14)',
+          border: '1px solid rgba(255,255,255,0.3)',
+          color: textColor,
+          backdropFilter: `blur(${vibe.blur}px)`,
+        }
       : vibe.buttonStyle === 'outline'
         ? {
-          backgroundColor: 'transparent',
-          border: `1px solid ${vibe.accent}`,
-          color: textColor,
-        }
+            backgroundColor: 'transparent',
+            border: `1px solid ${vibe.accent}`,
+            color: textColor,
+          }
         : {
             backgroundColor: vibe.accent,
             border: '1px solid transparent',
@@ -196,9 +196,12 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
 
   return (
     <div className="relative mx-auto h-[620px] w-[305px] overflow-hidden rounded-[3rem] border-[10px] border-zinc-900 bg-black shadow-2xl transition-all duration-500">
-      <div className="absolute inset-0 z-0 transition-colors duration-500" style={{ backgroundColor: vibe.backgroundColor }} />
+      <div 
+        className="absolute inset-0 z-0 transition-colors duration-500" 
+        style={{ backgroundColor: vibe.backgroundColor }} 
+      />
       {!vibe.customBackground ? (
-        <div className={`absolute inset-0 ${preset.bg} opacity-95 transition-all duration-500`} />
+        <div className={`absolute inset-0 ${preset.bg} opacity-85 transition-all duration-500`} />
       ) : (
         <div
           className="absolute inset-0 transition-all duration-500"
@@ -393,7 +396,7 @@ function PhonePreview({ profile, links, preset, vibe, aiConfig, avatarBorder, st
         </div>
 
         {aiConfig?.aiEnabled && (
-          <div
+          <div 
             className="absolute bottom-5 right-5 z-40 p-3 rounded-2xl bg-indigo-600 text-white shadow-xl flex items-center justify-center border border-white/20 hover:scale-105 transition-transform"
             title="Chat with AI Twin"
           >
@@ -501,34 +504,34 @@ export default function EditProfilePage() {
 
   const ui = isDark
     ? {
-      text: 'text-white',
-      muted: 'text-zinc-500',
-      panel: 'border-zinc-800 bg-zinc-900/60 backdrop-blur-md shadow-lg',
-      input: 'border-zinc-800 bg-zinc-950 text-white placeholder:text-zinc-600 focus:border-indigo-500/80 focus:ring-2 focus:ring-indigo-500/10',
-      activeTab: 'bg-white text-zinc-950 shadow-md',
-      tab: 'text-zinc-400 hover:text-white',
-      border: 'border-zinc-800/80',
-    }
+        text: 'text-white',
+        muted: 'text-zinc-500',
+        panel: 'border-zinc-800 bg-zinc-900/60 backdrop-blur-md shadow-lg',
+        input: 'border-zinc-800 bg-zinc-950 text-white placeholder:text-zinc-600 focus:border-indigo-500/80 focus:ring-2 focus:ring-indigo-500/10',
+        activeTab: 'bg-white text-zinc-950 shadow-md',
+        tab: 'text-zinc-400 hover:text-white',
+        border: 'border-zinc-800/80',
+      }
     : {
-      text: 'text-zinc-900',
-      muted: 'text-zinc-500',
-      panel: 'border-zinc-200 bg-white/80 backdrop-blur-md shadow-sm',
-      input: 'border-zinc-200/80 bg-zinc-50 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:ring-2 focus:ring-zinc-900/5',
-      activeTab: 'bg-zinc-900 text-white shadow-sm',
-      tab: 'text-zinc-500 hover:text-zinc-900',
-      border: 'border-zinc-200/70',
-    };
+        text: 'text-zinc-900',
+        muted: 'text-zinc-500',
+        panel: 'border-zinc-200 bg-white/80 backdrop-blur-md shadow-sm',
+        input: 'border-zinc-200/80 bg-zinc-50 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:ring-2 focus:ring-zinc-900/5',
+        activeTab: 'bg-zinc-900 text-white shadow-sm',
+        tab: 'text-zinc-500 hover:text-zinc-900',
+        border: 'border-zinc-200/70',
+      };
 
   useEffect(() => {
     if (!daplink) return;
     const dbPreset = PRESETS.find((p) => p.id === daplink.theme) || PRESETS[0];
     const mappedLinks = Array.isArray(daplink.links)
       ? daplink.links.map((l, idx) => ({
-        id: `${idx + 1}`,
-        title: l.linktext || '',
-        url: l.link || '',
-        active: true,
-      }))
+          id: `${idx + 1}`,
+          title: l.linktext || '',
+          url: l.link || '',
+          active: true,
+        }))
       : [];
 
     setPreset(dbPreset);
@@ -655,20 +658,21 @@ export default function EditProfilePage() {
   return (
     <div className={`flex flex-col gap-10 xl:flex-row ${ui.text} animate-in fade-in duration-500`}>
       <div className="flex-1 space-y-8">
-
+        
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className={`text-3xl font-black tracking-tight ${ui.text}`}>Digital Bio Canvas</h1>
             <p className={`text-sm mt-1 font-semibold ${ui.muted}`}>Design your custom aesthetic and share it globally.</p>
           </div>
-
+          
           <button
             onClick={publishChanges}
             disabled={mutation.isPending}
-            className={`flex items-center gap-2 rounded-2xl px-6 py-3.25 text-xs font-extrabold transition-all duration-300 shadow-md ${isDark
-              ? 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-600/10'
-              : 'bg-zinc-950 text-white hover:bg-black shadow-zinc-900/15'
-              } disabled:opacity-60 hover:scale-[1.02] active:scale-[0.98] cursor-pointer`}
+            className={`flex items-center gap-2 rounded-2xl px-6 py-3.25 text-xs font-extrabold transition-all duration-300 shadow-md ${
+              isDark 
+                ? 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-600/10' 
+                : 'bg-zinc-950 text-white hover:bg-black shadow-zinc-900/15'
+            } disabled:opacity-60 hover:scale-[1.02] active:scale-[0.98] cursor-pointer`}
           >
             {mutation.isPending ? 'Publishing...' : 'Publish Changes'}
             <Save size={14} strokeWidth={2.5} />
@@ -689,8 +693,9 @@ export default function EditProfilePage() {
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold relative transition-all duration-300 cursor-pointer ${isSelected ? ui.activeTab : ui.tab
-                  }`}
+                className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold relative transition-all duration-300 cursor-pointer ${
+                  isSelected ? ui.activeTab : ui.tab
+                }`}
               >
                 <Icon size={14} />
                 {t.label}
@@ -709,8 +714,8 @@ export default function EditProfilePage() {
                 transition={{ duration: 0.25 }}
                 className="space-y-4"
               >
-                <button
-                  onClick={addLink}
+                <button 
+                  onClick={addLink} 
                   className={`flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-4.5 font-bold transition-colors cursor-pointer hover:border-indigo-500/50 hover:text-indigo-400 ${ui.border} ${ui.muted}`}
                 >
                   <Plus size={16} />
@@ -756,16 +761,17 @@ export default function EditProfilePage() {
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => toggleLink(link.id)}
-                        className={`relative h-6 w-11 rounded-full cursor-pointer transition-colors duration-300 shrink-0 ${link.active ? 'bg-indigo-600 shadow-md shadow-indigo-600/20' : isDark ? 'bg-zinc-800' : 'bg-zinc-300'
-                          }`}
+                      <button 
+                        onClick={() => toggleLink(link.id)} 
+                        className={`relative h-6 w-11 rounded-full cursor-pointer transition-colors duration-300 shrink-0 ${
+                          link.active ? 'bg-indigo-600 shadow-md shadow-indigo-600/20' : isDark ? 'bg-zinc-800' : 'bg-zinc-300'
+                        }`}
                       >
                         <span className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-all duration-300 ${link.active ? 'left-6' : 'left-1'}`} />
                       </button>
 
-                      <button
-                        onClick={() => removeLink(link.id)}
+                      <button 
+                        onClick={() => removeLink(link.id)} 
                         className={`p-2 rounded-xl text-zinc-500 hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer shrink-0`}
                       >
                         <Trash2 size={14} />
@@ -802,114 +808,70 @@ export default function EditProfilePage() {
                   </div>
                 </div>
 
-                <div className={`rounded-3xl border p-5 ${ui.panel}`}>
-                  <div className="mb-6 flex items-center gap-5">
-                    <div className={`group relative h-24 w-24 overflow-hidden rounded-full ${ui.border}`}>
-                      <Image
-                        src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.name || "user")}`}
-                        alt="avatar"
-                        className="h-full w-full object-cover"
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Display Handle</label>
+                      <input
+                        value={profile?.name}
+                        disabled={true}
+                        className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold cursor-not-allowed leading-none opacity-60 ${ui.input}`}
+                        placeholder="Display Handle"
                       />
-                      <label className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100  ">
-                        <Plus size={18} className="text-white" />
-                        <input type="file" accept="image/*" className="hidden" onChange={onAvatarUpload} />
-                      </label>
                     </div>
-                    <p className={`text-sm ${ui.muted}`}>Upload avatar, edit location and bio.</p>
+                    <div className="space-y-2">
+                      <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Location</label>
+                      <input
+                        value={profile.location}
+                        onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
+                        className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold leading-none ${ui.input}`}
+                        placeholder="e.g. San Francisco, CA"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    <label className={`text-md font-semibold mx-2 ${ui.muted}`}>Display Handle</label>
-                    <input
-                      value={profile?.name}
-                      // onChange={(e) => setProfile((p) => ({ ...p, handle: e.target.value }))}
-                      disabled={true}
-                      className={`w-full rounded-2xl border px-4 py-3 mb-4 cursor-not-allowed ${ui.input}`}
-                      placeholder="Display Handle"
-                    />
-                    {/* <label className={`text-xs font-semibold ${ui.muted}`}>Note: Display Handle cannot be changed due to technical limitations. Please contact support if you want to change it.</label> */}
 
-                    <label className={`text-md font-semibold m-2 ${ui.muted}`}>Location</label>
-                    <input
-                      value={profile.location}
-                      onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
-                      className={`w-full rounded-2xl border px-4 py-3 ${ui.input}`}
-                      placeholder="Location"
-                    />
-                    <label className={`text-md font-semibold m-2 ${ui.muted}`}>Bio</label>
+                  <div className="space-y-2">
+                    <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Biography</label>
                     <textarea
-                      rows={3}
+                      rows={4}
                       value={profile.bio}
                       onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
-                      className={`w-full resize-none rounded-2xl border px-4 py-3 ${ui.input}`}
-                      placeholder="Bio"
+                      className={`w-full resize-none rounded-2xl border px-4 py-3 text-xs font-semibold leading-relaxed ${ui.input}`}
+                      placeholder="Write a tiny description of your work..."
                     />
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Display Handle</label>
-                          <input
-                            value={profile?.name}
-                            disabled={true}
-                            className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold cursor-not-allowed leading-none opacity-60 ${ui.input}`}
-                            placeholder="Display Handle"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Location</label>
-                          <input
-                            value={profile.location}
-                            onChange={(e) => setProfile((p) => ({ ...p, location: e.target.value }))}
-                            className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold leading-none ${ui.input}`}
-                            placeholder="e.g. San Francisco, CA"
-                          />
-                        </div>
-                      </div>
+                  </div>
+                </div>
 
-                      <div className="space-y-2">
-                        <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Biography</label>
-                        <textarea
-                          rows={4}
-                          value={profile.bio}
-                          onChange={(e) => setProfile((p) => ({ ...p, bio: e.target.value }))}
-                          className={`w-full resize-none rounded-2xl border px-4 py-3 text-xs font-semibold leading-relaxed ${ui.input}`}
-                          placeholder="Write a tiny description of your work..."
-                        />
-                      </div>
+                <div className="pt-6 border-t border-inherit space-y-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-400">Avatar Identity Rings</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Status Glow Ring</label>
+                      <select
+                        value={statusGlow}
+                        onChange={(e) => setStatusGlow(e.target.value)}
+                        className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold leading-none cursor-pointer ${ui.input}`}
+                      >
+                        <option value="online">Online (Emerald Glow)</option>
+                        <option value="busy">Busy (Ruby Glow)</option>
+                        <option value="away">Away (Amber Glow)</option>
+                        <option value="offline">Offline (Muted Gray)</option>
+                      </select>
                     </div>
 
-                    {/* Custom Avatar Ring and status selector */}
-                    <div className="pt-6 border-t border-inherit space-y-4">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-400">Avatar Identity Rings</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Status Glow Ring</label>
-                          <select
-                            value={statusGlow}
-                            onChange={(e) => setStatusGlow(e.target.value)}
-                            className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold leading-none cursor-pointer ${ui.input}`}
-                          >
-                            <option value="online">Online (Emerald Glow)</option>
-                            <option value="busy">Busy (Ruby Glow)</option>
-                            <option value="away">Away (Amber Glow)</option>
-                            <option value="offline">Offline (Muted Gray)</option>
-                          </select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Border Glow Gradient</label>
-                          <select
-                            value={avatarBorder}
-                            onChange={(e) => setAvatarBorder(e.target.value)}
-                            className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold leading-none cursor-pointer ${ui.input}`}
-                          >
-                            <option value="classic">Classic (Standard Ring)</option>
-                            <option value="emerald-glow">Emerald Glow (Pulse Verde)</option>
-                            <option value="aurora">Aurora Glow (Purple/Cyan Mesh)</option>
-                            <option value="neon-sunset">Neon Sunset (Pink/Orange Glow)</option>
-                            <option value="cyberpunk">Cyberpunk Glow (Yellow/Purple Neon)</option>
-                          </select>
-                        </div>
-                      </div>
+                    <div className="space-y-2">
+                      <label className={`block text-[10px] font-bold uppercase tracking-widest ml-1 ${ui.muted}`}>Border Glow Gradient</label>
+                      <select
+                        value={avatarBorder}
+                        onChange={(e) => setAvatarBorder(e.target.value)}
+                        className={`w-full rounded-2xl border px-4 py-3 text-xs font-semibold leading-none cursor-pointer ${ui.input}`}
+                      >
+                        <option value="classic">Classic (Standard Ring)</option>
+                        <option value="emerald-glow">Emerald Glow (Pulse Verde)</option>
+                        <option value="aurora">Aurora Glow (Purple/Cyan Mesh)</option>
+                        <option value="neon-sunset">Neon Sunset (Pink/Orange Glow)</option>
+                        <option value="cyberpunk">Cyberpunk Glow (Yellow/Purple Neon)</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -950,10 +912,11 @@ export default function EditProfilePage() {
                             })
                           );
                         }}
-                        className={`rounded-3xl border p-2 text-left transition-all duration-300 cursor-pointer ${isSelected
-                            ? 'border-indigo-500 ring-4 ring-indigo-500/10 shadow-lg'
+                        className={`rounded-3xl border p-2 text-left transition-all duration-300 cursor-pointer ${
+                          isSelected 
+                            ? 'border-indigo-500 ring-4 ring-indigo-500/10 shadow-lg' 
                             : isDark ? 'border-zinc-800 hover:border-zinc-700' : 'border-zinc-200 hover:border-zinc-300'
-                          }`}
+                        }`}
                       >
                         <div className={`h-22 rounded-2xl ${p.bg} shadow-inner`} />
                         <div className="mt-2.5 flex items-center justify-between px-1.5 pb-0.5">
@@ -970,7 +933,7 @@ export default function EditProfilePage() {
                     <Layout size={14} className="text-teal-400" />
                     <p className="text-xs font-bold uppercase tracking-wider">Layout Template Studio</p>
                   </div>
-
+                  
                   <div className="grid grid-cols-2 gap-3 md:grid-cols-4 mb-5">
                     {[
                       { id: 'classic', name: 'Standard List', desc: 'Classic centered vertical flow.' },
@@ -984,10 +947,11 @@ export default function EditProfilePage() {
                           key={lay.id}
                           type="button"
                           onClick={() => setVibe((v) => ({ ...v, layoutStyle: lay.id }))}
-                          className={`rounded-2xl border p-4 text-left transition-all duration-300 cursor-pointer flex flex-col justify-between h-28 relative hover:scale-[1.01] ${isSel
-                              ? 'border-indigo-500 ring-4 ring-indigo-500/10 bg-indigo-500/5'
+                          className={`rounded-2xl border p-4 text-left transition-all duration-300 cursor-pointer flex flex-col justify-between h-28 relative hover:scale-[1.01] ${
+                            isSel 
+                              ? 'border-indigo-500 ring-4 ring-indigo-500/10 bg-indigo-500/5' 
                               : isDark ? 'border-zinc-800 hover:border-zinc-700 bg-black/10' : 'border-zinc-200 hover:border-zinc-300 bg-white'
-                            }`}
+                          }`}
                         >
                           <div>
                             <span className="text-[10px] font-black uppercase tracking-wider block">{lay.name}</span>
@@ -1016,10 +980,11 @@ export default function EditProfilePage() {
                               key={c.id}
                               type="button"
                               onClick={() => setVibe((v) => ({ ...v, cardStyle: c.id }))}
-                              className={`rounded-xl border py-2.5 text-[9px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${isSel
-                                  ? 'border-indigo-500 text-indigo-500 bg-indigo-500/5'
+                              className={`rounded-xl border py-2.5 text-[9px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                                isSel 
+                                  ? 'border-indigo-500 text-indigo-500 bg-indigo-500/5' 
                                   : isDark ? 'border-zinc-800 text-zinc-400 hover:bg-zinc-850' : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50'
-                                }`}
+                              }`}
                             >
                               {c.name}
                             </button>
@@ -1107,10 +1072,11 @@ export default function EditProfilePage() {
                           <button
                             key={b}
                             onClick={() => setVibe((v) => ({ ...v, bgStyle: b }))}
-                            className={`rounded-xl border py-2.5 text-[10px] font-extrabold uppercase tracking-widest transition-all cursor-pointer ${isSel
-                                ? 'border-indigo-500 text-indigo-500 bg-indigo-500/5'
+                            className={`rounded-xl border py-2.5 text-[10px] font-extrabold uppercase tracking-widest transition-all cursor-pointer ${
+                              isSel 
+                                ? 'border-indigo-500 text-indigo-500 bg-indigo-500/5' 
                                 : isDark ? 'border-zinc-800 text-zinc-400 hover:bg-zinc-800' : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50'
-                              }`}
+                            }`}
                           >
                             {b}
                           </button>
@@ -1149,10 +1115,11 @@ export default function EditProfilePage() {
                           <button
                             key={b}
                             onClick={() => setVibe((v) => ({ ...v, buttonStyle: b }))}
-                            className={`rounded-xl border py-2.5 text-[10px] font-extrabold uppercase tracking-widest transition-all cursor-pointer ${isSel
-                                ? 'border-indigo-500 text-indigo-500 bg-indigo-500/5'
+                            className={`rounded-xl border py-2.5 text-[10px] font-extrabold uppercase tracking-widest transition-all cursor-pointer ${
+                              isSel 
+                                ? 'border-indigo-500 text-indigo-500 bg-indigo-500/5' 
                                 : isDark ? 'border-zinc-800 text-zinc-400 hover:bg-zinc-800' : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50'
-                              }`}
+                            }`}
                           >
                             {b}
                           </button>
@@ -1229,10 +1196,11 @@ export default function EditProfilePage() {
                           key={type.id}
                           type="button"
                           onClick={() => setPostType(type.id)}
-                          className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-bold cursor-pointer transition-all ${active
-                              ? 'bg-indigo-600 text-white shadow-sm'
+                          className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-bold cursor-pointer transition-all ${
+                            active 
+                              ? 'bg-indigo-600 text-white shadow-sm' 
                               : 'text-zinc-400 hover:text-zinc-200'
-                            }`}
+                          }`}
                         >
                           <Icon size={12} />
                           {type.label}
@@ -1250,8 +1218,8 @@ export default function EditProfilePage() {
                       className={`w-full resize-none rounded-2xl border px-4 py-3 text-xs font-semibold leading-relaxed ${ui.input}`}
                       placeholder={
                         postType === 'poll' ? "Ask a question to your audience..." :
-                          postType === 'audio' ? "Describe your voice memo..." :
-                            "Share an update, link, or announcement with your followers..."
+                        postType === 'audio' ? "Describe your voice memo..." :
+                        "Share an update, link, or announcement with your followers..."
                       }
                     />
                   </div>
@@ -1270,7 +1238,7 @@ export default function EditProfilePage() {
                           </button>
                         )}
                       </div>
-
+                      
                       <div className="space-y-2">
                         {pollOptions.map((opt, index) => (
                           <div key={index} className="flex items-center gap-2">
@@ -1320,8 +1288,9 @@ export default function EditProfilePage() {
                   </button>
 
                   {postStatus && (
-                    <div className={`text-center text-xs font-bold py-1 ${postStatus.includes("successfully") ? "text-emerald-500" : "text-amber-400"
-                      }`}>
+                    <div className={`text-center text-xs font-bold py-1 ${
+                      postStatus.includes("successfully") ? "text-emerald-500" : "text-amber-400"
+                    }`}>
                       {postStatus}
                     </div>
                   )}
@@ -1345,11 +1314,12 @@ export default function EditProfilePage() {
                     </h3>
                     <p className={`text-xs ${ui.muted}`}>Enable a real-time AI assistant trained on your bio and links to chat with visitors.</p>
                   </div>
-                  <button
+                  <button 
                     type="button"
-                    onClick={() => setAiConfig(prev => ({ ...prev, aiEnabled: !prev.aiEnabled }))}
-                    className={`relative h-6 w-11 rounded-full cursor-pointer transition-colors duration-300 shrink-0 ${aiConfig.aiEnabled ? 'bg-indigo-600 shadow-md shadow-indigo-600/20' : isDark ? 'bg-zinc-800' : 'bg-zinc-300'
-                      }`}
+                    onClick={() => setAiConfig(prev => ({ ...prev, aiEnabled: !prev.aiEnabled }))} 
+                    className={`relative h-6 w-11 rounded-full cursor-pointer transition-colors duration-300 shrink-0 ${
+                      aiConfig.aiEnabled ? 'bg-indigo-600 shadow-md shadow-indigo-600/20' : isDark ? 'bg-zinc-800' : 'bg-zinc-300'
+                    }`}
                   >
                     <span className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-all duration-300 ${aiConfig.aiEnabled ? 'left-6' : 'left-1'}`} />
                   </button>

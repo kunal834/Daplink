@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { io } from "socket.io-client";
 import {
-    Send, Search, MoreVertical, Check, MessageSquare, Loader2,
+    Send, Search, MoreVertical, Check, CheckCheck, MessageSquare, Loader2,
     Smile, Paperclip, Phone, Video as VideoIcon, User, Sparkles
 } from 'lucide-react';
 import Image from 'next/image';
@@ -267,50 +267,6 @@ export default function MessagePage() {
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-                    {loadingChats ? (
-                        <div className="flex justify-center items-center h-32">
-                            <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
-                        </div>
-                    ) : filteredConversations.map((conv) => {
-                        const userId = conv.user?._id;
-                        const unread = unreadCounts[String(userId)] || 0;
-                        const isSelected = activeChat?.user?._id === userId;
-                        const handle = conv.user?.daplinkID?.handle || conv.user?.handle || "Incognito";
-                        const profilePic = conv.user?.daplinkID?.profile || conv.user?.profile;
-
-                        if (!userId) return null;
-
-                        return (
-                            <div
-                                key={userId}
-                                onClick={() => handleSelectChat(conv)}
-                                className={`flex items-center gap-4 px-6 py-4 cursor-pointer transition-colors border-b border-zinc-100 dark:border-zinc-800/30
-                  ${isSelected ? ui.activeChat : ui.hoverChat}`}
-                            >
-                                <div className="relative shrink-0">
-                                    <div className="w-12 h-12 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold overflow-hidden shadow-sm">
-                                        {profilePic ? (
-                                            <Image src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-                                        ) : getInitials(handle)}
-                                    </div>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex justify-between items-baseline mb-0.5">
-                                        <h3 className={`font-bold text-xs truncate ${ui.text}`}>@{handle}</h3>
-                                        <span className={`text-[9px] font-extrabold tracking-wider whitespace-nowrap ${unread > 0 ? 'text-indigo-500' : ui.subtext}`}>
-                                            {conv.lastMessageTime ? new Date(conv.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                                        </span>
-                                    </div>
-                                    <p className={`text-xs truncate pr-2 leading-relaxed ${unread > 0 ? `${ui.text} font-bold` : ui.subtext}`}>
-                                        {conv.lastMessage?.text || "Real-time communication active"}
-                                    </p>
-                                </div>
-                            </div>
-                        );
-                    })}
-=======
                 {/* Conversation List Container */}
                 <div className="flex-1 overflow-y-auto scrollbar-thin divide-y dark:divide-zinc-800/30 divide-zinc-200/40">
                     <AnimatePresence>
@@ -386,7 +342,6 @@ export default function MessagePage() {
                             No conversations yet.<br />Reach out from the community directory to start!
                         </div>
                     )}
->>>>>>> origin/master
                 </div>
             </div>
 
@@ -450,15 +405,9 @@ export default function MessagePage() {
                                             <div className={`mt-1.5 flex items-center gap-1 text-[9px] font-extrabold tracking-wider ${ui.subtext}`}>
                                                 {msg.time}
                                                 {isMe && (
-<<<<<<< HEAD
-                                                    msg.status === "read" ? <Check className="w-3.5 h-3.5 text-blue-400" /> :
-                                                        msg.status === "sending" ? <Loader2 className="w-2.5 h-2.5 animate-spin text-indigo-500" /> :
-                                                            <Check className="w-3.5 h-3.5" />
-=======
                                                     msg.status === "read" ? <CheckCheck className="w-3.5 h-3.5 text-blue-400" /> :
                                                     msg.status === "sending" ? <Loader2 className="w-2.5 h-2.5 animate-spin text-indigo-500" /> :
                                                         <Check className="w-3.5 h-3.5" />
->>>>>>> origin/master
                                                 )}
                                             </div>
                                         </motion.div>
