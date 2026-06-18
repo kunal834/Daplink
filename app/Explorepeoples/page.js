@@ -108,7 +108,7 @@ const ChatWidget = ({
       }
     };
     fetchMessages();
-  },[recipient?._id, recipient?.handle, currentUserId, currentUserHandle]);
+  }, [recipient?._id, recipient?.handle, currentUserId, currentUserHandle]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -165,7 +165,7 @@ const ChatWidget = ({
           <div className="relative">
              <div className="w-9 h-9 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-sm overflow-hidden">
                 {recipient.avatar ? (
-                  <Image src={recipient.avatar} alt={`${recipient.handle}'s Profile`} className="w-full h-full object-cover" />
+                  <Image src={recipient.avatar} alt={`${recipient.handle}'s Profile`} className="w-full h-full object-cover" width={36} height={36} />
                 ) : getInitials(recipient.handle)}
              </div>
              <div className={`absolute bottom-0 right-0 w-2.5 h-2.5 border-2 ${theme === 'dark' ? 'border-[#09090b]' : 'border-white'} bg-emerald-500 rounded-full`}></div>
@@ -706,7 +706,7 @@ const UserProfile = ({ params }) => {
                       >
                         <div className={`w-9 h-9 rounded-full overflow-hidden shrink-0 ${theme === 'dark' ? 'bg-zinc-800' : 'bg-zinc-100'}`}>
                           {user.avatar ? (
-                            <Image src={user.avatar} alt={`${user.handle} avatar`} className="w-full h-full object-cover" />
+                            <Image src={user.avatar} alt={`${user.handle} avatar`} className="w-full h-full object-cover" width={36} height={36} />
                           ) : (
                             <div className={`w-full h-full flex items-center justify-center text-xs font-bold ${theme === 'dark' ? 'text-zinc-300' : 'text-zinc-600'}`}>
                               {getInitials(user.handle)}
@@ -735,7 +735,6 @@ const UserProfile = ({ params }) => {
                 {visiblePeople.map((user, index) => {
                   const unread = unreadCounts[String(user._id)] || 0;
                   
-                  // All profile data for the grid cards
                   const handle = user?.daplinkID?.handle || user?.handle || "Incognito";
                   const avatar = user?.daplinkID?.profile || user?.avatar || user?.profile;
                   const profession = user?.daplinkID?.profession || user?.profession || "Creator";
@@ -753,7 +752,7 @@ const UserProfile = ({ params }) => {
                       <div className="flex items-start justify-between mb-4">
                         <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-lg border-2 ${colors.avatarBg} ${theme === 'dark' ? 'border-zinc-700' : 'border-white'} shadow-sm overflow-hidden`}>
                           {avatar ? (
-                            <Image src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" />
+                            <Image src={avatar} alt={`${handle}'s Profile`} className="h-full w-full object-cover" width={56} height={56} />
                           ) : getInitials(handle)}
                         </div>
                         <div className="flex items-start justify-between mb-4">
