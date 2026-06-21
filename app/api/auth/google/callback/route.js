@@ -50,6 +50,8 @@ export async function GET(request) {
       user = await User.create({
         name: googleUser.name,
         email: googleUser.email,
+        isGoogleuser: true, // Pass this explicitly up front!
+       emailVerified: true // Good practice for OAuth providers
       });
     }
 
