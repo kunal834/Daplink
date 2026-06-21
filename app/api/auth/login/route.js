@@ -18,9 +18,9 @@ export async function POST(req) {
       );
     }
 
-    //Checking if user exists
+    // FIX: Added +emailVerified explicitly to the selection string
     const user = await User.findOne({ email: email.toLowerCase() })
-      .select("+password")
+      .select("+password +emailVerified") 
       .populate("daplinkID");
 
     if (!user) {
@@ -36,12 +36,14 @@ export async function POST(req) {
           message:
             "This account uses Google Login. Please sign in with Google.",
         },
-        { status: 403 }, // Forbidden: right user, wrong method
+        { status: 403 },
       );
     }
 
     // Checking if email is verified for non-Google users
-    if (!user.isGoogleuser && !user.emailVerified) {
+    // FIX: Using Boolean abstraction to ensure a strict true/false evaluation
+    const isVerified = Boolean(user.emailVerified);
+    if (!user.isGoogleuser && !isVerified) {
       return NextResponse.json(
         {
           success: false,
@@ -61,7 +63,7 @@ export async function POST(req) {
       );
     }
 
-    // Creating a  JWT token
+    // Creating a JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET,
@@ -88,8 +90,9 @@ export async function POST(req) {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: "/",
-      maxAge: 60 * 60, // 60 minutes
+      maxAge: 24 * 60 * 60, // Fixed to matching token expiration (1 day)
     });
+    
     return response;
   } catch (error) {
     console.error(error);
