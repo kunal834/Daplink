@@ -6,12 +6,12 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   // default remains the same
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
 
   // READ once on mount (same as before)
   useEffect(() => {
     const savedTheme = Cookies.get('daplink-theme');
-    if (savedTheme === 'dark' || savedTheme === 'light') {
+    if (savedTheme === 'light' || savedTheme === 'dark') {
       setTheme(savedTheme);
     }
   }, []);
